@@ -1,4 +1,4 @@
-# dotclaude
+# positronic
 
 A personal AI-coding framework. Karpathy's behavioral principles as the always-on floor (in `AGENTS.md`, the cross-tool standard read by Claude Code, Google Antigravity, and Cursor), a curated set of Pocock-style workflow skills on top for Claude Code, and an `optional/` parking lot for skills kept around but not active.
 
@@ -51,7 +51,7 @@ If your platform doesn't follow git symlinks (rare on macOS/Linux, possible on W
 ### Option A: as your user-level Claude Code config
 
 ```bash
-git clone https://github.com/<you>/dotclaude.git ~/.claude
+git clone https://github.com/<you>/positronic.git ~/.claude
 ```
 
 If `~/.claude` already exists, clone elsewhere and selectively merge.
@@ -61,8 +61,8 @@ If `~/.claude` already exists, clone elsewhere and selectively merge.
 From within Claude Code:
 
 ```text
-/plugin marketplace add <you>/dotclaude
-/plugin install dotclaude
+/plugin marketplace add <you>/positronic
+/plugin install positronic
 ```
 
 ### Option C: per-project

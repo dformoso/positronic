@@ -1,6 +1,6 @@
 {
-  "name": "dotclaude",
-  "description": "Personal Claude Code framework: Karpathy behavioral floor in CLAUDE.md, curated Pocock workflow skills, slash-only utilities. Optional skills are stored alongside but unregistered.",
+  "name": "positronic",
+  "description": "Personal Claude Code framework: Karpathy behavioral floor in AGENTS.md, curated Pocock workflow skills, slash-only utilities. Optional skills are stored alongside but unregistered.",
   "skills": [
     "./skills/meta/write-a-skill",
     "./skills/workflow/diagnose",
