@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "skills",
-      "source": ".",
+      "source": "./",
       "description": "Six skills (write-a-skill, diagnose, tdd, grill-me, caveman, zoom-out)."
     }
   ]
