@@ -1,0 +1,14 @@
+{
+  "name": "positronic",
+  "description": "Personal Claude Code framework",
+  "owner": {
+    "name": "dformoso"
+  },
+  "plugins": [
+    {
+      "name": "skills",
+      "source": ".",
+      "description": "Six skills (write-a-skill, diagnose, tdd, grill-me, caveman, zoom-out)."
+    }
+  ]
+}

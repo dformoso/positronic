@@ -1,11 +1,11 @@
 {
-  "name": "positronic",
-  "description": "Personal Claude Code framework: Karpathy behavioral floor in AGENTS.md, curated Pocock workflow skills, slash-only utilities. Optional skills are stored alongside but unregistered.",
+  "name": "skills",
+  "description": "Personal Claude Code framework",
   "skills": [
-    "./skills/meta/write-a-skill",
-    "./skills/workflow/diagnose",
-    "./skills/workflow/tdd",
-    "./skills/workflow/grill-me",
+    "./skills/model-invokable/write-a-skill",
+    "./skills/model-invokable/diagnose",
+    "./skills/model-invokable/tdd",
+    "./skills/model-invokable/grill-me",
     "./skills/slash-only/caveman",
     "./skills/slash-only/zoom-out"
   ]

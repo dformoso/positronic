@@ -107,13 +107,12 @@ Split into separate files when:
 
 ## Behavioral Floor
 
-Every skill in this framework runs on top of the four principles in the user-level `CLAUDE.md` (Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution). A new skill must not contradict the floor. If a skill needs to override it (e.g. an architecture skill that proposes refactors beyond the immediate request), state the override explicitly in the skill body.
+Every skill in this framework runs on top of the four principles in the user-level `AGENTS.md` (Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution). A new skill must not contradict the floor. If a skill needs to override it (e.g. an architecture skill that proposes refactors beyond the immediate request), state the override explicitly in the skill body.
 
 Default placement:
-- **`skills/workflow/`** — model-invokable. Trigger `description` must be tight enough that auto-selection doesn't fire on adjacent topics.
+- **`skills/model-invokable/`** — auto-fires on relevant prompts. Trigger `description` must be tight enough that auto-selection doesn't fire on adjacent topics.
 - **`skills/slash-only/`** — set `disable-model-invocation: true` in frontmatter. Use for stylistic modes, one-shot prompts, and heavy workflows that should only run on explicit invocation.
-- **`skills/optional/`** — leave unregistered in `.claude-plugin/plugin.json`. Stored but inert.
-- **`skills/meta/`** — skills about skills.
+- **`skills/dormant/`** — leave unregistered in `.claude-plugin/plugin.json`. Stored but inert.
 
 ## Review Checklist
 
@@ -125,6 +124,6 @@ After drafting, verify:
 - [ ] Consistent terminology
 - [ ] Concrete examples included
 - [ ] References one level deep
-- [ ] Does not contradict the four principles in `CLAUDE.md` (or states the override)
-- [ ] Placed in the right bucket (`workflow/`, `slash-only/`, `optional/`, `meta/`)
+- [ ] Does not contradict the four principles in `AGENTS.md` (or states the override)
+- [ ] Placed in the right bucket (`model-invokable/`, `slash-only/`, `dormant/`)
 - [ ] Registered in `.claude-plugin/plugin.json` if it should be active
