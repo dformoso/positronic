@@ -80,6 +80,34 @@ Clone into a project and either symlink `CLAUDE.md` to the project root or copy 
 
 Use the `write-a-skill` skill itself, or follow the template in [skills/meta/write-a-skill/SKILL.md](skills/meta/write-a-skill/SKILL.md). New skills must not contradict the four principles in `CLAUDE.md`.
 
+## MCP servers
+
+[Model Context Protocol](https://modelcontextprotocol.io/) servers add capabilities to Claude Code (browser automation, GitHub access, database queries, etc.). Same lean-context discipline as skills: install only what you actively use.
+
+### Recommended starter set
+
+| Server | Use | Install |
+| --- | --- | --- |
+| **[Playwright](https://github.com/microsoft/playwright-mcp)** | Browser automation, UI verification, end-to-end testing | `claude mcp add playwright npx '@playwright/mcp@latest'` |
+| **[GitHub](https://github.com/github/github-mcp-server)** | Issues, PRs, repo search, triage | See the official install guide — supports OAuth and token auth |
+
+The Playwright MCP exposes ~26 tools (~3,600 tokens of schema). Claude Code's MCP Tool Search lazy-loads them, but it's still the heaviest browser MCP — switch to a lighter alternative like Playwriter only if you hit context pressure.
+
+### Add as needs arise
+
+- **Database MCPs** (Postgres, SQLite) — install per-project when working on a database-backed app. Don't carry globally.
+- **Docs MCPs** (e.g. Context7) — useful if you hit "this API doesn't exist" hallucinations on third-party libraries.
+- **Sequential Thinking** — optional; Claude's extended thinking already covers most of what it offers.
+
+### Where MCP config lives
+
+- **User-level** (all projects): `claude mcp add <name> ...` writes to `~/.claude.json`.
+- **Project-level** (committed): create `.mcp.json` in the project root for MCPs specific to that project. Keep secrets out of the file — use env vars or `claude mcp add` per-developer.
+
+### Curation principle
+
+Each server costs picker context, even with Tool Search. Don't install MCPs you won't use. Skip MCPs that duplicate Claude Code built-ins (filesystem, basic shell). One server per capability — tool name collisions confuse the picker.
+
 ## Acknowledgments
 
 This setup is inspired by two people whose thinking shaped it:
