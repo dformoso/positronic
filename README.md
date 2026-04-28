@@ -1,14 +1,15 @@
 # dotclaude
 
-A personal Claude Code framework. Karpathy's behavioral principles as the always-on floor, a curated set of Pocock-style workflow skills on top, and an `optional/` parking lot for skills kept around but not active.
+A personal AI-coding framework. Karpathy's behavioral principles as the always-on floor (in `AGENTS.md`, the cross-tool standard read by Claude Code, Google Antigravity, and Cursor), a curated set of Pocock-style workflow skills on top for Claude Code, and an `optional/` parking lot for skills kept around but not active.
 
 ## Layout
 
 ```text
 .
-├── CLAUDE.md                              # behavioral floor (always on)
-├── .claude-plugin/plugin.json             # registers active skills
-└── skills/
+├── AGENTS.md                              # behavioral floor (cross-tool, always on)
+├── CLAUDE.md                              # symlink → AGENTS.md (for Claude Code)
+├── .claude-plugin/plugin.json             # registers active skills (Claude Code only)
+└── skills/                                # Claude Code only
     ├── meta/write-a-skill/                # how to extend the framework
     ├── workflow/                          # model-invokable
     │   ├── diagnose/
@@ -29,7 +30,21 @@ A personal Claude Code framework. Karpathy's behavioral principles as the always
         └── scaffold-exercises/
 ```
 
-The system prompt only ever sees `CLAUDE.md` plus the `description` fields of skills listed in `plugin.json`. `optional/` costs zero context until you promote a skill into a registered bucket.
+The system prompt only ever sees `AGENTS.md` (via `CLAUDE.md`) plus the `description` fields of skills listed in `plugin.json`. `optional/` costs zero context until you promote a skill into a registered bucket.
+
+## Multi-tool support
+
+`AGENTS.md` is a cross-tool convention now read by Claude Code, [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide) (since v1.20.3, March 2026), and Cursor. The repo is structured so the same behavioral floor reaches every tool:
+
+| Tool | What it reads |
+| --- | --- |
+| Claude Code | `CLAUDE.md` (symlinked to `AGENTS.md`) + `skills/` registered in `.claude-plugin/plugin.json` |
+| Google Antigravity | `AGENTS.md`. Optionally add a `GEMINI.md` next to it for Antigravity-specific overrides (Antigravity gives `GEMINI.md` higher priority than `AGENTS.md`). |
+| Cursor | `AGENTS.md`. Add `.cursor/rules/` for Cursor-specific overrides. |
+
+The `skills/` system is Claude-Code-specific (relies on the SKILL.md frontmatter format and Claude Code's skill picker). Other tools won't auto-load them; if you want a workflow from a skill available everywhere, lift its content into `AGENTS.md` or a tool-specific override file.
+
+If your platform doesn't follow git symlinks (rare on macOS/Linux, possible on Windows without `core.symlinks=true`), replace the `CLAUDE.md` symlink with a copy of `AGENTS.md` and re-sync manually when `AGENTS.md` changes.
 
 ## Install
 
