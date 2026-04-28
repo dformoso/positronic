@@ -7,7 +7,10 @@
   "plugins": [
     {
       "name": "skills",
-      "source": "./",
+      "source": {
+        "source": "github",
+        "repo": "dformoso/positronic"
+      },
       "description": "Six skills (write-a-skill, diagnose, tdd, grill-me, caveman, zoom-out)."
     }
   ]
