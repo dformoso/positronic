@@ -7,6 +7,9 @@
     "./skills/model-invokable/tdd",
     "./skills/model-invokable/grill-me",
     "./skills/slash-only/caveman",
-    "./skills/slash-only/zoom-out"
+    "./skills/slash-only/zoom-out",
+    "./skills/slash-only/to-prd",
+    "./skills/slash-only/to-issues",
+    "./skills/slash-only/git-guardrails-claude-code"
   ]
 }

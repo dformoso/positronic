@@ -26,14 +26,14 @@ For the full framework (skills + behavioral floor), see [Install](#install) belo
     │   └── write-a-skill/
     ├── slash-only/                        # disable-model-invocation: true
     │   ├── caveman/
-    │   └── zoom-out/
+    │   ├── zoom-out/
+    │   ├── to-prd/
+    │   ├── to-issues/
+    │   └── git-guardrails-claude-code/
     └── dormant/                           # unregistered, inert
         ├── grill-with-docs/
         ├── improve-codebase-architecture/
         ├── github-triage/
-        ├── to-issues/
-        ├── to-prd/
-        ├── git-guardrails-claude-code/
         ├── migrate-to-shoehorn/
         ├── setup-pre-commit/
         └── scaffold-exercises/
