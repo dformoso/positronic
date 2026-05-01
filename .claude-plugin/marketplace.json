@@ -11,7 +11,7 @@
         "source": "github",
         "repo": "dformoso/positronic"
       },
-      "description": "Six skills (write-a-skill, diagnose, tdd, grill-me, caveman, zoom-out)."
+      "description": "A curated set of skills for Claude Code. See plugin.json for the active set."
     }
   ]
 }
