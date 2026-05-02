@@ -31,10 +31,10 @@ For the full framework (skills + behavioral floor), see [Install](#install) belo
     │   ├── zoom-out/
     │   ├── to-prd/
     │   ├── to-issues/
-    │   └── git-guardrails-claude-code/
+    │   ├── git-guardrails-claude-code/
+    │   └── improve-codebase-architecture/
     └── dormant/                           # unregistered, inert
         ├── grill-with-docs/
-        ├── improve-codebase-architecture/
         ├── github-triage/
         ├── migrate-to-shoehorn/
         ├── setup-pre-commit/
@@ -157,7 +157,7 @@ Install per project — same lean-context discipline as MCP servers. Don't carry
 
 This setup is inspired by two people whose thinking shaped it:
 
-- **[Andrej Karpathy](https://x.com/karpathy/status/2015883857489522876)** — for the observations on how LLMs fail at coding (wrong assumptions, overcomplication, drive-by edits, vague execution) that became the four principles in `AGENTS.md`. Packaged into a Claude Code skill by [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills).
+- **[Andrej Karpathy](https://x.com/karpathy/status/2015883857489522876)** — for the observations on how LLMs fail at coding (wrong assumptions, overcomplication, drive-by edits, vague execution) that became four of the five principles in `AGENTS.md`. Packaged into a Claude Code skill by [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills).
 - **[Matt Pocock](https://github.com/mattpocock/skills)** — for the small, composable agent skills under `skills/` and the SKILL.md format with progressive disclosure and frontmatter triggers that keeps context lean.
 
 ## License

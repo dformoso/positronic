@@ -10,6 +10,7 @@
     "./skills/slash-only/zoom-out",
     "./skills/slash-only/to-prd",
     "./skills/slash-only/to-issues",
-    "./skills/slash-only/git-guardrails-claude-code"
+    "./skills/slash-only/git-guardrails-claude-code",
+    "./skills/slash-only/improve-codebase-architecture"
   ]
 }
