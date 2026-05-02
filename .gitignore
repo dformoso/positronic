@@ -2,4 +2,17 @@
 *.swp
 *.swo
 node_modules/
+
+# Local Claude Code state when developing positronic
 .claude/
+
+# Claude Code runtime files when positronic is installed as ~/.claude
+.credentials.json
+settings.local.json
+projects/
+statsig/
+shell-snapshots/
+todos/
+ide/
+file-history/
+mcp-logs/

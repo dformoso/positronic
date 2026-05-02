@@ -55,17 +55,9 @@ The `skills/` system is Claude-Code-specific (relies on the SKILL.md frontmatter
 
 ## Install
 
-Two paths, depending on whether you want the full framework or just the skills:
+Three scenarios — pick the one that matches what you want.
 
-### Full framework — clone as your user-level Claude Code config
-
-```bash
-git clone https://github.com/<you>/positronic.git ~/.claude
-```
-
-You get the behavioral floor (`AGENTS.md` via `CLAUDE.md` import) **and** the six registered skills. If `~/.claude` already exists, clone elsewhere and selectively merge.
-
-### Skills only — install as a Claude Code plugin
+### 1. Skills only (recommended for most users)
 
 From within Claude Code:
 
@@ -74,7 +66,45 @@ From within Claude Code:
 /plugin install skills@positronic
 ```
 
-One-time, per-user — once installed, the skills are available across all projects without per-project setup. **Caveat:** plugins only register what's declared in `plugin.json` (skills, hooks, agents, MCP servers); they do **not** load `AGENTS.md`. If you also want the behavioral floor, use the user-level clone above instead, or copy `AGENTS.md` into your own `~/.claude/CLAUDE.md`.
+One-time, per-user — once installed, the skills are available across all projects without per-project setup. **Caveat:** plugins only register what's declared in `plugin.json` (skills, hooks, agents, MCP servers); they do **not** load `AGENTS.md`. To get the behavioral floor too, see scenario 2.
+
+### 2. Full framework — skills + behavioral floor
+
+You get the eleven registered skills **and** the behavioral floor (`AGENTS.md` via `CLAUDE.md` import). Two paths depending on whether `~/.claude` already exists.
+
+#### 2a. Fresh `~/.claude` (no existing user config)
+
+```bash
+git clone https://github.com/<you>/positronic.git ~/.claude
+```
+
+#### 2b. Existing `~/.claude` (graft pattern)
+
+A direct clone fails when the target directory isn't empty. Use the graft pattern — keeps your existing untracked files, lays positronic's tracked files on top:
+
+```bash
+# Optional: back up your own CLAUDE.md / AGENTS.md if you've customized them
+cp ~/.claude/CLAUDE.md ~/.claude/CLAUDE.md.bak 2>/dev/null
+cp ~/.claude/AGENTS.md ~/.claude/AGENTS.md.bak 2>/dev/null
+
+# Graft the repo into ~/.claude
+git clone --no-checkout https://github.com/<you>/positronic.git /tmp/positronic-graft
+mv /tmp/positronic-graft/.git ~/.claude/
+rm -rf /tmp/positronic-graft
+cd ~/.claude && git checkout .
+```
+
+**Warning:** `git checkout .` overwrites any file present in both your `~/.claude` and positronic — most importantly `AGENTS.md` and `CLAUDE.md`. Untracked files (your `settings.local.json`, `projects/`, `.credentials.json`, etc.) are preserved. After the graft, `git pull` updates positronic in place.
+
+### 3. Develop on positronic itself
+
+Clone anywhere — typically a workspace dir, not `~/.claude`:
+
+```bash
+git clone https://github.com/<you>/positronic.git ~/work/positronic
+```
+
+To dogfood while developing, install the plugin pointing at your fork (`/plugin marketplace add <yourname>/positronic`), or symlink `AGENTS.md` and `skills/` into your `~/.claude`. The repo's `.gitignore` covers Claude Code's runtime state (`settings.local.json`, `projects/`, `.credentials.json`, etc.) so a `git status` on a clone-as-config install stays clean.
 
 ## Activating a dormant skill
 
