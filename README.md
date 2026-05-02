@@ -4,14 +4,16 @@ A personal AI-coding framework. Karpathy's behavioral principles as the always-o
 
 **Cloud lean:** built for Google Cloud and [Google ADK](https://adk.dev). See [Google Cloud and ADK](#google-cloud-and-adk) below.
 
-**Quick install (skills only, from inside Claude Code):**
+**Built for:** solo, opinionated use. Fork and adapt for your own setup.
+
+**TL;DR — most users:**
 
 ```text
-/plugin marketplace add <you>/positronic
+/plugin marketplace add dformoso/positronic
 /plugin install skills@positronic
 ```
 
-For the full framework (skills + behavioral floor), see [Install](#install) below.
+For full framework, forks, or development, see [Install](#install) below.
 
 ## Layout
 
@@ -39,7 +41,25 @@ For the full framework (skills + behavioral floor), see [Install](#install) belo
         └── setup-pre-commit/
 ```
 
-The system prompt only ever sees `AGENTS.md` plus the `description` fields of skills listed in `plugin.json`. `dormant/` costs zero context until you promote a skill into a registered bucket.
+The system prompt only ever sees `AGENTS.md` plus the `description` fields of the **model-invokable** skills. Slash-only skills (`disable-model-invocation: true`) and `dormant/` skills both cost **zero per-turn context** — their descriptions and bodies load only when invoked.
+
+## Skills at a glance
+
+| Skill | Bucket | What it does |
+| --- | --- | --- |
+| `diagnose` | model-invokable | Disciplined loop for hard bugs and performance regressions |
+| `tdd` | model-invokable | Test-driven development with red-green-refactor |
+| `grill-me` | model-invokable | Interview the user about a design until shared understanding |
+| `terse` | slash-only | Ultra-compressed mode (~75% token savings) |
+| `zoom-out` | slash-only | Step back and give broader context |
+| `to-prd` | slash-only | Synthesize the current conversation into a PRD on GitHub |
+| `to-issues` | slash-only | Break a plan into independently-grabbable GitHub issues |
+| `setup-git-guardrails` | slash-only | Install hooks that block dangerous git commands |
+| `improve-codebase-architecture` | slash-only | Find shallow modules and propose how to deepen them |
+| `grill-with-docs` | slash-only | Grill against domain docs; update CONTEXT.md / ADRs inline |
+| `write-a-skill` | slash-only | Create new agent skills with proper structure |
+| `github-triage` | dormant | Triage GitHub issues through a label-based state machine |
+| `setup-pre-commit` | dormant | Set up Husky + lint-staged + Prettier pre-commit hooks |
 
 ## Multi-tool support
 
@@ -55,14 +75,14 @@ The `skills/` system is Claude-Code-specific (relies on the SKILL.md frontmatter
 
 ## Install
 
-Three scenarios — pick the one that matches what you want.
+Three scenarios — pick the one that matches what you want. Examples use `dformoso/positronic` (the canonical repo); substitute your username if you've forked.
 
 ### 1. Skills only (recommended for most users)
 
 From within Claude Code:
 
 ```text
-/plugin marketplace add <you>/positronic
+/plugin marketplace add dformoso/positronic
 /plugin install skills@positronic
 ```
 
@@ -75,7 +95,7 @@ You get the eleven registered skills **and** the behavioral floor (`AGENTS.md` v
 #### 2a. Fresh `~/.claude` (no existing user config)
 
 ```bash
-git clone https://github.com/<you>/positronic.git ~/.claude
+git clone https://github.com/dformoso/positronic.git ~/.claude
 ```
 
 #### 2b. Existing `~/.claude` (graft pattern)
@@ -88,7 +108,7 @@ cp ~/.claude/CLAUDE.md ~/.claude/CLAUDE.md.bak 2>/dev/null
 cp ~/.claude/AGENTS.md ~/.claude/AGENTS.md.bak 2>/dev/null
 
 # Graft the repo into ~/.claude
-git clone --no-checkout https://github.com/<you>/positronic.git /tmp/positronic-graft
+git clone --no-checkout https://github.com/dformoso/positronic.git /tmp/positronic-graft
 mv /tmp/positronic-graft/.git ~/.claude/
 rm -rf /tmp/positronic-graft
 cd ~/.claude && git checkout .
@@ -101,7 +121,7 @@ cd ~/.claude && git checkout .
 Clone anywhere — typically a workspace dir, not `~/.claude`:
 
 ```bash
-git clone https://github.com/<you>/positronic.git ~/work/positronic
+git clone https://github.com/dformoso/positronic.git ~/work/positronic
 ```
 
 To dogfood while developing, install the plugin pointing at your fork (`/plugin marketplace add <yourname>/positronic`), or symlink `AGENTS.md` and `skills/` into your `~/.claude`. The repo's `.gitignore` covers Claude Code's runtime state (`settings.local.json`, `projects/`, `.credentials.json`, etc.) so a `git status` on a clone-as-config install stays clean.
@@ -119,31 +139,14 @@ Use the `write-a-skill` skill itself, or follow the template in [skills/slash-on
 
 ## MCP servers
 
-[Model Context Protocol](https://modelcontextprotocol.io/) servers add capabilities to Claude Code (browser automation, GitHub access, database queries, etc.). Same lean-context discipline as skills: install only what you actively use.
-
-### Recommended starter set
+[Model Context Protocol](https://modelcontextprotocol.io/) servers add capabilities to Claude Code (browser automation, GitHub access, database queries). Same lean-context discipline as skills: install only what you actively use; one server per capability.
 
 | Server | Use | Install |
 | --- | --- | --- |
-| **[Playwright](https://github.com/microsoft/playwright-mcp)** | Browser automation, UI verification, end-to-end testing | `claude mcp add playwright npx '@playwright/mcp@latest'` |
-| **[GitHub](https://github.com/github/github-mcp-server)** | Issues, PRs, repo search, triage | See the official install guide — supports OAuth and token auth |
+| **[Playwright](https://github.com/microsoft/playwright-mcp)** | Browser automation, UI verification | `claude mcp add playwright npx '@playwright/mcp@latest'` |
+| **[GitHub](https://github.com/github/github-mcp-server)** | Issues, PRs, repo search, triage | See the official install guide |
 
-The Playwright MCP exposes ~26 tools (~3,600 tokens of schema). Claude Code's MCP Tool Search lazy-loads them, but it's still the heaviest browser MCP — switch to a lighter alternative like Playwriter only if you hit context pressure.
-
-### Add as needs arise
-
-- **Database MCPs** (Postgres, SQLite) — install per-project when working on a database-backed app. Don't carry globally.
-- **Docs MCPs** (e.g. Context7) — useful if you hit "this API doesn't exist" hallucinations on third-party libraries.
-- **Sequential Thinking** — optional; Claude's extended thinking already covers most of what it offers.
-
-### Where MCP config lives
-
-- **User-level** (all projects): `claude mcp add <name> ...` writes to `~/.claude.json`.
-- **Project-level** (committed): create `.mcp.json` in the project root for MCPs specific to that project. Keep secrets out of the file — use env vars or `claude mcp add` per-developer.
-
-### Curation principle
-
-Each server costs picker context, even with Tool Search. Don't install MCPs you won't use. Skip MCPs that duplicate Claude Code built-ins (filesystem, basic shell). One server per capability — tool name collisions confuse the picker.
+Add others (Postgres, SQLite, Context7) per-project as needs arise — don't carry globally. User-level MCPs go in `~/.claude.json` via `claude mcp add`; project-level MCPs go in `.mcp.json`.
 
 ## Google Cloud and ADK
 
