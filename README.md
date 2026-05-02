@@ -26,19 +26,17 @@ For the full framework (skills + behavioral floor), see [Install](#install) belo
     │   ├── tdd/
     │   └── grill-me/
     ├── slash-only/                        # disable-model-invocation: true
-    │   ├── caveman/
+    │   ├── terse/
     │   ├── zoom-out/
     │   ├── to-prd/
     │   ├── to-issues/
-    │   ├── git-guardrails-claude-code/
+    │   ├── setup-git-guardrails/
     │   ├── improve-codebase-architecture/
     │   ├── grill-with-docs/
     │   └── write-a-skill/
     └── dormant/                           # unregistered, inert
         ├── github-triage/
-        ├── migrate-to-shoehorn/
-        ├── setup-pre-commit/
-        └── scaffold-exercises/
+        └── setup-pre-commit/
 ```
 
 The system prompt only ever sees `AGENTS.md` plus the `description` fields of skills listed in `plugin.json`. `dormant/` costs zero context until you promote a skill into a registered bucket.

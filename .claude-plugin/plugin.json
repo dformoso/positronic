@@ -5,11 +5,11 @@
     "./skills/model-invokable/diagnose",
     "./skills/model-invokable/tdd",
     "./skills/model-invokable/grill-me",
-    "./skills/slash-only/caveman",
+    "./skills/slash-only/terse",
     "./skills/slash-only/zoom-out",
     "./skills/slash-only/to-prd",
     "./skills/slash-only/to-issues",
-    "./skills/slash-only/git-guardrails-claude-code",
+    "./skills/slash-only/setup-git-guardrails",
     "./skills/slash-only/improve-codebase-architecture",
     "./skills/slash-only/grill-with-docs",
     "./skills/slash-only/write-a-skill"

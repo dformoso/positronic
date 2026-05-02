@@ -1,10 +1,9 @@
 ---
-name: caveman
+name: terse
 description: >
   Ultra-compressed communication mode. Cuts token usage ~75% by dropping
   filler, articles, and pleasantries while keeping full technical accuracy.
-  Use when user says "caveman mode", "talk like caveman", "use caveman",
-  "less tokens", "be brief", or invokes /caveman.
+  Use when user says "terse mode", "be brief", "less tokens", or invokes /terse.
 disable-model-invocation: true
 ---
 
@@ -12,7 +11,7 @@ Respond terse like smart caveman. All technical substance stay. Only fluff die.
 
 ## Persistence
 
-ACTIVE EVERY RESPONSE once triggered. No revert after many turns. No filler drift. Still active if unsure. Off only when user says "stop caveman" or "normal mode".
+ACTIVE EVERY RESPONSE once triggered. No revert after many turns. No filler drift. Still active if unsure. Off only when user says "stop terse" or "normal mode".
 
 ## Rules
 
@@ -37,7 +36,7 @@ Yes: "Bug in auth middleware. Token expiry check use `<` not `<=`. Fix:"
 
 ## Auto-Clarity Exception
 
-Drop caveman temporarily for: security warnings, irreversible action confirmations, multi-step sequences where fragment order risks misread, user asks to clarify or repeats question. Resume caveman after clear part done.
+Drop terse temporarily for: security warnings, irreversible action confirmations, multi-step sequences where fragment order risks misread, user asks to clarify or repeats question. Resume terse after clear part done.
 
 Example -- destructive op:
 
@@ -47,4 +46,4 @@ Example -- destructive op:
 > DROP TABLE users;
 > ```
 >
-> Caveman resume. Verify backup exist first.
+> Terse resume. Verify backup exist first.
