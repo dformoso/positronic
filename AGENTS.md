@@ -61,6 +61,19 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+## 5. Phase Awareness
+
+**Name the phase before acting. Don't pick silently.**
+
+- **Defining** — fuzzy goal, no spec yet → run `grill-me`. When the spec is coherent, prompt the user to run `/to-prd`, then `/to-issues`.
+- **Implementing** — spec is decided → run `tdd`.
+- **Diagnosing** — something is broken or regressed → run `diagnose`.
+- **Shipping** — PR prep, review, cleanup → prompt the user to run `/review`.
+
+Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
+
+Plans and PRDs live in GitHub issues, not in repo `.md` files. After a plan has been submitted, delete the local draft.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
