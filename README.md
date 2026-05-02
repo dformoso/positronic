@@ -32,9 +32,9 @@ For the full framework (skills + behavioral floor), see [Install](#install) belo
     │   ├── to-prd/
     │   ├── to-issues/
     │   ├── git-guardrails-claude-code/
-    │   └── improve-codebase-architecture/
+    │   ├── improve-codebase-architecture/
+    │   └── grill-with-docs/
     └── dormant/                           # unregistered, inert
-        ├── grill-with-docs/
         ├── github-triage/
         ├── migrate-to-shoehorn/
         ├── setup-pre-commit/
