@@ -2,7 +2,6 @@
   "name": "skills",
   "description": "Personal Claude Code framework",
   "skills": [
-    "./skills/model-invokable/write-a-skill",
     "./skills/model-invokable/diagnose",
     "./skills/model-invokable/tdd",
     "./skills/model-invokable/grill-me",
@@ -12,6 +11,7 @@
     "./skills/slash-only/to-issues",
     "./skills/slash-only/git-guardrails-claude-code",
     "./skills/slash-only/improve-codebase-architecture",
-    "./skills/slash-only/grill-with-docs"
+    "./skills/slash-only/grill-with-docs",
+    "./skills/slash-only/write-a-skill"
   ]
 }

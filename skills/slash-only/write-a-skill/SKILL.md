@@ -1,6 +1,7 @@
 ---
 name: write-a-skill
 description: Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.
+disable-model-invocation: true
 ---
 
 # Writing Skills
@@ -110,8 +111,8 @@ Split into separate files when:
 Every skill in this framework runs on top of the five principles in the user-level `AGENTS.md` (Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution, Phase Awareness). A new skill must not contradict the floor. If a skill needs to override it (e.g. an architecture skill that proposes refactors beyond the immediate request), state the override explicitly in the skill body.
 
 Default placement:
-- **`skills/model-invokable/`** — auto-fires on relevant prompts. Trigger `description` must be tight enough that auto-selection doesn't fire on adjacent topics.
-- **`skills/slash-only/`** — set `disable-model-invocation: true` in frontmatter. Use for stylistic modes, one-shot prompts, and heavy workflows that should only run on explicit invocation.
+- **`skills/model-invokable/`** — for **behaviors to enforce** (disciplines like TDD, diagnosis loops, design grilling). Auto-fires on relevant prompts. Trigger `description` must be tight enough that auto-selection doesn't fire on adjacent topics.
+- **`skills/slash-only/`** — for **actions to authorize** (deploys, commits, GitHub writes, file scaffolding, mode switches). Set `disable-model-invocation: true` in frontmatter. Zero per-turn context cost; user invokes explicitly.
 - **`skills/dormant/`** — leave unregistered in `.claude-plugin/plugin.json`. Stored but inert.
 
 ## Review Checklist

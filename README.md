@@ -24,8 +24,7 @@ For the full framework (skills + behavioral floor), see [Install](#install) belo
     ├── model-invokable/                   # auto-fires on relevant prompts
     │   ├── diagnose/
     │   ├── tdd/
-    │   ├── grill-me/
-    │   └── write-a-skill/
+    │   └── grill-me/
     ├── slash-only/                        # disable-model-invocation: true
     │   ├── caveman/
     │   ├── zoom-out/
@@ -33,7 +32,8 @@ For the full framework (skills + behavioral floor), see [Install](#install) belo
     │   ├── to-issues/
     │   ├── git-guardrails-claude-code/
     │   ├── improve-codebase-architecture/
-    │   └── grill-with-docs/
+    │   ├── grill-with-docs/
+    │   └── write-a-skill/
     └── dormant/                           # unregistered, inert
         ├── github-triage/
         ├── migrate-to-shoehorn/
@@ -87,7 +87,7 @@ One-time, per-user — once installed, the skills are available across all proje
 
 ## Adding a new skill
 
-Use the `write-a-skill` skill itself, or follow the template in [skills/model-invokable/write-a-skill/SKILL.md](skills/model-invokable/write-a-skill/SKILL.md). New skills must not contradict the five principles in `AGENTS.md`.
+Use the `write-a-skill` skill itself, or follow the template in [skills/slash-only/write-a-skill/SKILL.md](skills/slash-only/write-a-skill/SKILL.md). New skills must not contradict the five principles in `AGENTS.md`.
 
 ## MCP servers
 
