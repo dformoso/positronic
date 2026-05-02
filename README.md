@@ -2,6 +2,8 @@
 
 A personal AI-coding framework. Karpathy's behavioral principles as the always-on floor (in `AGENTS.md`, the cross-tool standard read by Claude Code, Google Antigravity, and Cursor), a curated set of Pocock-style skills on top for Claude Code, and a `dormant/` parking lot for skills kept around but not active.
 
+**Cloud lean:** built for Google Cloud and [Google ADK](https://adk.dev). See [Google Cloud and ADK](#google-cloud-and-adk) below.
+
 **Quick install (skills only, from inside Claude Code):**
 
 ```text
@@ -85,7 +87,7 @@ One-time, per-user — once installed, the skills are available across all proje
 
 ## Adding a new skill
 
-Use the `write-a-skill` skill itself, or follow the template in [skills/model-invokable/write-a-skill/SKILL.md](skills/model-invokable/write-a-skill/SKILL.md). New skills must not contradict the four principles in `AGENTS.md`.
+Use the `write-a-skill` skill itself, or follow the template in [skills/model-invokable/write-a-skill/SKILL.md](skills/model-invokable/write-a-skill/SKILL.md). New skills must not contradict the five principles in `AGENTS.md`.
 
 ## MCP servers
 
@@ -114,6 +116,42 @@ The Playwright MCP exposes ~26 tools (~3,600 tokens of schema). Claude Code's MC
 ### Curation principle
 
 Each server costs picker context, even with Tool Search. Don't install MCPs you won't use. Skip MCPs that duplicate Claude Code built-ins (filesystem, basic shell). One server per capability — tool name collisions confuse the picker.
+
+## Google Cloud and ADK
+
+This framework leans toward [Google Cloud](https://cloud.google.com/) for deployment and [Google ADK](https://adk.dev) for custom agent harnesses. For projects that need either, install [`google-agents-cli`](https://github.com/google/agents-cli) — a CLI plus a set of skills your coding agent uses end-to-end.
+
+### Install agents-cli
+
+Full CLI + skills (recommended):
+
+```bash
+uvx google-agents-cli setup
+```
+
+Skills only (skip the CLI):
+
+```bash
+npx skills add google/agents-cli
+```
+
+Install per project — same lean-context discipline as MCP servers. Don't carry globally if you don't need it on every project.
+
+### Skills
+
+| Skill | What it covers |
+| --- | --- |
+| `google-agents-cli-workflow` | Development lifecycle, code preservation, model selection |
+| `google-agents-cli-adk-code` | ADK Python API — agents, tools, orchestration, callbacks, state |
+| `google-agents-cli-scaffold` | Project scaffolding (`create`, `enhance`, `upgrade`) |
+| `google-agents-cli-eval` | Evaluation — metrics, evalsets, LLM-as-judge, trajectory scoring |
+| `google-agents-cli-deploy` | Deployment to Agent Runtime, Cloud Run, GKE, CI/CD, secrets |
+| `google-agents-cli-publish` | Gemini Enterprise registration |
+| `google-agents-cli-observability` | Cloud Trace, logging, third-party integrations |
+
+### Sample agents (reference, not skills)
+
+[`google/adk-samples`](https://github.com/google/adk-samples) is a collection of sample ADK agents in Python, Java, Go, and TypeScript. Useful as reference implementations when building your own — clone the relevant subdirectory rather than installing as a skill.
 
 ## Acknowledgments
 

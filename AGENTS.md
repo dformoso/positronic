@@ -74,6 +74,12 @@ Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt th
 
 Plans and PRDs live in GitHub issues, not in repo `.md` files. After a plan has been submitted, delete the local draft.
 
+## 6. Cloud Deployments
+
+**For Google ADK or Google Cloud projects, prompt the user to install — don't install yourself.**
+
+When the project uses [Google ADK](https://adk.dev) or deploys to Google Cloud, prompt the user to install [`google-agents-cli`](https://github.com/google/agents-cli) and register the relevant skills. See the README for install commands and the skill list.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
