@@ -44,7 +44,8 @@ Both files are plain text with no dependencies; `curl` works too.
 | `terse` | slash-only | Ultra-compressed mode (~75% token savings) |
 | `zoom-out` | slash-only | Step back and give broader context |
 | `to-prd` | slash-only | Synthesize the current conversation into a PRD on GitHub |
-| `to-issues` | slash-only | Break a plan into independently-grabbable GitHub issues |
+| `to-issues` | slash-only | Break a plan into independently-grabbable GitHub issues; labels each `afk` or `hitl` |
+| `run-afk-in-loop` | slash-only | Work through all unblocked AFK issues in order, updating `BOARD.md` at each step |
 | `setup-git-guardrails` | slash-only | Install hooks that block dangerous git commands |
 | `improve-codebase-architecture` | slash-only | Find shallow modules and propose how to deepen them |
 | `grill-with-docs` | slash-only | Grill against domain docs; update CONTEXT.md / ADRs inline |
@@ -66,6 +67,20 @@ The system prompt sees `AGENTS.md` plus descriptions of model-invokable skills o
     ├── slash-only/        # disable-model-invocation: true
     └── dormant/           # unregistered, inert
 ```
+
+## AFK loop
+
+`/to-issues` tags each issue `afk` or `hitl`. `/run-afk-in-loop` then works through all unblocked AFK issues in order — picking the next one, implementing it with `/tdd`, closing it, and looping until done.
+
+**Progress board** — `BOARD.md` at the project root is a Mermaid dependency graph updated on every state change. Open it in VS Code with Cmd+K V for a live split-pane view. Nodes show issue number, title, type, deliverable, and acceptance criteria; edges show blocking relationships; colors show status (done / active / ready / blocked / HITL).
+
+**Unattended runs with credit-exhaustion retry:**
+
+```bash
+bash skills/slash-only/run-afk-in-loop/scripts/run-afk-loop.sh
+```
+
+Env vars: `RETRY_WAIT_SECONDS` (default 1800), `MAX_ATTEMPTS` (default 20).
 
 ## Adding or promoting a skill
 

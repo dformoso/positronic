@@ -50,7 +50,14 @@ Iterate until the user approves the breakdown.
 
 ### 5. Create the GitHub issues
 
-For each approved slice, create a GitHub issue using `gh issue create`. Use the issue body template below.
+First, ensure the labels exist (idempotent — safe to run even if they already exist):
+
+```bash
+gh label create afk  --color "#9ca3af" --force
+gh label create hitl --color "#3b82f6" --force
+```
+
+For each approved slice, create a GitHub issue using `gh issue create --label afk` or `gh issue create --label hitl` based on the slice type. Use the issue body template below.
 
 Create issues in dependency order (blockers first) so you can reference real issue numbers in the "Blocked by" field.
 
