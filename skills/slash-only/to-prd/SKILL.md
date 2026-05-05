@@ -1,6 +1,6 @@
 ---
 name: to-prd
-description: Turn the current conversation context into a PRD and submit it as a GitHub issue. Use when user wants to create a PRD from the current context.
+description: Turn the current conversation context into a PRD and save it as a versioned local file. Use when user wants to create a PRD from the current context.
 disable-model-invocation: true
 ---
 
@@ -16,7 +16,7 @@ A deep module (as opposed to a shallow module) is one which encapsulates a lot o
 
 Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
 
-3. Write the PRD using the template below. Save it locally as `docs/prd-YYYY-MM-DD.md` (today's date), then submit it as a GitHub issue. Do not delete the local file.
+3. Write the PRD using the template below. Save it as `docs/prd-YYYY-MM-DD.md` (today's date) and commit it. Do not submit it as a GitHub issue.
 
 <prd-template>
 
