@@ -75,18 +75,27 @@ while IFS= read -r issue; do
   title=$(echo "$issue"  | jq -r '.title' | sed "s/[\"'\`]//g")
   state=$(echo "$issue"  | jq -r '.state')
   body=$(echo "$issue"   | jq -r '.body // ""')
-  label=$(echo "$issue"  | jq -r '[.labels[].name] | map(select(. == "afk" or . == "hitl")) | first // "afk"')
+  label=$(echo "$issue"  | jq -r '[.labels[].name] | map(select(. == "afk" or . == "hitl")) | first // ""')
 
-  dlv=$(deliverable "$body")
-  crits=$(criteria "$body")
+  # Skip issues with no afk/hitl label (e.g. parent PRD issues)
+  [ -z "$label" ] && continue
+
   blocker_nums=$(blockers "$body")
 
-  # Build multi-line node label
-  label_text="#${number} · ${title}\n${label^^}"
-  [ -n "$dlv"   ] && label_text="${label_text}\n${dlv}"
-  while IFS= read -r crit; do
-    [ -n "$crit" ] && label_text="${label_text}\n${crit}"
-  done <<< "$crits"
+  sc=$(status_class "$number" "$state" "$label" "$blocker_nums")
+
+  # State symbol
+  case "$sc" in
+    done)    state_str="✓  DONE"    ;;
+    ready)   state_str="○  READY"   ;;
+    blocked) state_str="✗  BLOCKED" ;;
+    active)  state_str="▶  ACTIVE"  ;;
+    hitl)    state_str="◈  HITL"    ;;
+    *)       state_str="${sc^^}"    ;;
+  esac
+
+  # Build node label
+  label_text="#${number}  ·  ${title}\n(${label^^})  ${state_str}"
 
   nodes="${nodes}  ${number}[\"${label_text}\"]\n"
 
@@ -94,7 +103,6 @@ while IFS= read -r issue; do
     edges="${edges}  ${b} --> ${number}\n"
   done
 
-  sc=$(status_class "$number" "$state" "$label" "$blocker_nums")
   class_assignments="${class_assignments}  class ${number} ${sc}\n"
 
 done < <(echo "$issues" | jq -c '.[]')

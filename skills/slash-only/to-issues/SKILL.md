@@ -34,7 +34,7 @@ Slices may be 'HITL' or 'AFK'. HITL slices need human input (architectural decis
 
 Present the proposed breakdown as a numbered list. For each slice, show:
 
-- **Title**: short descriptive name
+- **Title**: short, plain-English task description — written as something a human would say, not a file path or module name. Good: "Build the login page". Bad: "api/auth.py — JWT handler + middleware".
 - **Type**: HITL / AFK
 - **Blocked by**: which other slices (if any) must complete first
 - **User stories covered**: which user stories this addresses (if the source material has them)
