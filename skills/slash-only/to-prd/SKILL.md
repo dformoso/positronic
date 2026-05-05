@@ -16,7 +16,7 @@ A deep module (as opposed to a shallow module) is one which encapsulates a lot o
 
 Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
 
-3. Write the PRD using the template below and submit it as a GitHub issue.
+3. Write the PRD using the template below. Save it locally as `docs/prd-YYYY-MM-DD.md` (today's date), then submit it as a GitHub issue. Do not delete the local file.
 
 <prd-template>
 
