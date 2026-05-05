@@ -6,7 +6,7 @@
 set -euo pipefail
 
 BOARD_FILE="${BOARD_FILE:-BOARD.md}"
-ACTIVE_ISSUES="${ACTIVE_ISSUES:-}"  # space-separated issue numbers currently being worked
+ACTIVE_ISSUE="${ACTIVE_ISSUE:-}"  # set by run-afk-in-loop skill when working an issue
 
 issues=$(cat)
 
@@ -49,7 +49,10 @@ status_class() {
     echo "hitl"
     return
   fi
-  for a in $ACTIVE_ISSUES; do [ "$number" = "$a" ] && { echo "active"; return; }; done
+  if [ -n "$ACTIVE_ISSUE" ] && [ "$number" = "$ACTIVE_ISSUE" ]; then
+    echo "active"
+    return
+  fi
   # Check if any blocker is still open
   for b in $blocker_numbers; do
     blocker_state=$(echo "$issues" | jq -r --argjson n "$b" '.[] | select(.number == $n) | .state')
