@@ -16,37 +16,23 @@ A personal AI-coding framework: a cross-tool behavioral floor in [`AGENTS.md`](A
 
 Examples use `dformoso/positronic`; substitute your username if forked.
 
-### 1. Skills only (most users)
+The two pieces install independently — most users want both.
+
+### 1. Skills (Claude Code plugin)
 
 ```text
 /plugin marketplace add dformoso/positronic
 /plugin install skills@positronic
 ```
 
-Plugins register skills/hooks/agents/MCPs but **not** `AGENTS.md`. For the behavioral floor too, see scenario 2.
+### 2. Behavioral floor (AGENTS.md)
 
-### 2. Full framework (skills + AGENTS.md)
+Ask your coding agent to copy `AGENTS.md` (and `CLAUDE.md` if Claude Code is your primary tool) from this repo into either:
 
-If `~/.claude` is empty:
+- `~/.claude/` — applies the floor globally to every project
+- a project root — applies it just to that project
 
-```bash
-git clone https://github.com/dformoso/positronic.git ~/.claude
-```
-
-If `~/.claude` already has files, graft — preserves untracked files, **overwrites** any tracked-name conflicts (back up your own `CLAUDE.md` / `AGENTS.md` first if customized):
-
-```bash
-git clone --no-checkout https://github.com/dformoso/positronic.git /tmp/positronic-graft
-mv /tmp/positronic-graft/.git ~/.claude/
-rm -rf /tmp/positronic-graft
-cd ~/.claude && git checkout .
-```
-
-After install, `git pull` updates in place.
-
-### 3. Develop on positronic
-
-Clone to a workspace dir; install your fork as a plugin or symlink files into `~/.claude` to dogfood. The `.gitignore` covers Claude Code runtime state.
+Both files are plain text with no dependencies; `curl` works too.
 
 ## Skills
 
