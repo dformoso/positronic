@@ -1,63 +1,74 @@
 ---
 name: run-afk-in-loop
-description: Loop through all unblocked AFK GitHub issues in order, implementing each with /tdd, updating BOARD.md at each step. Use when user wants to run AFK issues automatically or says "run the loop".
+description: Loop through all unblocked AFK GitHub issues in parallel waves, implementing each with /tdd, updating BOARD.md at each step. Use when user wants to run AFK issues automatically or says "run the loop".
 disable-model-invocation: true
 ---
 
 # Run AFK In Loop
 
-Implement all unblocked AFK GitHub issues in sequence, updating `BOARD.md` after each state change.
+Implement all unblocked AFK GitHub issues in parallel waves, updating `BOARD.md` after each wave.
 
 ## Workflow
 
-### 1. Fetch issues and find next
+### 1. Fetch issues and identify the wave
 
 ```bash
 issues=$(gh issue list --state all --json number,title,body,state,labels --limit 100)
 ```
 
-From `issues`, find open issues with label `afk`. For each candidate, extract "Blocked by #N" lines from the body and check if any referenced issue N is still `OPEN` — if so, skip it. Pick the lowest number from the remaining unblocked set. If none exist, print the completion summary (see below) and stop.
+From `issues`, find **all** open issues labeled `afk` where every "Blocked by #N" issue is already closed. This set is the **wave**. If the wave is empty, print the completion summary (see below) and stop.
 
-### 2. Compute progress counter
+### 2. Compute progress and print status
 
 ```bash
 total=$(echo "$issues" | jq '[.[] | select(.labels[].name == "afk")] | length')
 done_count=$(echo "$issues" | jq '[.[] | select(.labels[].name == "afk" and .state == "CLOSED")] | length')
-n=$((done_count + 1))
 ```
 
-### 3. Print status line and mark active
-
-Output exactly:
+Output:
 
 ```
-[N/total] Starting #X — <title>  →  [BOARD.md](BOARD.md)
+Wave [done_count/total]: #X — <title>, #Y — <title>, ...  →  [BOARD.md](BOARD.md)
 ```
 
-Then update the board with the issue marked active:
+### 3. Mark all wave issues active and update board
 
 ```bash
-echo "$issues" | ACTIVE_ISSUE=X bash skills/slash-only/run-afk-in-loop/scripts/update-board.sh
+ACTIVE_ISSUES="X Y Z" bash skills/slash-only/run-afk-in-loop/scripts/update-board.sh
 ```
 
-### 4. Implement with /tdd
+### 4. Implement wave issues in parallel
 
-Invoke `/tdd` with this prompt:
+For each issue in the wave, build a `/tdd` prompt and spawn a `claude` subprocess:
 
-> Implement GitHub issue #X: **<title>**
->
-> Acceptance criteria:
-> <paste the acceptance criteria lines verbatim from the issue body>
+```bash
+claude --dangerously-skip-permissions --print "/tdd Implement GitHub issue #X: <title>
 
-### 5. Close the issue and update board
+Acceptance criteria:
+<acceptance criteria lines from the issue body>" &
+```
+
+Then wait for all spawned processes:
+
+```bash
+wait
+```
+
+### 5. Close completed issues and update board
+
+For each issue that finished successfully:
 
 ```bash
 gh issue close X --comment "Completed by /run-afk-in-loop"
-issues=$(gh issue list --state all --json number,title,body,state,labels --limit 100)
-echo "$issues" | bash skills/slash-only/run-afk-in-loop/scripts/update-board.sh
 ```
 
-Print: `[N/total] Closed #X ✓` — then return to step 1. The refreshed `$issues` from this step already reflects the closed issue, so blocker re-evaluation in step 1 is automatically up to date.
+Then refresh the board:
+
+```bash
+bash skills/slash-only/run-afk-in-loop/scripts/update-board.sh
+```
+
+Print: `Wave [N/total] complete — closed #X ✓, #Y ✓` — then return to step 1.
 
 ### Completion summary
 
@@ -71,9 +82,19 @@ Blocked (waiting on HITL): #C — <title>, ...
 
 List any open HITL issues and any open AFK issues that are still blocked.
 
-## Running with credit-exhaustion retry
+## Running in parallel (unattended)
 
-For unattended execution, use the wrapper script instead of invoking the skill directly:
+For unattended parallel execution with per-issue credit-exhaustion retry:
+
+```bash
+bash skills/slash-only/run-afk-in-loop/scripts/run-parallel.sh
+```
+
+Set `CONCURRENCY=N` (default: 4) to control how many issues run simultaneously per wave.
+
+## Running with credit-exhaustion retry (sequential)
+
+For sequential execution with automatic retry on credit exhaustion:
 
 ```bash
 bash skills/slash-only/run-afk-in-loop/scripts/run-afk-loop.sh
