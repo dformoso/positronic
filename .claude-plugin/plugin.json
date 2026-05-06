@@ -5,6 +5,7 @@
     "./skills/model-invokable/diagnose",
     "./skills/model-invokable/tdd",
     "./skills/model-invokable/grill-me",
+    "./skills/model-invokable/discover",
     "./skills/slash-only/terse",
     "./skills/slash-only/zoom-out",
     "./skills/slash-only/to-prd",

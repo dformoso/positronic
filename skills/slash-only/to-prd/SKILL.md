@@ -16,21 +16,25 @@ A deep module (as opposed to a shallow module) is one which encapsulates a lot o
 
 Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
 
-3. Write the PRD using the template below. Save it as `docs/prd-YYYY-MM-DD.md` (today's date) and commit it. Do not submit it as a GitHub issue.
+3. Write the PRD using the template below. Save it as `PRD-YYYY-MM-DD.md` in the repo root (today's date) and commit it. Do not submit it as a GitHub issue.
+
+Length and density: the PRD must be 5 pages or fewer — preferably less. Every sentence must carry information. No padding, no repetition, no restating the obvious. If a section can be a table, make it a table. If a sentence adds nothing new, cut it.
+
+4. Present the saved PRD to the user and ask them to review it. Wait for their approval or changes before proceeding to `/to-issues`.
 
 <prd-template>
 
 ## Problem Statement
 
-The problem in the user's words.
+The problem in the user's words. Two to four sentences maximum.
 
 ## Solution
 
-The solution in user-facing terms.
+The solution in user-facing terms. Two to four sentences maximum.
 
 ## User Stories
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+A numbered list of user stories covering every significant actor and workflow. Each in the format:
 
 1. As an <actor>, I want a <feature>, so that <benefit>
 
@@ -38,7 +42,7 @@ A LONG, numbered list of user stories. Each user story should be in the format o
 1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
 </user-story-example>
 
-The list should be extensive — cover every aspect of the feature.
+Be comprehensive but not exhaustive — cut stories that are obvious consequences of others.
 
 ## Implementation Decisions
 

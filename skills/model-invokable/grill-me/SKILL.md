@@ -11,24 +11,47 @@ If a question can be answered by exploring the codebase, explore the codebase in
 
 ## When the context is a vague product idea (no spec yet)
 
-Shift from stress-testing a plan to surfacing and ranking assumptions before any spec exists. Work through these in order, one question at a time:
+Shift from stress-testing a plan to surfacing assumptions and understanding users before any spec exists. Work through these steps in order, one question at a time.
 
-1. **List the assumptions.** Ask the user to name every belief the idea depends on. Add any they miss.
+**Step 1 — Classify.** What kind of project is this? (Consumer app, B2B SaaS, internal tool, API/platform, product strategy question, data product, hardware/software.) One question, one answer. The type determines which dimensions below to prioritise.
 
-2. **Rank by importance × evidence.** For each assumption: how badly does the idea fail if this is wrong? How much evidence exists already? Focus on high-importance, low-evidence assumptions first — those are the ones that kill ideas cheapest if wrong.
+**Step 2 — Probe relevant dimensions.** Pick 3–5 based on project type. Ask 2–3 tight questions per dimension before moving to the next.
 
-3. **Tag each assumption's risk type:**
-   - **Value** — will users actually want this?
-   - **Usability** — can users figure it out?
-   - **Viability** — does it work for the business (pricing, regulation, ROI)?
-   - **Feasibility** — can we build it within constraints?
+*Clarification & Scoping*
+Should we solve this at all, or is this a symptom of a different problem? Is it a one-sided or multi-sided market? Internal or external facing? New product or improvement to an existing one? Startup or legacy context? Geo, regulatory, or seasonality constraints?
 
-   Push back if the user conflates them. A product can pass usability and fail value.
+*User & Customer Segmentation*
+Who exactly is the user? Who is the customer (the one paying)? Are they different people? In B2B: who is the economic buyer, the daily user, the internal champion, the procurement blocker? Which segment do we serve first, and why them over others?
 
-4. **Drive to a falsifiable hypothesis.** For the top assumption: "We believe [Target User] experiences [Specific Friction] because [Root Cause]. If we provide [Core Capability], then [Measurable Change in Behavior] will occur." Reject vague hypotheses — require specificity.
+*UX & Critical User Journeys* — probe this for every product idea, regardless of type
+This is the most important dimension. Go deep and stay specific.
+- What does the target user do today, without this product? Walk through their typical day or week as it relates to this problem. Be concrete — what tools, steps, and people are involved?
+- What triggers the need? What just happened that makes them go looking for a solution?
+- Name the 2–3 Critical User Journeys (CUJs). For each: who is the user, what are they trying to accomplish, and what are the exact steps from trigger to outcome?
+- For each CUJ: what pages, screens, or surfaces are required? What does the user provide as input? What do they get back?
+- What is the interface style — and why? (Consumer mobile, web dashboard, CLI, API, embedded widget, voice, email.)
+- What does a great experience feel like to this user? What would make them tell a colleague?
+- Any existing design system, brand constraints, or accessibility requirements?
 
-5. **Nail the kill criteria.** What exact threshold means this assumption is wrong and the idea should pivot or die? Get a number and a behavior, not a feeling.
+*UXR Intent*
+What do we most need to learn, and at what stage? (Foundational: what to build. Iterative: how to build it. Evaluative: did it work.) What proxy behaviors show the problem exists today — spreadsheets, manual workarounds, Slack pings? Where do frustrated users talk about this publicly?
 
-6. **Name the cheapest prototype.** What is the lowest-effort artifact that tests the top assumption? For AI/algorithmic features: can the back-end be faked (human-operated or manual) before building the real thing?
+*Business & Viability*
+How large is the market (TAM/SAM)? How does this make money — subscription, freemium, transaction fees, ads, licensing? Who are the direct and indirect competitors, and what is the actual differentiator? Regulatory, security, or compliance constraints?
 
-When these are resolved, prompt the user to run `/to-prd`.
+*Technical Feasibility*
+Stack constraints, build vs. buy, existing integrations? Timeline, team size, data residency, or partner dependencies that affect scope?
+
+**Step 3 — Assumption map.** List every belief the idea depends on. Rank by importance × evidence — how badly does the idea fail if this is wrong, and how much do we already know? Tag each:
+- **Value** — will users want it?
+- **Usability** — can users figure it out?
+- **Viability** — does it work for the business?
+- **Feasibility** — can we build it within constraints?
+
+Test high-importance, low-evidence assumptions first. Push back if the user conflates risk types — a product can pass usability and fail value.
+
+**Step 4 — Falsifiable hypothesis.** For the top assumption: "We believe [Target User] experiences [Specific Friction] because [Root Cause]. If we provide [Core Capability], then [Measurable Change in Behavior] will occur." Reject vague hypotheses. Set kill criteria: the exact threshold — a number and a behavior — that means pivot or die.
+
+**Step 5 — Cheapest prototype.** What is the lowest-effort artifact that tests the top assumption? Options: static mock (value prop and mental model), interactive prototype (usability), Wizard of Oz (human-operated back-end, best for AI features before the algorithm exists), Concierge MVP (you deliver the service manually, no UI), Flintstoning (fake automation behind real UI).
+
+**Step 6 — Hand off to discover.** If this is a genuine zero-to-one situation — no product exists yet, real market uncertainty — invoke the discover skill now. It runs the full generative research → prototype evaluation → trusted tester → PMF pipeline, anchored on the CUJs and user segments defined above. Otherwise, prompt the user to run `/to-prd`.
