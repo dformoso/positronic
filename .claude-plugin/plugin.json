@@ -13,6 +13,7 @@
     "./skills/slash-only/improve-codebase-architecture",
     "./skills/slash-only/grill-with-docs",
     "./skills/slash-only/write-a-skill",
-    "./skills/slash-only/run-afk-in-loop"
+    "./skills/slash-only/run-afk-in-loop",
+    "./skills/slash-only/review"
   ]
 }
