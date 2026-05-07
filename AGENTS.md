@@ -66,7 +66,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 **Name the phase before acting. Don't pick silently.**
 
 - **Defining** — fuzzy goal, no spec yet → run `grill-me`. When the spec is coherent, prompt the user to run `/to-prd`, then `/to-issues`. For zero-to-one situations (no product exists yet, genuine market uncertainty), grill-me hands off automatically to `discover` before `/to-prd`.
-- **Implementing** — spec is decided → run `tdd`.
+- **Implementing** — spec is decided → run `tdd` for a single issue. For the full backlog, prompt the user to run `/run-afk-in-loop`, which works through unblocked AFK issues in parallel waves and keeps `BOARD.md` updated. Check `BOARD.md` for current backlog state.
 - **Diagnosing** — something is broken or regressed → run `diagnose`.
 - **Shipping** — PR prep, review, cleanup → prompt the user to run `/review`.
 
