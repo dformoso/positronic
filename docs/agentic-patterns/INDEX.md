@@ -35,6 +35,4 @@ Open questions sections flag where rankings would shift if a particular question
 
 ## Cross-references
 
-The briefs and detailed docs are paired but standalone. The detailed versions cite specific papers (with arXiv links via the parent `SUMMARY.md`); the briefs synthesize without overwhelming citation density.
-
-For the source papers themselves, see `../SUMMARY.md` and the per-paper transcriptions in `../detailed/`.
+The briefs and detailed docs are paired but standalone. The detailed versions cite specific papers inline; the briefs synthesize without overwhelming citation density.
