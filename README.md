@@ -46,7 +46,6 @@ Both files are plain text with no dependencies; `curl` works too.
 | `to-prd` | slash-only | Synthesize the current conversation into a PRD on GitHub |
 | `to-issues` | slash-only | Break a plan into independently-grabbable GitHub issues; labels each `afk` or `hitl` |
 | `run-afk-in-loop` | slash-only | Work through all unblocked AFK issues in order, updating `BOARD.md` at each step |
-| `setup-git-guardrails` | slash-only | Install hooks that block dangerous git commands |
 | `improve-codebase-architecture` | slash-only | Find shallow modules and propose how to deepen them |
 | `grill-with-docs` | slash-only | Grill against domain docs; update CONTEXT.md / ADRs inline |
 | `write-a-skill` | slash-only | Create new agent skills with proper structure |
