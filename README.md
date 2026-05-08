@@ -61,6 +61,7 @@ The system prompt sees `AGENTS.md` plus descriptions of model-invokable skills o
 ├── AGENTS.md          # behavioral floor (cross-tool, always on)
 ├── CLAUDE.md          # @AGENTS.md import (Claude Code)
 ├── .claude-plugin/    # plugin.json registers skills
+├── docs/              # reference corpus (frontier briefs on agentic patterns)
 └── skills/
     ├── model-invokable/   # auto-fires on relevant prompts
     ├── slash-only/        # disable-model-invocation: true

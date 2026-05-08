@@ -1,6 +1,6 @@
 # Frontier Documents Index
 
-Two versions of each document: a 2-page **brief** and a longer **detailed** version. All ranking and tradeoffs are based on the 54 papers in `../`.
+Two versions of each document: a 2-page **brief** and a longer **detailed** version. All ranking and tradeoffs are based on a 2024-2026 review of 54 papers.
 
 ## The five topics
 
