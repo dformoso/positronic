@@ -1,6 +1,12 @@
 # positronic
 
-A personal AI-coding framework: a cross-tool behavioral floor in [`AGENTS.md`](AGENTS.md) plus skills for Claude Code. Solo, opinionated — fork to adapt.
+A personal AI-coding framework — opinionated, solo. Fork to adapt.
+
+**What positronic does** — three layers across the lifecycle of a software project:
+
+- **Product management** — `grill-me`-style interviews extract design decisions before any code is written; `/to-prd`, `/to-spec`, `/to-issues` lock them down as versioned artifacts.
+- **Software engineering** — five behavioral rules (below) and test-driven development (red → green → refactor) where tests verify behavior through public interfaces, not implementation details.
+- **Agent harness engineering** — `pick-harness-shape` plus a reference corpus of frontier briefs (`docs/agentic-patterns/`) biases toward off-the-shelf and surfaces the load-bearing decisions when a custom harness is warranted.
 
 **The behavioral floor** — five rules Claude follows on every turn:
 
@@ -52,6 +58,7 @@ Both files are plain text with no dependencies; `curl` works too.
 | `improve-codebase-architecture` | slash-only | Find shallow modules and propose how to deepen them |
 | `grill-with-docs` | slash-only | Grill against domain docs; update CONTEXT.md / ADRs inline |
 | `write-a-skill` | slash-only | Create new agent skills with proper structure |
+| `review` | slash-only | Review the current branch before it ships; flags must-fix and worth-noting items |
 | `github-triage` | dormant | Triage GitHub issues through a label-based state machine |
 | `setup-pre-commit` | dormant | Set up Husky + lint-staged + Prettier pre-commit hooks |
 
