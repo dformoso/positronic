@@ -65,14 +65,12 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **Name the phase before acting. Don't pick silently.**
 
-- **Defining** — fuzzy goal, no spec yet → run `grill-me`. When the spec is coherent, prompt the user to run `/to-prd`, then `/to-issues`. For zero-to-one situations (no product exists yet, genuine market uncertainty), grill-me hands off automatically to `discover` before `/to-prd`.
+- **Defining** — fuzzy goal, no spec yet → run `grill-me`. Once grill-me converges, prompt the user to run `/to-prd`, then `/to-spec`, then `/to-issues`. For zero-to-one situations (no product exists yet, genuine market uncertainty), grill-me hands off automatically to `discover` before `/to-prd`. When a custom LLM harness is on the table, grill-me also hands off to `pick-harness-shape` to surface harness-shape decisions before `/to-spec`.
 - **Implementing** — spec is decided → run `tdd` for a single issue. For the full backlog, prompt the user to run `/run-afk-in-loop`, which works through unblocked AFK issues in parallel waves and keeps `BOARD.md` updated. Check `BOARD.md` for current backlog state.
 - **Diagnosing** — something is broken or regressed → run `diagnose`.
 - **Shipping** — PR prep, review, cleanup → prompt the user to run `/review`.
 
 Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
-
-Plans and PRDs live in GitHub issues, not in repo `.md` files. After a plan has been submitted, delete the local draft.
 
 ## 6. Cloud Deployments
 
