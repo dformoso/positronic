@@ -1,12 +1,12 @@
 ---
 name: run-afk-in-loop
-description: Loop through all unblocked AFK GitHub issues in parallel waves, implementing each with /tdd, updating BOARD.md at each step. Use when user wants to run AFK issues automatically or says "run the loop".
+description: Loop through all unblocked AFK GitHub issues in parallel waves, implementing each with /tdd. Use when user wants to run AFK issues automatically or says "run the loop".
 disable-model-invocation: true
 ---
 
 # Run AFK In Loop
 
-Implement all unblocked AFK GitHub issues in parallel waves, updating `BOARD.md` after each wave.
+Implement all unblocked AFK GitHub issues in parallel waves.
 
 ## Workflow
 
@@ -28,16 +28,10 @@ done_count=$(echo "$issues" | jq '[.[] | select(.labels[].name == "afk" and .sta
 Output:
 
 ```
-Wave [done_count/total]: #X — <title>, #Y — <title>, ...  →  [BOARD.md](BOARD.md)
+Wave [done_count/total]: #X — <title>, #Y — <title>, ...
 ```
 
-### 3. Mark all wave issues active and update board
-
-```bash
-ACTIVE_ISSUES="X Y Z" bash skills/slash-only/run-afk-in-loop/scripts/update-board.sh
-```
-
-### 4. Implement wave issues in parallel
+### 3. Implement wave issues in parallel
 
 For each issue in the wave, build a `/tdd` prompt and spawn a `claude` subprocess:
 
@@ -54,18 +48,12 @@ Then wait for all spawned processes:
 wait
 ```
 
-### 5. Close completed issues and update board
+### 4. Close completed issues
 
 For each issue that finished successfully:
 
 ```bash
 gh issue close X --comment "Completed by /run-afk-in-loop"
-```
-
-Then refresh the board:
-
-```bash
-bash skills/slash-only/run-afk-in-loop/scripts/update-board.sh
 ```
 
 Print: `Wave [N/total] complete — closed #X ✓, #Y ✓` — then return to step 1.

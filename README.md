@@ -48,7 +48,7 @@ Both files are plain text with no dependencies; `curl` works too.
 | `to-prd` | slash-only | Synthesize the current conversation into a versioned PRD in `prds/` |
 | `to-spec` | slash-only | Synthesize the latest PRD + harness decisions into a versioned implementation SPEC in `specs/` |
 | `to-issues` | slash-only | Break a plan into independently-grabbable GitHub issues; labels each `afk` or `hitl` |
-| `run-afk-in-loop` | slash-only | Work through all unblocked AFK issues in order, updating `BOARD.md` at each step |
+| `run-afk-in-loop` | slash-only | Work through all unblocked AFK issues in parallel waves |
 | `improve-codebase-architecture` | slash-only | Find shallow modules and propose how to deepen them |
 | `grill-with-docs` | slash-only | Grill against domain docs; update CONTEXT.md / ADRs inline |
 | `write-a-skill` | slash-only | Create new agent skills with proper structure |
@@ -74,8 +74,6 @@ The system prompt sees `AGENTS.md` plus descriptions of model-invokable skills o
 ## AFK loop
 
 `/to-issues` tags each issue `afk` or `hitl`. `/run-afk-in-loop` then works through all unblocked AFK issues in order — picking the next one, implementing it with `/tdd`, closing it, and looping until done.
-
-**Progress board** — `BOARD.md` at the project root is a Mermaid dependency graph updated on every state change. Open it in VS Code with Cmd+K V for a live split-pane view. Nodes show issue number, title, type, deliverable, and acceptance criteria; edges show blocking relationships; colors show status (done / active / ready / blocked / HITL).
 
 **Unattended runs with credit-exhaustion retry:**
 

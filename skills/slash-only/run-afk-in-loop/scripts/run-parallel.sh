@@ -52,7 +52,6 @@ while true; do
   done < <(get_unblocked "$issues_json")
 
   if [ "${#wave[@]}" -eq 0 ]; then
-    ISSUES_JSON="$issues_json" bash "$SCRIPTS_DIR/update-board.sh" 2>/dev/null || true
     log "All AFK issues complete."
     open_hitl=$(echo "$issues_json" | \
       jq -r '.[] | select(.labels[].name == "hitl" and .state == "OPEN") | "  #\(.number) — \(.title)"' || true)
@@ -64,8 +63,6 @@ while true; do
   fi
 
   log "Wave: ${wave[*]}"
-  ACTIVE_ISSUES="${wave[*]}" ISSUES_JSON="$issues_json" \
-    bash "$SCRIPTS_DIR/update-board.sh" 2>/dev/null || true
 
   pids=()
   for num in "${wave[@]}"; do
