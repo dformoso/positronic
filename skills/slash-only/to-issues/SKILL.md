@@ -12,7 +12,7 @@ Break a plan into independently-grabbable GitHub issues using vertical slices (t
 
 ### 1. Gather context
 
-Work from what's already in the conversation. If the user passes a GitHub issue number or URL as an argument, fetch it with `gh issue view <number>` (with comments).
+Work from what's already in the conversation. If a `specs/` directory exists with files, read the most recent SPEC (`ls specs/[0-9]*.md | sort | tail -1`) as the primary source — the SPEC carries the implementation contract and is what issues should decompose. Otherwise, if `prds/` exists, read the most recent PRD (`ls prds/[0-9]*.md | sort | tail -1`) as the source. If the user passes a GitHub issue number or URL as an argument, fetch it with `gh issue view <number>` (with comments).
 
 ### 2. Explore the codebase (optional)
 

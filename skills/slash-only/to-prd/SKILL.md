@@ -16,7 +16,7 @@ A deep module (as opposed to a shallow module) is one which encapsulates a lot o
 
 Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
 
-3. Write the PRD using the template below. Save it as `PRD-YYYY-MM-DD.md` in the repo root (today's date) and commit it. Do not submit it as a GitHub issue.
+3. Write the PRD using the template below. Save it as `prds/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `prds/` if it doesn't exist) and commit it. Do not submit it as a GitHub issue.
 
 Length and density: the PRD must be 5 pages or fewer — preferably less. Every sentence must carry information. No padding, no repetition, no restating the obvious. If a section can be a table, make it a table. If a sentence adds nothing new, cut it.
 

@@ -55,3 +55,5 @@ Test high-importance, low-evidence assumptions first. Push back if the user conf
 **Step 5 — Cheapest prototype.** What is the lowest-effort artifact that tests the top assumption? Options: static mock (value prop and mental model), interactive prototype (usability), Wizard of Oz (human-operated back-end, best for AI features before the algorithm exists), Concierge MVP (you deliver the service manually, no UI), Flintstoning (fake automation behind real UI).
 
 **Step 6 — Hand off to discover.** If this is a genuine zero-to-one situation — no product exists yet, real market uncertainty — invoke the discover skill now. It runs the full generative research → prototype evaluation → trusted tester → PMF pipeline, anchored on the CUJs and user segments defined above. Otherwise, prompt the user to run `/to-prd`.
+
+**Step 7 — Hand off to pick-harness-shape.** If the project involves a custom LLM/agent harness — non-coding agent work, multi-agent workflow, or any system where Claude Code / off-the-shelf doesn't fit — invoke pick-harness-shape now to triage the harness decisions before `/to-prd` and `/to-spec`.

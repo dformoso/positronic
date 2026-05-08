@@ -41,9 +41,12 @@ Both files are plain text with no dependencies; `curl` works too.
 | `diagnose` | model-invokable | Disciplined loop for hard bugs and performance regressions |
 | `tdd` | model-invokable | Test-driven development with red-green-refactor |
 | `grill-me` | model-invokable | Interview the user about a design until shared understanding |
+| `discover` | model-invokable | Zero-to-one product discovery: generative research → prototype → trusted tester → PMF |
+| `pick-harness-shape` | model-invokable | Triage the shape of a custom LLM/agent harness; biases toward off-the-shelf |
 | `terse` | slash-only | Ultra-compressed mode (~75% token savings) |
 | `zoom-out` | slash-only | Step back and give broader context |
-| `to-prd` | slash-only | Synthesize the current conversation into a PRD on GitHub |
+| `to-prd` | slash-only | Synthesize the current conversation into a versioned PRD in `prds/` |
+| `to-spec` | slash-only | Synthesize the latest PRD + harness decisions into a versioned implementation SPEC in `specs/` |
 | `to-issues` | slash-only | Break a plan into independently-grabbable GitHub issues; labels each `afk` or `hitl` |
 | `run-afk-in-loop` | slash-only | Work through all unblocked AFK issues in order, updating `BOARD.md` at each step |
 | `improve-codebase-architecture` | slash-only | Find shallow modules and propose how to deepen them |
