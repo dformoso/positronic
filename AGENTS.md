@@ -27,7 +27,18 @@ Before implementing:
 
 Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
-## 3. Surgical Changes
+## 3. Plain Naming
+
+**Functions, modules, and variables read like plain English.**
+
+- Names describe intent — what the code does or holds, not what it's called or what type it is.
+- No abbreviations, acronyms, or clever wordplay. `userCount` not `usrCnt`. `parsePayment` not `procPmt`.
+- Module names describe the domain, not abstract patterns. `billing/` not `helpers/` or `utils/`.
+- A reader who hasn't seen the code should understand intent from the name alone.
+
+If you can't write a clear name, you don't yet understand the thing you're naming. Stop and clarify.
+
+## 4. Surgical Changes
 
 **Touch only what you must. Clean up only your own mess.**
 
@@ -43,7 +54,7 @@ When your changes create orphans:
 
 The test: Every changed line should trace directly to the user's request.
 
-## 4. Goal-Driven Execution
+## 5. Goal-Driven Execution
 
 **Define success criteria. Loop until verified.**
 
@@ -61,7 +72,7 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
-## 5. Phase Awareness
+## 6. Phase Awareness
 
 **Name the phase before acting. Don't pick silently.**
 
@@ -72,7 +83,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
 
-## 6. Cloud Deployments
+## 7. Cloud Deployments
 
 **For Google ADK or Google Cloud projects, prompt the user to install — don't install yourself.**
 
