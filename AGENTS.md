@@ -9,25 +9,42 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
 Before implementing:
+
 - State your assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
 - If you're about to use an unfamiliar API or pattern, verify it exists — read the code, the docs, or grep the codebase first. Don't invent.
 
-## 2. Simplicity First
+## 2. Read Before You Write
 
-**Minimum code that solves the problem. Nothing speculative.**
+**Ground every action in actual code, not remembered code.**
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+- Before editing a file, read it.
+- Before calling an API or using a pattern, verify it exists — grep, read the docs, find an example in the codebase.
+- If you catch yourself writing "from memory," stop and verify first.
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+## 3. Minimum Diff
 
-## 3. Plain Naming
+**Every changed line traces to the request. For new code, write the minimum that solves it. For edits, touch only what you must.**
+
+For new code:
+
+- No speculative features, abstractions, configurability, or error handling for scenarios that can't happen.
+- If you wrote 200 lines and could write 50, rewrite.
+
+For edits:
+
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor what isn't broken.
+- Match existing style, even if you'd write it differently.
+
+For both:
+
+- Remove orphans your changes created (unused imports, dead variables, dead functions).
+- If you notice pre-existing dead code, mention it — don't delete it.
+
+## 4. Plain Naming
 
 **Functions, modules, and variables read like plain English.**
 
@@ -38,39 +55,31 @@ Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, sim
 
 If you can't write a clear name, you don't yet understand the thing you're naming. Stop and clarify.
 
-## 4. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
 ## 5. Goal-Driven Execution
 
-**Define success criteria. Loop until verified.**
+**Define verifiable success. Loop until verified — or stop and surface what's blocking.**
 
-Transform tasks into verifiable goals:
+**Driving forward.** Transform fuzzy tasks into verifiable goals:
+
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
 - "Refactor X" → "Ensure tests pass before and after"
 
 For multi-step tasks, state a brief plan:
-```
+
+```text
 1. [Step] → verify: [check]
 2. [Step] → verify: [check]
 3. [Step] → verify: [check]
 ```
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+**Stopping.** If the path isn't working:
+
+- If the same approach fails twice, stop. Surface the obstacle. Don't keep trying variations.
+- If a test won't go green after a focused attempt, say what you tried and what's confusing.
+- Sunk cost is not a reason to keep going.
 
 ## 6. Phase Awareness
 
@@ -90,7 +99,21 @@ Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt th
 - For operations >2s, show progress (spinner, status line, streamed activity). Silent ≠ done — the user has already assumed it crashed.
 - For external failures (LLM, HTTP, DB, filesystem), map raw exceptions to one-sentence messages naming **what went wrong** and **what to do next**. Don't leak provider stack traces. Pin tests against the actual production exception text you observed.
 
-## 8. Cloud Deployments
+## 8. Secret & Data Hygiene
+
+**Don't leak credentials or sensitive data, ever.**
+
+- Never commit `.env`, API keys, tokens, or credential files.
+- Never log, print, or echo credentials, PII, or auth headers — including in error messages and stack traces.
+- If you find a secret already committed in code, stop and surface it. Don't paste it back in your output.
+
+---
+
+## Stack-specific rules
+
+The rules above are universal. The rules below apply only when the stack matches.
+
+### Cloud Deployments
 
 **For Google ADK or Google Cloud projects, prompt the user to install — don't install yourself.**
 

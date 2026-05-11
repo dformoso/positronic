@@ -5,18 +5,19 @@ A personal AI-coding framework — opinionated, solo. Fork to adapt.
 **What positronic does** — three layers across the lifecycle of a software project:
 
 - **Product management** — `grill-me`-style interviews extract design decisions before any code is written; `/to-prd`, `/to-spec`, `/to-issues` lock them down as versioned artifacts.
-- **Software engineering** — seven behavioral rules (below) and test-driven development (red → green → refactor) where tests verify behavior through public interfaces, not implementation details.
+- **Software engineering** — eight behavioral rules (below) and test-driven development (red → green → refactor) where tests verify behavior through public interfaces, not implementation details.
 - **Agent harness engineering** — `pick-harness-shape` plus a reference corpus of frontier briefs (`docs/agentic-patterns/`) biases toward off-the-shelf and surfaces the load-bearing decisions when a custom harness is warranted.
 
-**The behavioral floor** — seven rules Claude follows on every turn:
+**The behavioral floor** — eight rules Claude follows on every turn:
 
 1. **Think Before Coding** — state assumptions, ask when uncertain, push back on overcomplication.
-2. **Simplicity First** — minimum code that solves the problem; no speculative features.
-3. **Plain Naming** — functions, modules, variables read like plain English; names describe intent.
-4. **Surgical Changes** — touch only what you must; clean up only your own mess.
-5. **Goal-Driven Execution** — define verifiable success criteria; loop until met.
+2. **Read Before You Write** — ground every action in actual code; verify APIs and patterns before using them.
+3. **Minimum Diff** — every changed line traces to the request; minimum code for new work, surgical edits for changes.
+4. **Plain Naming** — functions, modules, variables read like plain English; names describe intent.
+5. **Goal-Driven Execution** — define verifiable success; loop until verified, or stop and surface what's blocking.
 6. **Phase Awareness** — name the phase (defining / implementing / diagnosing / shipping) before acting.
 7. **User-Facing Reliability** — show progress on operations >2s; map external failures to one-sentence actionable messages, not raw exceptions.
+8. **Secret & Data Hygiene** — never commit secrets; never log credentials, PII, or auth headers.
 
 `AGENTS.md` is read by Claude Code, [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide) (since v1.20.3), and Cursor. The `skills/` system is Claude Code only — for cross-tool skill reach, use [`google-agents-cli`](#google-cloud-and-adk). Cloud lean: [Google Cloud](https://cloud.google.com/) + [Google ADK](https://adk.dev).
 
