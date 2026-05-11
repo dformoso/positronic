@@ -12,6 +12,7 @@
     "./skills/slash-only/to-prd",
     "./skills/slash-only/to-spec",
     "./skills/slash-only/to-issues",
+    "./skills/slash-only/audit-prompt",
     "./skills/slash-only/improve-codebase-architecture",
     "./skills/slash-only/grill-with-docs",
     "./skills/slash-only/write-a-skill",

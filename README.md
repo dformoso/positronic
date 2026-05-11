@@ -5,10 +5,10 @@ A personal AI-coding framework — opinionated, solo. Fork to adapt.
 **What positronic does** — three layers across the lifecycle of a software project:
 
 - **Product management** — `grill-me`-style interviews extract design decisions before any code is written; `/to-prd`, `/to-spec`, `/to-issues` lock them down as versioned artifacts.
-- **Software engineering** — six behavioral rules (below) and test-driven development (red → green → refactor) where tests verify behavior through public interfaces, not implementation details.
+- **Software engineering** — seven behavioral rules (below) and test-driven development (red → green → refactor) where tests verify behavior through public interfaces, not implementation details.
 - **Agent harness engineering** — `pick-harness-shape` plus a reference corpus of frontier briefs (`docs/agentic-patterns/`) biases toward off-the-shelf and surfaces the load-bearing decisions when a custom harness is warranted.
 
-**The behavioral floor** — six rules Claude follows on every turn:
+**The behavioral floor** — seven rules Claude follows on every turn:
 
 1. **Think Before Coding** — state assumptions, ask when uncertain, push back on overcomplication.
 2. **Simplicity First** — minimum code that solves the problem; no speculative features.
@@ -16,6 +16,7 @@ A personal AI-coding framework — opinionated, solo. Fork to adapt.
 4. **Surgical Changes** — touch only what you must; clean up only your own mess.
 5. **Goal-Driven Execution** — define verifiable success criteria; loop until met.
 6. **Phase Awareness** — name the phase (defining / implementing / diagnosing / shipping) before acting.
+7. **User-Facing Reliability** — show progress on operations >2s; map external failures to one-sentence actionable messages, not raw exceptions.
 
 `AGENTS.md` is read by Claude Code, [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide) (since v1.20.3), and Cursor. The `skills/` system is Claude Code only — for cross-tool skill reach, use [`google-agents-cli`](#google-cloud-and-adk). Cloud lean: [Google Cloud](https://cloud.google.com/) + [Google ADK](https://adk.dev).
 
@@ -56,6 +57,7 @@ Both files are plain text with no dependencies; `curl` works too.
 | `to-spec` | slash-only | Synthesize the latest PRD + harness decisions into a versioned implementation SPEC in `specs/` |
 | `to-issues` | slash-only | Break a plan into independently-grabbable GitHub issues; labels each `afk` or `hitl` |
 | `run-afk-in-loop` | slash-only | Work through all unblocked AFK issues in parallel waves |
+| `audit-prompt` | slash-only | Audit an LLM agent prompt for tool-catalogue coverage, dead references, and rule sharpness |
 | `improve-codebase-architecture` | slash-only | Find shallow modules and propose how to deepen them |
 | `grill-with-docs` | slash-only | Grill against domain docs; update CONTEXT.md / ADRs inline |
 | `write-a-skill` | slash-only | Create new agent skills with proper structure |

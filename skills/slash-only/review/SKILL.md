@@ -29,6 +29,13 @@ Read every changed file in full. For each, check against the AGENTS.md principle
 - **Security** — command injection, XSS, SQL injection, OWASP top 10. Flag anything that takes external input.
 - **Correctness** — logic errors, off-by-ones, edge cases the tests don't cover.
 - **Dead imports/variables** — orphans left by the change that weren't cleaned up.
+- **Private-API reach** — flag any access to underscore-prefixed attributes across module boundaries. If a public surface needs the data, the underscore reach is a bug-in-waiting and the deepening opportunity should go to `/improve-codebase-architecture`.
+- **User-facing reliability** — for new >2s operations, confirm a progress signal is shown; for new external calls, confirm failure paths map to actionable messages, not raw exception strings. AGENTS.md §7.
+- **Trace-to-task** — every changed line traces to a sentence in the user's request. Pre-existing dirty state (files modified before the session started) gets surfaced explicitly — never quietly bundled.
+
+### 2a. Coverage check (for cross-surface or removal diffs)
+
+For diffs touching both halves of the stack or removing a feature, grep the whole repo (not just the changed files) for endpoint names, type names, route IDs, fixtures, demo data, prompt mentions, and doc references. Half-removed concepts won't show up in a file-by-file walk — they survive in the files the diff didn't touch.
 
 ### 3. Report
 

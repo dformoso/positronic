@@ -83,7 +83,14 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
 
-## 7. Cloud Deployments
+## 7. User-Facing Reliability
+
+**The user must see what's happening and understand what failed.**
+
+- For operations >2s, show progress (spinner, status line, streamed activity). Silent ≠ done — the user has already assumed it crashed.
+- For external failures (LLM, HTTP, DB, filesystem), map raw exceptions to one-sentence messages naming **what went wrong** and **what to do next**. Don't leak provider stack traces. Pin tests against the actual production exception text you observed.
+
+## 8. Cloud Deployments
 
 **For Google ADK or Google Cloud projects, prompt the user to install — don't install yourself.**
 

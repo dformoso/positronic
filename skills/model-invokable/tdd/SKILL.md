@@ -102,6 +102,12 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 [ ] Test describes behavior, not implementation
 [ ] Test uses public interface only
 [ ] Test would survive internal refactor
+[ ] Test sets up state via the same call shape production uses (no shortcut helpers)
+[ ] For regression tests: stash the fix and confirm the test fails with the actual production symptom
+[ ] Every external dependency the code calls has at least one failure-mode test
+[ ] Tests that hit paid / external services skip on environmental failure, fail only on code regression
 [ ] Code is minimal for this test
 [ ] No speculative features added
 ```
+
+See [tests.md](tests.md) for production-path coverage, stash-and-fail, external-dependency failure modes, and environmental skip rules.
