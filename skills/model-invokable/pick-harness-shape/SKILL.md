@@ -79,6 +79,32 @@ For each gate:
 
 Hard gates stall on legitimate variation; soft gates miss errors. Pick one and instrument it. (See `docs/agentic-patterns/05_harness_architectures_brief.md`.)
 
+## 7. Per-stage sampling & model choice
+
+Harness behavior depends as much on per-stage parameters as on topology. Provider defaults (often `T=1.0`, latest frontier model, no reasoning budget) are rarely optimal — planner and verifier stages in particular benefit from explicit, lower-variance settings.
+
+For each stage in the topology picked in section 3, decide:
+
+- **Model tier** — frontier / mid / cheap
+- **Temperature** (and/or top-p)
+- **Reasoning effort** — if the model exposes it (Claude extended thinking, GPT-5 reasoning levels)
+- **Max tokens per step** — implicit bound on how much an executor can do per turn
+
+Sensible defaults by stage type:
+
+| Stage type | Temperature | Model tier | Why |
+|---|---|---|---|
+| Planner / decomposer | 0.0–0.2 | Frontier | Stable decomposition; one good plan beats N drifty ones |
+| Executor / tool caller | 0.0–0.2 | Mid–frontier | Deterministic tool dispatch; schema adherence collapses at high T |
+| Generator (code, prose) | 0.3–0.7 | Frontier | Some variance is the point; too low produces stilted output |
+| Self-consistency sampler | 0.7–1.0 | Mid | High T *is* the mechanism — without it you get N copies of the same answer |
+| Verifier-LM | 0.0–0.2 | Mid (cheaper than the agent it verifies) | Consistent judgments; the verifier shouldn't be a flaky test |
+| Brainstormer / ideator | 0.7–1.0 | Frontier | Variance is wanted |
+
+Reasoning effort: bump for planner and verifier stages; default off for executor (latency cost rarely pays back on tool calls). Max tokens: tighter caps force more loop iterations and finer-grained recovery — useful when verification gates are strong, harmful when they're weak.
+
+Cost compounds: a planner running frontier+high-reasoning at every turn is the single fastest way to a surprise bill. Pick the tier per stage, not per harness. (See `docs/agentic-patterns/04_prompt_management_brief.md` for self-consistency sampling cost.)
+
 ## Hand-off
 
-Summarise the picked shape: substrate, topology, memory model, rough tool layer, gate strategy. Then prompt the user to run `/to-prd` (if not yet done) and `/to-spec` to document the decisions.
+Summarise the picked shape: substrate, topology, memory model, rough tool layer, gate strategy, and per-stage model + sampling choices. Then prompt the user to run `/to-prd` (if not yet done) and `/to-spec` to document the decisions.
