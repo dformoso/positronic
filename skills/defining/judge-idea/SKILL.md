@@ -10,7 +10,7 @@ Try to invalidate the chosen direction. Enumerate everything that could be wrong
 
 By default, the most recent ideation winner: `ls ideas/[0-9]*/winner.md | sort | tail -1`. Plus the most recent research artifact for cross-reference.
 
-Can also be run on a PRD or SPEC after the fact. If invoked after `/to-prd` or `/to-spec`, target the most recent `prds/` or `specs/` artifact instead.
+Can also be run on a PRD or SPEC after the fact. If invoked after `/to-prd` target `ls prds/[0-9]*.md | sort | tail -1`; if after `/to-spec` target `ls specs/[0-9]*.md | sort | tail -1`.
 
 If no target artifact exists, prompt the user for which artifact to judge and stop.
 

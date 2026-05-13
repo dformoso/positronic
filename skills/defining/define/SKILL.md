@@ -1,6 +1,6 @@
 ---
 name: define
-description: Defining-phase orchestrator. Surfaces assumptions, frames a falsifiable hypothesis, then routes to the right pre-PRD path (research-market / ideate / judge-idea / to-prd / pick-harness-shape). Use when the user has a fuzzy product or feature idea with no PRD or SPEC yet.
+description: Defining-phase orchestrator. Surfaces assumptions, frames a falsifiable hypothesis, then routes to the right next step (research-market / ideate / judge-idea / to-prd / pick-harness-shape). Use when the user has a fuzzy product or feature idea with no PRD or SPEC yet.
 ---
 
 Entry point for the Defining phase: when a goal is fuzzy and no spec exists, surface the assumptions the idea depends on, frame a falsifiable hypothesis, and route to the right pre-PRD path. Work through the steps in order, one question at a time. For each question, recommend an answer.
@@ -52,6 +52,5 @@ Test high-importance, low-evidence assumptions first. Push back if the user conf
 
 - **Zero-to-one with market uncertainty.** Prompt the user to run `/research-market` (mines forums and competitive landscape into a versioned research artifact), then `/ideate` (10 ranked one-pagers, user picks the winner), then `/judge-idea` (adversarial gate that returns proceed | loop-back | pivot), then `/to-prd`.
 - **Established space, user knows the market well.** Prompt the user to run `/to-prd` directly.
-- **Product is already shipped and you want primary user signal.** That's `validate-with-users` — JTBD interviews, prototype/usability testing, trusted tester program, PMF. Optional, post-launch.
 
 **Step 7 — Hand off to pick-harness-shape.** If the project involves a custom LLM/agent harness — non-coding agent work, multi-agent workflow, or any system where Claude Code / off-the-shelf doesn't fit — invoke pick-harness-shape now to triage the harness decisions before `/to-spec`. This runs independently of which path above was chosen.
