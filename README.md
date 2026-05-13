@@ -65,7 +65,7 @@ Both files are plain text with no dependencies; `curl` works too.
 | `review` | slash-only | Review the current branch before it ships; flags must-fix and worth-noting items |
 | `github-triage` | slash-only | Triage GitHub issues through a label-based state machine |
 
-The system prompt sees `AGENTS.md` plus descriptions of model-invokable skills only. Slash-only loads on invoke; dormant is unregistered until promoted — both cost **zero per-turn context**.
+The system prompt sees `AGENTS.md` plus descriptions of model-invokable skills only. Slash-only loads on invoke — **zero per-turn context cost**.
 
 ## Layout
 
@@ -92,9 +92,9 @@ bash skills/slash-only/run-afk-in-loop/scripts/run-afk-loop.sh
 
 Env vars: `RETRY_WAIT_SECONDS` (default 1800), `MAX_ATTEMPTS` (default 20).
 
-## Adding or promoting a skill
+## Adding a skill
 
-Use `/write-a-skill` or follow [its template](skills/slash-only/write-a-skill/SKILL.md). To promote a dormant skill: move its folder to `model-invokable/` (auto-fires) or `slash-only/` (ensure `disable-model-invocation: true` in frontmatter), then add the path to `.claude-plugin/plugin.json`.
+Use `/write-a-skill` or follow [its template](skills/slash-only/write-a-skill/SKILL.md). Place the folder in `model-invokable/` (auto-fires) or `slash-only/` (set `disable-model-invocation: true` in frontmatter), then register the path in `.claude-plugin/plugin.json`.
 
 ## MCP servers
 
