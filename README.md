@@ -63,8 +63,7 @@ Both files are plain text with no dependencies; `curl` works too.
 | `grill-with-docs` | slash-only | Grill against domain docs; update CONTEXT.md / ADRs inline |
 | `write-a-skill` | slash-only | Create new agent skills with proper structure |
 | `review` | slash-only | Review the current branch before it ships; flags must-fix and worth-noting items |
-| `github-triage` | dormant | Triage GitHub issues through a label-based state machine |
-| `setup-pre-commit` | dormant | Set up Husky + lint-staged + Prettier pre-commit hooks |
+| `github-triage` | slash-only | Triage GitHub issues through a label-based state machine |
 
 The system prompt sees `AGENTS.md` plus descriptions of model-invokable skills only. Slash-only loads on invoke; dormant is unregistered until promoted — both cost **zero per-turn context**.
 
@@ -78,8 +77,7 @@ The system prompt sees `AGENTS.md` plus descriptions of model-invokable skills o
 ├── docs/              # reference corpus (frontier briefs on agentic patterns)
 └── skills/
     ├── model-invokable/   # auto-fires on relevant prompts
-    ├── slash-only/        # disable-model-invocation: true
-    └── dormant/           # unregistered, inert
+    └── slash-only/        # disable-model-invocation: true
 ```
 
 ## AFK loop

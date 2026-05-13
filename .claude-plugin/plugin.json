@@ -9,6 +9,7 @@
     "./skills/model-invokable/pick-harness-shape",
     "./skills/slash-only/terse",
     "./skills/slash-only/zoom-out",
+    "./skills/slash-only/github-triage",
     "./skills/slash-only/to-prd",
     "./skills/slash-only/to-spec",
     "./skills/slash-only/to-issues",
