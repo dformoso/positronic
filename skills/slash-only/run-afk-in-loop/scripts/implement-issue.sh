@@ -20,13 +20,37 @@ RETRY_WAIT="${RETRY_WAIT_SECONDS:-1800}"
 
 log() { echo "[implement-issue] $*"; }
 
-criteria=$(${GH_CMD} issue view "${NUM}" --json body | jq -r '.body' | \
-  awk '/^## Acceptance criteria/{f=1;next} f && /^## /{exit} f && /- \[/{print}')
+body=$(${GH_CMD} issue view "${NUM}" --json body | jq -r '.body')
+
+spec_path=""
+prd_path=""
+if [ -d specs ]; then
+  spec_path=$(ls specs/[0-9]*.md 2>/dev/null | sort | tail -1 || true)
+fi
+if [ -d prds ]; then
+  prd_path=$(ls prds/[0-9]*.md 2>/dev/null | sort | tail -1 || true)
+fi
 
 prompt="Implement GitHub issue #${NUM}: ${TITLE}
 
-Acceptance criteria:
-${criteria}"
+Issue body:
+${body}"
+
+if [ -n "$spec_path" ] || [ -n "$prd_path" ]; then
+  prompt="${prompt}
+
+Source documents to read before starting:"
+  if [ -n "$spec_path" ]; then
+    prompt="${prompt}
+- Latest SPEC: ${spec_path}"
+  fi
+  if [ -n "$prd_path" ]; then
+    prompt="${prompt}
+- Latest PRD: ${prd_path}"
+  fi
+fi
+
+log "#${NUM}: starting — ${TITLE}"
 
 attempt=0
 while [ "$attempt" -lt "$MAX_ATTEMPTS" ]; do

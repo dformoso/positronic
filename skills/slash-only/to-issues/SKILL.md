@@ -30,6 +30,8 @@ Slices may be 'HITL' or 'AFK'. HITL slices need human input (architectural decis
 - Prefer many thin slices over few thick ones
 </vertical-slice-rules>
 
+**Template-first pattern.** If multiple slices share the same shape (e.g., one standardizer per entity type, one extractor per data source), identify which slice *establishes* the shape and mark the others as `Blocked by` it. This serializes the mirror slices behind a working in-repo example and prevents parallel AFK agents from drifting into divergent shapes. The shape-establishing slice is often a good candidate for HITL (do it inline) so subsequent AFK agents can reference a finished file.
+
 ### 4. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each slice, show:
@@ -45,6 +47,7 @@ Ask the user:
 - Are the dependency relationships correct?
 - Should any slices be merged or split further?
 - Are the correct slices marked as HITL and AFK?
+- Is there a shape-establishing slice that others should mirror? If so, are the mirrors `Blocked by` it?
 
 Iterate until the user approves the breakdown.
 
@@ -69,6 +72,24 @@ Create issues in dependency order (blockers first) so you can reference real iss
 ## What to build
 
 A concise description of this vertical slice. Describe the end-to-end behavior, not layer-by-layer implementation.
+
+## Source spec
+
+Pointer into the SPEC this issue implements: section name or anchor in `specs/<latest>.md`. Omit this section if no SPEC exists.
+
+## Exemplar to mirror
+
+Path of a file whose shape this issue should follow (e.g., `backend/app/extractors/standardize.py`). Omit this section if this issue establishes a new pattern rather than mirroring one.
+
+## Decisions taken
+
+- Decisions and rejected alternatives that constrain this issue, so the implementer doesn't re-open them.
+- Omit this section if no load-bearing decisions apply.
+
+## Shared conventions
+
+- Cross-issue invariants this issue must respect (naming, shape, error handling).
+- Omit this section if no shared conventions apply.
 
 ## Acceptance criteria
 
