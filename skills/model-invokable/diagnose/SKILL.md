@@ -112,6 +112,6 @@ Required before declaring done:
 - [ ] Throwaway prototypes deleted (or moved to a clearly-marked debug location)
 - [ ] The hypothesis that turned out correct is stated in the commit / PR message — so the next debugger learns
 
-**Audit the existing tests.** A green suite that shipped this bug is itself a bug. Open the closest existing test, find why it missed (wrong call shape / fixture / assertion — see [`tdd/tests.md`](../../model-invokable/tdd/tests.md)), and patch it. A new regression test alone isn't enough.
+**Audit the existing tests.** A green suite that shipped this bug is itself a bug. Open the closest existing test, find why it missed (wrong call shape / fixture / assertion — see [`tdd/tests.md`](../tdd/tests.md)), and patch it. A new regression test alone isn't enough.
 
 **Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) hand off to the `/improve-codebase-architecture` skill with the specifics. Make the recommendation **after** the fix is in, not before — you have more information now than when you started.

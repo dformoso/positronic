@@ -19,7 +19,7 @@ A personal AI-coding framework — opinionated, solo. Fork to adapt.
 7. **User-Facing Reliability** — show progress on operations >2s; map external failures to one-sentence actionable messages, not raw exceptions.
 8. **Secret & Data Hygiene** — never commit secrets; never log credentials, PII, or auth headers.
 
-`AGENTS.md` is read by Claude Code, [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide) (since v1.20.3), and Cursor. The `skills/` system is Claude Code only — for cross-tool skill reach, use [`google-agents-cli`](#google-cloud-and-adk). Cloud lean: [Google Cloud](https://cloud.google.com/) + [Google ADK](https://adk.dev).
+`AGENTS.md` is read by Claude Code and [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide) (since v1.20.3); other tools (Cursor, Codex) are converging on the same convention. The `skills/` system is Claude Code only — for cross-tool skill reach, use [`google-agents-cli`](#google-cloud-and-adk). Cloud lean: [Google Cloud](https://cloud.google.com/) + [Google ADK](https://adk.dev).
 
 ## Install
 

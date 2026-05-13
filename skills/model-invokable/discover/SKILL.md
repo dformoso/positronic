@@ -5,6 +5,8 @@ description: Operational pipeline for zero-to-one product discovery. Invoked by 
 
 You are running the product discovery pipeline. The problem space, user segments, and Critical User Journeys (CUJs) were defined in grill-me. Treat those as the north star throughout — every phase anchors on the CUJs.
 
+**If those inputs are not yet defined** (e.g. you were invoked directly, not via grill-me), stop and run grill-me Steps 1–5 first to establish them. Do not improvise CUJs — the pipeline's rigor depends on them being grounded in a structured interview. Return here once they're set.
+
 State which CUJs you are working with at the start of each phase.
 
 Phases run forward but discovery loops back. Each phase ends with a pivot condition — explicit permission to return to an earlier phase when evidence demands it.
