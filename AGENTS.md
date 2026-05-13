@@ -16,6 +16,8 @@ Before implementing:
 - If something is unclear, stop. Name what's confusing. Ask.
 - If you're about to use an unfamiliar API or pattern, verify it exists — read the code, the docs, or grep the codebase first. Don't invent.
 
+**Grilling mode.** When the user says "grill me", "stress-test this", "interrogate my plan", or anything similar, and/or when you consider it appropriate, interview them one question at a time, walking each branch of the design tree and resolving dependencies between decisions one-by-one. For each question, propose options, highlight tradeoffs, recommend an answer, explain why. If a question can be answered by exploring the codebase, explore instead of asking.
+
 ## 2. Read Before You Write
 
 **Ground every action in actual code, not remembered code.**
@@ -85,10 +87,13 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **Name the phase before acting. Don't pick silently.**
 
-- **Defining** — fuzzy goal, no spec yet → run `grill-me`. Once grill-me converges, prompt the user to run `/to-prd`, then `/to-spec`, then `/to-issues`. For zero-to-one situations (no product exists yet, genuine market uncertainty), grill-me hands off automatically to `discover` before `/to-prd`. When a custom LLM harness is on the table, grill-me also hands off to `pick-harness-shape` to surface harness-shape decisions before `/to-spec`.
-- **Implementing** — spec is decided → run `tdd` for a single issue. For the full backlog, prompt the user to run `/run-afk-in-loop`, which works through unblocked AFK issues in parallel waves.
+- **Defining** — fuzzy goal, no spec yet → run `define`. Once define converges:
+  - **Zero-to-one with market uncertainty.** Prompt the user to run `/research-market` (forum + competitive evidence), `/ideate` (10 ranked one-pagers, user picks), `/judge-idea` (adversarial gate), then `/to-prd`, `/to-spec`, `/to-issues`.
+  - **Established space.** Prompt the user to run `/to-prd`, `/to-spec`, `/to-issues` directly.
+  - **Custom LLM harness on the table.** `define` also hands off to `pick-harness-shape` to surface harness-shape decisions before `/to-spec` (independent of which Defining path above was taken).
+- **Implementing** — spec is decided → run `test-driven-dev` for a single issue. For the full backlog, prompt the user to run `/run-afk-in-loop`, which works through unblocked AFK issues in parallel waves. When implementing UI, `ui-taste` fires automatically.
 - **Diagnosing** — something is broken or regressed → run `diagnose`.
-- **Shipping** — PR prep, review, cleanup → prompt the user to run `/review`.
+- **Shipping** — PR prep, review, cleanup → prompt the user to run `/review-pr`.
 
 Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
 
