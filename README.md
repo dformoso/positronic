@@ -53,7 +53,7 @@ Skills are organized by phase (per AGENTS.md §6). Invocation modes: `model-invo
 | `to-issues` | slash-only | defining | Break a plan into independently-grabbable GitHub issues; labels each `afk` or `hitl` |
 | `align-with-docs` | slash-only | defining | Reconcile a plan against the project's domain docs; update CONTEXT.md / ADRs inline |
 | `test-driven-dev` | model-invokable | implementing | Test-driven development with red-green-refactor |
-| `ui-taste` | model-invokable | implementing | Opinionated visual rules; fires on UI work; avoids the generic AI-look |
+| `ui-taste` | model-invokable | implementing | Opinionated visual rules; fires on UI work; avoids the generic, cookie-cutter look |
 | `run-afk-in-loop` | slash-only | implementing | Work through all unblocked AFK issues in parallel waves |
 | `diagnose` | model-invokable | diagnosing | Disciplined loop for hard bugs and performance regressions |
 | `review-pr` | slash-only | shipping | Review the current branch before it ships; flags must-fix and worth-noting items |
