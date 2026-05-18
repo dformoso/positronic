@@ -49,7 +49,7 @@ Ask the user:
 - Are the correct slices marked as HITL and AFK?
 - Is there a shape-establishing slice that others should mirror? If so, are the mirrors `Blocked by` it?
 
-Iterate until the user approves the breakdown.
+Iterate on user feedback.
 
 ### 5. Create the GitHub issues
 
