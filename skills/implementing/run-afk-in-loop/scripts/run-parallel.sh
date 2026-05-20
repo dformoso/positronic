@@ -32,6 +32,18 @@ mkdir -p "$LOGS_DIR"
 
 log() { echo "[run-parallel] $*"; }
 
+# Pre-flight: worktree commits will fail loudly mid-wave without identity.
+# Fail fast here with a clearer message than git's "Please tell me who you are".
+if [ "$AFK_WORKTREE" = "1" ]; then
+  if ! "$GIT_CMD" config user.email >/dev/null 2>&1 \
+     || ! "$GIT_CMD" config user.name  >/dev/null 2>&1; then
+    log "git user.name and user.email must be set before launching a wave."
+    log "Run: git config --global user.email \"you@example.com\""
+    log "     git config --global user.name  \"Your Name\""
+    exit 1
+  fi
+fi
+
 # Print unblocked open AFK issue numbers, one per line.
 get_unblocked() {
   local issues_json="$1"
@@ -44,7 +56,7 @@ get_unblocked() {
       local bs
       bs=$(echo "$issues_json" | jq -r --argjson b "$b" '.[] | select(.number == $b) | .state')
       [ "$bs" = "OPEN" ] && blocked=true && break
-    done < <(echo "$body" | grep -oE 'Blocked by #[0-9]+' | grep -oE '[0-9]+$' || true)
+    done < <(echo "$body" | grep -ioE 'Blocked by #[0-9]+' | grep -oE '[0-9]+$' || true)
     $blocked || echo "$num"
   done < <(echo "$issues_json" | \
     jq -r '.[] | select(.labels[].name == "afk" and .state == "OPEN") | .number')
@@ -59,7 +71,9 @@ integrate_issue() {
   local branch="afk/issue-${num}"
 
   if [ "$AFK_WORKTREE" != "1" ]; then
-    "$GH_CMD" issue close "$num" --comment "Completed by /run-afk-in-loop"
+    local head_sha
+    head_sha=$("$GIT_CMD" rev-parse HEAD 2>/dev/null || echo "")
+    "$GH_CMD" issue close "$num" --comment "Completed by /run-afk-in-loop${head_sha:+ in $head_sha}"
     return 0
   fi
 
@@ -77,7 +91,9 @@ integrate_issue() {
   fi
 
   if "$GIT_CMD" merge --no-ff --no-edit -m "Merge afk/issue-${num}: ${title}" "$branch" >/dev/null 2>&1; then
-    "$GH_CMD" issue close "$num" --comment "Completed by /run-afk-in-loop"
+    local merge_sha
+    merge_sha=$("$GIT_CMD" rev-parse HEAD)
+    "$GH_CMD" issue close "$num" --comment "Completed by /run-afk-in-loop in $merge_sha"
     local worktree_base worktree
     worktree_base="${WORKTREE_BASE:-$(dirname "$("$GIT_CMD" rev-parse --show-toplevel)")}"
     worktree="$worktree_base/wt-issue-${num}"
@@ -98,8 +114,13 @@ print_outcome() {
   case "$code" in
     0)  echo "Outcome: ✓ agent succeeded (marker present)" ;;
     2)  local reason
-        reason=$(grep -A1 '^=== AFK-RESULT: blocked ===$' "$log_file" 2>/dev/null \
-                 | tail -1 | sed 's/^Reason:[[:space:]]*//')
+        # Print the reason that follows the LAST blocked marker, in case the
+        # agent quoted the preamble (with placeholder text) earlier in its output.
+        reason=$(awk '
+          /^=== AFK-RESULT: blocked ===$/ { found=1; next }
+          found && /^Reason:/ { sub(/^Reason:[[:space:]]*/, ""); current=$0; found=0 }
+          END { print current }
+        ' "$log_file" 2>/dev/null)
         echo "Outcome: ⏸ blocked — ${reason:-<no reason given>}" ;;
     *)  echo "Outcome: ✗ failed (exit ${code}, no marker)" ;;
   esac
@@ -130,19 +151,63 @@ while true; do
     break
   fi
 
-  log "Wave: ${wave[*]}"
+  total_afk=$(echo "$issues_json" | jq '[.[] | select(.labels[].name == "afk")] | length')
+  done_afk=$(echo "$issues_json" | jq '[.[] | select(.labels[].name == "afk" and .state == "CLOSED")] | length')
+
+  spec_path=""; prd_path=""
+  [ -d specs ] && spec_path=$(ls specs/[0-9]*.md 2>/dev/null | sort -V | tail -1 || true)
+  [ -d prds ]  && prd_path=$(ls prds/[0-9]*.md  2>/dev/null | sort -V | tail -1 || true)
+
+  n=${#wave[@]}
+  log "Wave $((done_afk + 1))..$((done_afk + n))/$total_afk — $n issues:"
+  for num in "${wave[@]}"; do
+    title=$(echo "$issues_json" | jq -r --argjson n "$num" '.[] | select(.number == $n) | .title')
+    body=$(echo "$issues_json" | jq -r --argjson n "$num" '.[] | select(.number == $n) | .body // ""')
+    what=$(echo "$body"     | awk '/^## What to build/{f=1;next}/^## /{f=0}f && NF{print;exit}')
+    exemplar=$(echo "$body" | awk '/^## Exemplar to mirror/{f=1;next}/^## /{f=0}f && NF{print;exit}')
+    decisions=$(echo "$body"| awk '/^## Decisions taken/{f=1;next}/^## /{f=0}f && NF{print;exit}')
+    echo "  #${num} — ${title}"
+    [ -n "$what" ]      && echo "    What to build: ${what}"
+    [ -n "$exemplar" ]  && echo "    Exemplar to mirror: ${exemplar}"
+    [ -n "$decisions" ] && echo "    Decisions taken: ${decisions}"
+    if [ -n "$spec_path" ] || [ -n "$prd_path" ]; then
+      sep=""; [ -n "$spec_path" ] && [ -n "$prd_path" ] && sep=", "
+      echo "    Source documents: ${spec_path}${sep}${prd_path}"
+    fi
+  done
 
   declare -A num_to_title
   declare -A pid_to_num
   pids=()
+  first=1
   for num in "${wave[@]}"; do
     title=$(echo "$issues_json" | jq -r --argjson n "$num" '.[] | select(.number == $n) | .title')
     num_to_title["$num"]="$title"
+    # Stagger spawns to avoid a synchronized burst against the API.
+    [ "$first" = "1" ] && first=0 || sleep 0.3
     bash "$IMPL_SCRIPT" "$num" "$title" > "$LOGS_DIR/issue-${num}.log" 2>&1 &
     pid=$!
     pids+=("$pid")
     pid_to_num["$pid"]="$num"
   done
+
+  # Heartbeat: every 60s, name which wave issues are still running.
+  # Closes the AGENTS.md §7 "show progress for >2s ops" gap — without it the
+  # orchestrator goes silent for the duration of the slowest agent.
+  wave_started=$(date +%s)
+  (
+    while sleep 60; do
+      elapsed_min=$(( ($(date +%s) - wave_started) / 60 ))
+      still=""
+      for p in "${pids[@]}"; do
+        if kill -0 "$p" 2>/dev/null; then
+          still+="${still:+ }#${pid_to_num[$p]}"
+        fi
+      done
+      [ -n "$still" ] && echo "[run-parallel] still running (${elapsed_min}m elapsed): $still"
+    done
+  ) &
+  hb_pid=$!
 
   declare -A num_to_exit
   for pid in "${pids[@]}"; do
@@ -152,6 +217,9 @@ while true; do
     set -e
     num_to_exit["${pid_to_num[$pid]}"]=$code
   done
+
+  kill "$hb_pid" 2>/dev/null || true
+  wait "$hb_pid" 2>/dev/null || true
 
   marks=()
   for num in "${wave[@]}"; do

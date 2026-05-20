@@ -12,7 +12,7 @@ Run it on any prompt: a system prompt, an agent's instructions, a SKILL.md body,
 
 ## Inputs
 
-- The prompt file (or files) being audited
+- The prompt file (or files) being audited. **MCP tool descriptions also count** — agents pick tools from them, and clients increasingly embed them for semantic search
 - If the prompt mentions tools or an output format, the place those are defined in the surrounding code
 
 If the surrounding code can't be located, audit clarity and stale references only and say so in the report.
@@ -56,6 +56,16 @@ When the prompt asks for structured output (JSON, an envelope, named sections):
 - Every field the prompt mentions should be consumed somewhere (or marked optional).
 - Examples should use the exact field names the parser expects.
 
+### 5. If auditing MCP tool descriptions, do they pull their weight as embedding targets?
+
+Clients increasingly pick tools via semantic search over `f"{tool.name}: {tool.description}"`. The four checks above all apply, plus:
+
+- **Concrete domain nouns beat generic verbs.** "Get GitHub pull request details" matches a search for "github pull request" much closer than "Use this tool to retrieve information about pull requests".
+- **Tool name `[a-z0-9_]+`; never embed the server name.** Clients namespace as `${server}_${tool}`; hyphens and unicode get sanitized to `_`. `weather_today` inside the `weather` server becomes `weather_weather_today`.
+- **Annotations are policy.** `readOnlyHint`, `idempotentHint`, `destructiveHint`, `openWorldHint` drive client security gating — omitting them gets the spec's worst-case defaults.
+
+See `docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation.
+
 ## Report
 
 Output one review with these sections — write "none" for any empty section, no filler:
@@ -64,3 +74,4 @@ Output one review with these sections — write "none" for any empty section, no
 - **Stale references** — prompt mentions of things that no longer exist in the code.
 - **Tool drift** — tools in the prompt but not the code, or vice versa.
 - **Output drift** — fields the parser reads but the prompt doesn't describe, or vice versa.
+- **MCP description quality** (when auditing tool descriptions) — vague descriptions, embedded server names, missing annotations.

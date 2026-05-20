@@ -31,6 +31,7 @@ Read every changed file in full. For each, check against the AGENTS.md principle
 - **Dead imports/variables** — orphans left by the change that weren't cleaned up.
 - **Private-API reach** — flag any access to underscore-prefixed attributes across module boundaries. If a public surface needs the data, the underscore reach is a bug-in-waiting and the deepening opportunity should go to `/deepen-modules`.
 - **User-facing reliability** — for new >2s operations, confirm a progress signal is shown; for new external calls, confirm failure paths map to actionable messages, not raw exception strings. AGENTS.md §7.
+- **MCP-server changes** — if the diff adds or modifies an MCP tool / resource / prompt: `inputSchema` is the public contract (single-type fields, `description` per property, `enum`/`pattern` where the domain is finite, no `oneOf`/`anyOf` discriminators); tool name `[a-z0-9_]+` with no embedded server name; failures wrap as `CallToolResult(isError=True, content=[TextContent(...)])` — never thrown; `annotations` set (`readOnlyHint`, `idempotentHint`, `destructiveHint`, `openWorldHint`); capabilities advertised match what's implemented; `tools/list_changed` emitted on mutation; schemas validated at server startup. See `docs/agentic-patterns/06_mcp_design_brief.md`.
 - **Trace-to-task** — every changed line traces to a sentence in the user's request. Pre-existing dirty state (files modified before the session started) gets surfaced explicitly — never quietly bundled.
 
 ### 2a. Coverage check (for cross-surface or removal diffs)

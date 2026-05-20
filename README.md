@@ -29,11 +29,11 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet.
 2. **`define` picks the route based on what it heard:**
    - **Zero-to-one with market uncertainty** → it prompts `/research-market` (forum + competitive evidence into `research/`) → `/ideate` (ten ranked one-pagers, you pick) → `/judge-idea` (adversarial gate; verdict is proceed, loop-back, or pivot) → `/to-prd`.
    - **Established space** → it prompts `/to-prd` directly; the research arc is skipped.
-3. **If a custom LLM harness is on the table**, `pick-harness-shape` fires before `/to-spec` and walks the load-bearing decisions (substrate, loop topology, memory, tool layer, gates) — biased toward off-the-shelf when one fits.
+3. **If a custom LLM harness is on the table**, `pick-harness-shape` fires before `/to-spec` and walks the load-bearing decisions (substrate, loop topology, memory, tool layer, gates) — biased toward off-the-shelf when one fits. When the tool layer means designing your own MCP server, `/design-mcp-server` walks the server-design decisions (transport, auth, schema discipline, error model, testing) — grounded in `docs/agentic-patterns/06_mcp_design_brief.md`.
 4. **`/to-spec`** synthesizes the PRD plus harness decisions into a versioned implementation SPEC in `specs/`. **`/align-with-docs`** is an optional detour to reconcile the plan against project domain docs (CONTEXT.md, ADRs).
 5. **`/to-issues`** breaks the SPEC into independently-grabbable GitHub issues, labeling each `afk` (Claude can do it solo) or `hitl` (needs you in the loop).
 6. **`/run-afk-in-loop`** works through unblocked `afk` issues in parallel waves. Each issue runs through `test-driven-dev`, which auto-fires on implementation work. UI work also triggers `ui-taste`; bugs during implementation auto-fire `diagnose`.
-7. **`/review-pr`** before the branch ships — flags must-fix and worth-noting items. `/audit-prompt` if the change touched an LLM agent prompt.
+7. **`/review-pr`** before the branch ships — flags must-fix and worth-noting items. `/audit-prompt` for changes to LLM agent prompts or MCP tool descriptions. `/audit-docs` for projects with versioned PRDs/SPECs/ADRs — detects drift across the doc graph (glossary, dead cross-references, ADRs overtaken by the latest SPEC, orphan ADRs).
 
 Skip steps when the phase is already clear: a bug report drops straight into `diagnose`; a known-good plan can jump to `/to-spec`; a finished branch can go right to `/review-pr`.
 
@@ -45,6 +45,7 @@ Skills are organized by phase (per AGENTS.md §6). Invocation modes: `model-invo
 | --- | --- | --- | --- |
 | `define` | model-invokable | defining | Defining-phase orchestrator — surfaces assumptions, frames a falsifiable hypothesis, routes to the right pre-PRD path |
 | `pick-harness-shape` | model-invokable | defining | Pick the harness shape for an LLM/agent system — custom when genuinely useful, off-the-shelf otherwise |
+| `design-mcp-server` | slash-only | defining | Walk the design decisions for a new MCP server — transport, auth, tool surface, schema discipline, state model, error model, testing |
 | `research-market` | slash-only | defining | Mine forums + competitive landscape into a versioned `research/` artifact |
 | `ideate` | slash-only | defining | Generate, rank, and pick a product idea grounded in `research/` |
 | `judge-idea` | slash-only | defining | Adversarial pass on a winner / PRD / SPEC; verdict is proceed, loop-back, or pivot |
@@ -57,7 +58,8 @@ Skills are organized by phase (per AGENTS.md §6). Invocation modes: `model-invo
 | `run-afk-in-loop` | slash-only | implementing | Work through all unblocked AFK issues in parallel waves |
 | `diagnose` | model-invokable | diagnosing | Disciplined loop for hard bugs and performance regressions |
 | `review-pr` | slash-only | shipping | Review the current branch before it ships; flags must-fix and worth-noting items |
-| `audit-prompt` | slash-only | shipping | Audit an LLM agent prompt for tool-catalogue coverage, dead references, and rule sharpness |
+| `audit-docs` | slash-only | shipping | Audit the project's doc graph (PRDs/SPECs/ADRs/CONTEXT.md) for drift; reports must-fix and worth-noting |
+| `audit-prompt` | slash-only | shipping | Audit an LLM agent prompt (or MCP tool descriptions) for tool-catalogue coverage, dead references, and rule sharpness |
 | `add-a-skill` | slash-only | meta | Create new agent skills with proper structure |
 | `github-triage` | slash-only | meta | Triage GitHub issues through a label-based state machine |
 | `deepen-modules` | slash-only | meta | Find shallow modules and propose how to deepen them |

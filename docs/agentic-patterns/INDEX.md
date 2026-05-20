@@ -1,8 +1,8 @@
 # Frontier Documents Index
 
-Two versions of each document: a 2-page **brief** and a longer **detailed** version. All ranking and tradeoffs are based on a 2024-2026 review of 54 papers.
+A 2-page **brief** for each topic; older topics (1–5) also have a longer **detailed** companion. Topics 1–5 are based on a 2024-2026 review of 54 papers; topic 6 is grounded in a 2026 cross-cut of five popular MCP-consuming agent frameworks.
 
-## The five topics
+## The topics
 
 | # | Topic | Brief | Detailed |
 |---|-------|-------|----------|
@@ -11,6 +11,7 @@ Two versions of each document: a 2-page **brief** and a longer **detailed** vers
 | 3 | Context Management & Memory | [Brief](03_context_management_brief.md) | [Detailed](03_context_management_detailed.md) |
 | 4 | Prompt Management & Optimization | [Brief](04_prompt_management_brief.md) | [Detailed](04_prompt_management_detailed.md) |
 | 5 | Harness Architectures | [Brief](05_harness_architectures_brief.md) | [Detailed](05_harness_architectures_detailed.md) |
+| 6 | MCP Server Design | [Brief](06_mcp_design_brief.md) | — |
 
 ## Reading order suggestions
 

@@ -114,15 +114,31 @@ done
 
 # ── parse the AFK-RESULT marker ───────────────────────────────────────────────
 
-if echo "$output" | grep -q "^=== AFK-RESULT: success ===$"; then
+last_marker=$(printf '%s\n' "$output" | grep -E '^=== AFK-RESULT: (success|blocked) ===$' | tail -1)
+
+if [ "$last_marker" = "=== AFK-RESULT: success ===" ]; then
+  # Verify the agent committed its work. A "success" marker with a dirty
+  # worktree almost always means the agent edited files but skipped
+  # `git commit` — the integrate step would fail confusingly later.
+  # Downgrade to blocked here with a reason the parser will surface.
+  if [ "$AFK_WORKTREE" = "1" ] \
+     && [ -n "$("$GIT_CMD" -C "$run_dir" status --porcelain 2>/dev/null)" ]; then
+    log "#${NUM}: success marker present but worktree has uncommitted changes — downgrading to blocked"
+    echo "=== AFK-RESULT: blocked ==="
+    echo "Reason: agent reported success but left uncommitted changes in the worktree (likely skipped git commit)"
+    exit 2
+  fi
   log "#${NUM}: success marker present — branch ${branch} ready for merge"
   exit 0
 fi
 
-if echo "$output" | grep -q "^=== AFK-RESULT: blocked ===$"; then
-  reason=$(echo "$output" | awk '
+if [ "$last_marker" = "=== AFK-RESULT: blocked ===" ]; then
+  # Track every (marker, reason) pair and print the LAST reason — so a quoted
+  # preamble with placeholder text doesn't shadow the real blocker.
+  reason=$(printf '%s\n' "$output" | awk '
     /^=== AFK-RESULT: blocked ===$/ { found=1; next }
-    found && /^Reason:/ { sub(/^Reason:[[:space:]]*/, ""); print; exit }
+    found && /^Reason:/ { sub(/^Reason:[[:space:]]*/, ""); current=$0; found=0 }
+    END { print current }
   ')
   log "#${NUM}: blocked — ${reason:-<no reason given>}"
   exit 2

@@ -241,6 +241,111 @@ gh8=$(make_gh "$BODY_JSON" "$close_log8")
 ) && ok "worktree mode: succeeds even with stale worktree path" \
   || fail "worktree mode: succeeds even with stale worktree path"
 
+# ── test 10: quoted preamble does not shadow a real blocked outcome ───────────
+# Agent quotes the preamble (with `success` template) early in its output, then
+# emits a real `blocked` marker at the end. Expect exit 2.
+
+close_log10="$tmp/close10.log"; touch "$close_log10"
+claude_quoted_success=$(make_claude 0 \
+  "Per the preamble, the success format is:" \
+  "=== AFK-RESULT: success ===" \
+  "Files: <list>" \
+  "Tests: <command>" \
+  "Commit: <sha>" \
+  "(end of quoted template)" \
+  "Actually I cannot proceed because dependency foo is missing." \
+  "=== AFK-RESULT: blocked ===" \
+  "Reason: missing dependency foo")
+gh10=$(make_gh "$BODY_JSON" "$close_log10")
+
+set +e
+CLAUDE_CMD="$claude_quoted_success" GH_CMD="$gh10" run_impl 42 "Add login" >/dev/null 2>&1
+quoted_exit=$?
+set -e
+
+[ "$quoted_exit" -eq 2 ] \
+  && ok "quoted-success preamble does not shadow real blocked marker (got $quoted_exit)" \
+  || fail "quoted-success preamble does not shadow real blocked marker (got $quoted_exit)"
+
+[ ! -s "$close_log10" ] \
+  && ok "does not close issue when real outcome is blocked" \
+  || fail "does not close issue when real outcome is blocked"
+
+# ── test 11: reason extraction picks the LAST blocked marker's reason ─────────
+# Agent quotes the preamble (with placeholder `Reason:` line), then emits a real
+# blocked marker with the real reason. The log line must contain the real reason.
+
+log_capture="$tmp/log11.txt"
+claude_quoted_reason=$(make_claude 0 \
+  "Per the preamble, the blocked format is:" \
+  "=== AFK-RESULT: blocked ===" \
+  "Reason: <one sentence describing what is missing or contradictory>" \
+  "(end of quoted template)" \
+  "=== AFK-RESULT: blocked ===" \
+  "Reason: real blocker is the missing schema migration")
+gh11=$(make_gh "$BODY_JSON" "$tmp/close11.log")
+
+set +e
+CLAUDE_CMD="$claude_quoted_reason" GH_CMD="$gh11" run_impl 42 "Add login" >"$log_capture" 2>&1
+reason_exit=$?
+set -e
+
+[ "$reason_exit" -eq 2 ] \
+  && ok "exits 2 when last marker is blocked even after quoted preamble" \
+  || fail "exits 2 when last marker is blocked even after quoted preamble"
+
+grep -q "missing schema migration" "$log_capture" \
+  && ok "reason extraction picks the real reason, not the placeholder" \
+  || fail "reason extraction picks the real reason, not the placeholder"
+
+# ── test 12: success marker with uncommitted changes downgrades to blocked ────
+# Agent edits files but skips `git commit`, then claims success. Orchestrator
+# catches the dirty worktree and downgrades — otherwise the merge step would
+# fail confusingly later.
+
+repo12="$tmp/repo12"
+git init -q "$repo12"
+(
+  cd "$repo12"
+  git config user.email "test@test"; git config user.name "Test"
+  echo "initial" > README.md
+  git add README.md
+  git commit -q -m "initial"
+)
+
+cat > "$tmp/claude_no_commit" <<EOF
+#!/usr/bin/env bash
+echo "doing work"
+echo "feature" > feature.txt
+git add feature.txt
+# Intentionally no \`git commit\` — this is the bug being detected.
+echo "=== AFK-RESULT: success ==="
+echo "Files: feature.txt"; echo "Tests: pass"; echo "Commit: <skipped>"
+exit 0
+EOF
+chmod +x "$tmp/claude_no_commit"
+
+gh12=$(make_gh "$BODY_JSON" "$tmp/close12.log")
+log12="$tmp/log12.txt"
+
+set +e
+(
+  cd "$repo12"
+  AFK_WORKTREE=1 CLAUDE_CMD="$tmp/claude_no_commit" GH_CMD="$gh12" \
+    MAX_ATTEMPTS=1 RETRY_WAIT_SECONDS=0 \
+    bash "$IMPL_SCRIPT" 100 "feature" >"$log12" 2>&1
+)
+no_commit_exit=$?
+set -e
+
+[ "$no_commit_exit" -eq 2 ] \
+  && ok "downgrades success-with-dirty-worktree to blocked (got $no_commit_exit)" \
+  || fail "downgrades success-with-dirty-worktree to blocked (got $no_commit_exit)"
+
+grep -q "uncommitted changes" "$log12" \
+  && ok "log explains the downgrade reason" \
+  || fail "log explains the downgrade reason"
+
 # ── summary ───────────────────────────────────────────────────────────────────
 
 echo ""

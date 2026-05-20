@@ -4,6 +4,7 @@
   "skills": [
     "./skills/defining/define",
     "./skills/defining/pick-harness-shape",
+    "./skills/defining/design-mcp-server",
     "./skills/defining/research-market",
     "./skills/defining/ideate",
     "./skills/defining/judge-idea",
@@ -16,6 +17,7 @@
     "./skills/implementing/run-afk-in-loop",
     "./skills/diagnosing/diagnose",
     "./skills/shipping/review-pr",
+    "./skills/shipping/audit-docs",
     "./skills/shipping/audit-prompt",
     "./skills/meta/add-a-skill",
     "./skills/meta/github-triage",

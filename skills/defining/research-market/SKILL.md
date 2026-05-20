@@ -23,7 +23,11 @@ The problem space, segments, and pain hypotheses defined in `define` (in-context
    - **Saturation.** Last 10 sources added no new themes.
    - **Diversity.** ≥3 distinct platforms or persona segments sampled.
 
-   For non-deterministic content (forums), prefer recent + high-engagement threads. Save raw fetched content under `research/<run-id>/raw/<source>-<n>.txt` for reproducibility. **On first run, append `research/*/raw/` to `.gitignore`** — raw content is regenerable and carries ToS risk if redistributed.
+   For non-deterministic content (forums), prefer recent + high-engagement threads. Save raw fetched content under `research/<run-id>/raw/<source>-<n>.txt` for reproducibility.
+
+   **Optional URL cleanup.** Before saving article-shaped pages, check `which defuddle 2>/dev/null`. If installed, run `defuddle <url>` and save that output instead of the raw `WebFetch` markdown — strips ads, nav, and footers; typically saves 40–60% tokens. Fall back silently to `WebFetch` if missing. Install: `npm install -g defuddle` (the old `defuddle-cli` package was merged into `defuddle`). Skip defuddle for non-article sources (forum threads, app-store reviews) — it can over-trim.
+
+   **On first run, append `research/*/raw/` to `.gitignore`** — raw content is regenerable and carries ToS risk if redistributed.
 
 4. **Synthesize.** Cluster observations into themes. For each theme, capture:
    - The pain itself (one sentence)

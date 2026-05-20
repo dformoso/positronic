@@ -61,7 +61,7 @@ Compaction policy: when does context get summarized vs. truncated? Pick one and 
 Five well-designed tools beat fifty. Decide:
 
 - Rough tool count and boundaries
-- MCP server vs. custom
+- MCP server vs. custom — if MCP, prompt the user to run `/design-mcp-server` next to walk transport, auth, tool surface, schema discipline, error model, and testing strategy. See `docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation
 - For each tool: what shape does the *agent* see (not the human)?
 - Permission scope per tool
 - Idempotency

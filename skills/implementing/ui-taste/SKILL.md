@@ -9,6 +9,16 @@ Opinionated visual rules. Apply them when you write or change UI. If three or mo
 
 These rules are safe defaults, not laws. Break them when you have a reason; surface the reason.
 
+## Before you start
+
+Name three things before generating a new surface or restyling a page:
+
+- **Who.** The actual user — not "users." A teacher at 7am is not a developer debugging at midnight.
+- **Feel.** In specific words. "Warm like a notebook," "cold like a terminal," "dense like a trading floor." Never "clean and modern" — every AI says that.
+- **Signature.** One element — visual, structural, or interactive — that could only exist for THIS product. If you can't name one, you haven't designed yet.
+
+Skip for isolated tweaks (one button colour, a typo) where the direction is already set.
+
 ## 1. One primary thing per surface
 
 Every screen has one job. Establish the primary element with size, weight, and contrast — not just colour. Demote everything else. If two buttons look equal, neither is primary.
@@ -36,7 +46,7 @@ Uniform spacing is the #1 tell of generic UI. Vary it deliberately.
 One font for body, optionally one for display. System font stacks are fine — most users won't notice, and you skip a network request.
 
 - Body text ≥ 16px. Body line-height ~1.5. Heading line-height ~1.2.
-- Line length 45–75 characters. Wider than 80 and the eye loses the next line.
+- Line length 45–75 characters — use `max-width: 65ch` as a default. Wider than 80 and the eye loses the next line.
 - Four type sizes covers almost any interface. Five is already a smell.
 
 ## 6. Colour is a system, not picks
@@ -115,5 +125,8 @@ Skim the screen and look for these tells. Each one is a deduction:
 - No empty state, no error state, no loading state.
 - Decorative emoji or icons that don't carry meaning.
 - Tooltips containing essential information.
+- Swap test fails — replace the typeface or colour for the obvious alternative; if no one would notice, you defaulted.
+- Squint and the hierarchy collapses, or borders and colours jump out harshly.
+- Four cards in a row, all identical — same icon position, number style, trend treatment.
 
 Three or more = generic. Fix the worst before anything else.

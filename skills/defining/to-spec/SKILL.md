@@ -74,6 +74,20 @@ Nodes + edges. For each node: input, output, LLM-or-not, retry policy, idempoten
 
 For each tool: name, MCP / custom, the shape the *agent* sees (not the human), idempotency, permission scope. Five well-designed tools beat fifty.
 
+If the SPEC is for an MCP **server** (you're producing tools other agents consume), the entry also locks down the public-API contract:
+
+| Field | What to lock down |
+|---|---|
+| `name` | `[a-z0-9_]+`; verb_noun; never embed the server name (clients namespace as `${server}_${tool}`) |
+| `description` | Embedding target — clients pick tools via semantic search. Concrete domain nouns beat generic "use this to..." |
+| `inputSchema` | Single-type fields, `description` per property, `enum`/`pattern` where the domain is finite. Avoid `oneOf`/`anyOf` discriminators |
+| `outputSchema` | Publish it. Lets agents chain tools |
+| Return shape | `structuredContent` *consistently* — always when `outputSchema` is declared, or never |
+| `annotations` | All four: `readOnlyHint`, `idempotentHint`, `destructiveHint`, `openWorldHint` |
+| Failure mode | `CallToolResult(isError=True, content=[TextContent(...)])`. No throwing |
+
+For the empirical foundation and per-decision tradeoffs, see `docs/agentic-patterns/06_mcp_design_brief.md`. If the server hasn't been designed yet, run `/design-mcp-server` first.
+
 ## Memory & state
 
 What persists across calls. Compaction policy. Episodic / semantic / procedural split (only if more than one is needed).
