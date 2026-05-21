@@ -1,7 +1,6 @@
 ---
 name: design-mcp-server
 description: Walk the design decisions for a new MCP (Model Context Protocol) server before any code is written. Covers transport, auth, tool-surface shape, schema discipline, state model, capability declaration, error model, annotations, and testing. Use when the user is designing an MCP server — not consuming one.
-disable-model-invocation: true
 ---
 
 You are picking the design for a new MCP server. The schema is the contract — no client will validate args for you. Pick deliberately.

@@ -29,7 +29,7 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet.
 2. **`define` picks the route based on what it heard:**
    - **Zero-to-one with market uncertainty** → it prompts `/research-market` (forum + competitive evidence into `research/`) → `/ideate` (ten ranked one-pagers, you pick) → `/judge-idea` (adversarial gate; verdict is proceed, loop-back, or pivot) → `/to-prd`.
    - **Established space** → it prompts `/to-prd` directly; the research arc is skipped.
-3. **If a custom LLM harness is on the table**, `pick-harness-shape` fires before `/to-spec` and walks the load-bearing decisions (substrate, loop topology, memory, tool layer, gates) — biased toward off-the-shelf when one fits. When the tool layer means designing your own MCP server, `/design-mcp-server` walks the server-design decisions (transport, auth, schema discipline, error model, testing) — grounded in `docs/agentic-patterns/06_mcp_design_brief.md`.
+3. **If a custom LLM harness is on the table**, `pick-harness-shape` fires before `/to-spec` and walks the load-bearing decisions (substrate, loop topology, memory, tool layer, gates) — biased toward off-the-shelf when one fits. When the tool layer means designing your own MCP server, `design-mcp-server` walks the server-design decisions (transport, auth, schema discipline, error model, testing) — grounded in `docs/agentic-patterns/06_mcp_design_brief.md`.
 4. **`/to-spec`** synthesizes the PRD plus harness decisions into a versioned implementation SPEC in `specs/`. **`/align-with-docs`** is an optional detour to reconcile the plan against project domain docs (CONTEXT.md, ADRs).
 5. **`/to-issues`** breaks the SPEC into independently-grabbable GitHub issues, labeling each `afk` (Claude can do it solo) or `hitl` (needs you in the loop).
 6. **`/run-afk-in-loop`** works through unblocked `afk` issues in parallel waves. Each issue runs through `test-driven-dev`, which auto-fires on implementation work. UI work also triggers `ui-taste`; bugs during implementation auto-fire `diagnose`.
@@ -45,7 +45,7 @@ Skills are organized by phase (per AGENTS.md §6). Invocation modes: `model-invo
 | --- | --- | --- | --- |
 | `define` | model-invokable | defining | Defining-phase orchestrator — surfaces assumptions, frames a falsifiable hypothesis, routes to the right pre-PRD path |
 | `pick-harness-shape` | model-invokable | defining | Pick the harness shape for an LLM/agent system — custom when genuinely useful, off-the-shelf otherwise |
-| `design-mcp-server` | slash-only | defining | Walk the design decisions for a new MCP server — transport, auth, tool surface, schema discipline, state model, error model, testing |
+| `design-mcp-server` | model-invokable | defining | Walk the design decisions for a new MCP server — transport, auth, tool surface, schema discipline, state model, error model, testing |
 | `research-market` | slash-only | defining | Mine forums + competitive landscape into a versioned `research/` artifact |
 | `ideate` | slash-only | defining | Generate, rank, and pick a product idea grounded in `research/` |
 | `judge-idea` | slash-only | defining | Adversarial pass on a winner / PRD / SPEC; verdict is proceed, loop-back, or pivot |
