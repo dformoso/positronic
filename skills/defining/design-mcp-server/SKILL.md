@@ -52,6 +52,7 @@ Without metadata discovery, every consumer hand-configures `authorization_server
 Five well-designed tools beat fifty. Decide:
 
 - **Rough count and boundaries.** Each tool maps to a single user-meaningful action.
+- **Anti-pattern: proxying an API 1:1.** Thirty CRM endpoints don't become thirty tools; they collapse into five-to-seven workflow tools (`create_lead_with_contact`, not `create_contact` + `create_lead` + `link_contact_to_lead`). Each tool description costs context on every call, and 1:1 proxies force the LLM to compose multi-step plans for what should be one call. If you're naming tools after the underlying API's resources and verbs, stop and re-design around what the agent is trying to accomplish.
 - **Naming.** `[a-z0-9_]+`. Verb_noun ordering (`pull_request_create`, not `create`). Never embed the server name (clients namespace as `${server}_${tool}` — a tool named `weather_today` inside the `weather` server becomes `weather_weather_today`).
 - **Description.** Treat as embedding target, not boilerplate. mcp-use's server-manager mode picks tools via cosine similarity over `f"{tool.name}: {tool.description}"`. "Use this tool to do X" matches further from "github pull request" than "Get GitHub pull request details".
 

@@ -58,6 +58,8 @@ Substrate, topology, memory, tool layer, gate strategy. One paragraph max. Cite 
 
 For each module: name, responsibility, interface (inputs / outputs), depth (deep vs shallow). Look for opportunities to extract deep modules that can be tested in isolation.
 
+**Anti-pattern: one module per data type or REST resource.** `users/`, `orders/`, `products/` is a shallow-module trap — each becomes a CRUD passthrough with no real behavior, and every workflow has to coordinate across all of them. Group by domain function instead (`checkout/`, `billing/`, `reconciliation/`) — each owns multiple data types internally and exposes a small interface that does meaningful work. If a module's name is a noun lifted from your schema, suspect it.
+
 ## Data model / schema
 
 Tables, fields, constraints, relationships. Include only fields that change behavior — skip filler.
