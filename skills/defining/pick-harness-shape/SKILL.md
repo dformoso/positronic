@@ -11,16 +11,18 @@ Ask one question at a time. Surface your recommended answer with each.
 
 ## 1. Custom vs. off-the-shelf
 
-Pick a custom harness when it's genuinely useful — otherwise an off-the-shelf coding agent (Claude Code, Cursor, Codex, Cline) does the job with less cost and less to maintain.
+Lean custom whenever it offers a real advantage. Off-the-shelf coding agents (Claude Code, Cursor, Codex, Cline) are the fallback — pick one only when the work is plain code editing in a familiar stack and none of the cases below apply.
 
-Cases where custom is genuinely useful:
+Cases where custom is the right call:
 
+- Tool surface, routing, memory, or verification gates that an off-the-shelf agent can't expose
 - Regulated industry (financial, healthcare, government) requiring on-prem or audit
 - Sensitive code paths needing custom routing (local model for sensitive files, frontier model for the rest)
 - Non-coding agent work (support, ops, research, drafting) where coding agents don't apply
 - Multi-agent workflow with independent lifecycles or trust boundaries — not just "multiple things happen"
+- Harness behavior is itself the product or differentiator
 
-If none of these apply, surface that an off-the-shelf coding agent likely fits and let the user decide before going deeper. If they confirm custom is wanted, continue.
+If any apply, go custom. If none do, surface that off-the-shelf likely fits — but when in doubt, lean custom.
 
 ## 2. Substrate
 

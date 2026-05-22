@@ -77,6 +77,8 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+**No shortcuts.** Within scope, pick the best approach — not the easiest to implement. Don't suppress errors, mock around real problems, pick an inferior API because the better one is harder, leave TODOs, or bypass type/lint/test gates to "get green." If the best approach is genuinely too expensive, stop and surface the tradeoff — don't silently downgrade.
+
 **Stopping.** If the path isn't working:
 
 - If the same approach fails twice, stop. Surface the obstacle. Don't keep trying variations.
@@ -90,7 +92,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **Defining** — fuzzy goal, no spec yet → run `define`. Once define converges:
   - **Zero-to-one with market uncertainty.** Prompt the user to run `/research-market` (forum + competitive evidence), `/ideate` (10 ranked one-pagers, user picks), `/judge-idea` (adversarial gate), then `/to-prd`, `/to-spec`, `/to-issues`.
   - **Established space.** Prompt the user to run `/to-prd`, `/to-spec`, `/to-issues` directly.
-  - **Custom LLM harness on the table.** `define` also hands off to `pick-harness-shape` to surface harness-shape decisions before `/to-spec` (independent of which Defining path above was taken).
+  - **Custom LLM harness on the table.** Default to custom whenever it offers a real advantage — off-the-shelf is the fallback. `define` hands off to `pick-harness-shape` to walk substrate, topology, memory, tools, and gates.
 - **Implementing** — spec is decided → run `test-driven-dev` for a single issue. For the full backlog, prompt the user to run `/run-afk-in-loop`, which works through unblocked AFK issues in parallel waves. When implementing UI, `ui-taste` fires automatically.
 - **Diagnosing** — something is broken or regressed → run `diagnose`.
 - **Shipping** — PR prep, review, cleanup → prompt the user to run `/review-pr`. For projects with PRDs/SPECs/ADRs, also prompt `/audit-docs` to surface doc drift.
