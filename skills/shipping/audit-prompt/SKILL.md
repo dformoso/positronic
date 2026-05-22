@@ -64,7 +64,7 @@ Clients increasingly pick tools via semantic search over `f"{tool.name}: {tool.d
 - **Tool name `[a-z0-9_]+`; never embed the server name.** Clients namespace as `${server}_${tool}`; hyphens and unicode get sanitized to `_`. `weather_today` inside the `weather` server becomes `weather_weather_today`.
 - **Annotations are policy.** `readOnlyHint`, `idempotentHint`, `destructiveHint`, `openWorldHint` drive client security gating — omitting them gets the spec's worst-case defaults.
 
-See `docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation.
+See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation.
 
 ## Report
 

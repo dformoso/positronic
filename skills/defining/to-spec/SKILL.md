@@ -52,7 +52,7 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 ## Harness shape
 
-Substrate, topology, memory, tool layer, gate strategy. One paragraph max. Cite which named patterns from `docs/agentic-patterns/` were chosen.
+Substrate, topology, memory, tool layer, gate strategy. One paragraph max. Cite which named patterns from `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` were chosen.
 
 ## Modules & interfaces
 
@@ -88,7 +88,7 @@ If the SPEC is for an MCP **server** (you're producing tools other agents consum
 | `annotations` | All four: `readOnlyHint`, `idempotentHint`, `destructiveHint`, `openWorldHint` |
 | Failure mode | `CallToolResult(isError=True, content=[TextContent(...)])`. No throwing |
 
-For the empirical foundation and per-decision tradeoffs, see `docs/agentic-patterns/06_mcp_design_brief.md`. If the server hasn't been designed yet, invoke `design-mcp-server` first.
+For the empirical foundation and per-decision tradeoffs, see `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/06_mcp_design_brief.md`. If the server hasn't been designed yet, invoke `design-mcp-server` first.
 
 ## Memory & state
 

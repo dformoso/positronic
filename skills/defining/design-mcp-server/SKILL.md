@@ -5,7 +5,7 @@ description: Walk the design decisions for a new MCP (Model Context Protocol) se
 
 You are picking the design for a new MCP server. The schema is the contract — no client will validate args for you. Pick deliberately.
 
-Reference: `docs/agentic-patterns/06_mcp_design_brief.md` carries the empirical foundation, cross-cut from 5 popular agent frameworks (mastra, langgraph, pydantic-ai, mcp-use, mcp-agent). Cite ranked techniques as you make recommendations.
+Reference: `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/06_mcp_design_brief.md` carries the empirical foundation, cross-cut from 5 popular agent frameworks (mastra, langgraph, pydantic-ai, mcp-use, mcp-agent). Cite ranked techniques as you make recommendations.
 
 Ask one question at a time. Surface your recommended answer with each.
 

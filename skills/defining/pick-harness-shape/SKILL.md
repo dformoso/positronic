@@ -5,7 +5,7 @@ description: Pick the harness shape for a custom LLM/agent system. Invoked by de
 
 You are picking the harness shape for a custom LLM/agent system. The harness is the runtime stack around the LLM: tool dispatch, scheduling, memory, verification gates. Harness changes alone can swing benchmark scores 6× on the same model — these decisions are load-bearing.
 
-Reference: `docs/agentic-patterns/` carries the empirical foundation. Cite the named pattern and its evidence as you make recommendations. Pull the relevant brief for each section below.
+Reference: `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` carries the empirical foundation. Cite the named pattern and its evidence as you make recommendations. Pull the relevant brief for each section below.
 
 Ask one question at a time. Surface your recommended answer with each.
 
@@ -32,7 +32,7 @@ If none of these apply, surface that an off-the-shelf coding agent likely fits a
 | smolagents | Lightweight, hackable; research-grade |
 | Fork existing harness (pi.dev, OpenClaw) | Cross-provider routing; on-prem; multi-tenant |
 
-Default to the SDK matching the provider already in use. Forking is for genuinely cross-provider or regulated cases. (See `docs/agentic-patterns/01_harness_engineering_brief.md`.)
+Default to the SDK matching the provider already in use. Forking is for genuinely cross-provider or regulated cases. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/01_harness_engineering_brief.md`.)
 
 ## 3. Loop topology
 
@@ -44,7 +44,7 @@ Default to the SDK matching the provider already in use. Forking is for genuinel
 | Multi-agent (orchestrator / hub-and-spoke) | Workflow obviously decomposes into specialists with non-overlapping responsibilities AND distinct lifecycles or trust boundaries |
 | Multi-agent (peer-to-peer / A2A) | Cross-org agents in separate runtimes |
 
-Hard pushback on multi-agent: a single agent with multiple tools handles "multiple things" without coordination overhead. Demand a real decomposition reason — independent lifecycles, trust boundaries, or parallelism gain >2×. (See `docs/agentic-patterns/05_harness_architectures_brief.md` and `02_role_design_brief.md`.)
+Hard pushback on multi-agent: a single agent with multiple tools handles "multiple things" without coordination overhead. Demand a real decomposition reason — independent lifecycles, trust boundaries, or parallelism gain >2×. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/05_harness_architectures_brief.md` and `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/02_role_design_brief.md`.)
 
 ## 4. Memory & state
 
@@ -54,19 +54,19 @@ Hard pushback on multi-agent: a single agent with multiple tools handles "multip
 - **Hierarchical / virtual context** (MemGPT-style) — survives unbounded sessions.
 - **Episodic + semantic + procedural split** — only when more than one type is genuinely needed.
 
-Compaction policy: when does context get summarized vs. truncated? Pick one and document it. (See `docs/agentic-patterns/03_context_management_brief.md`.)
+Compaction policy: when does context get summarized vs. truncated? Pick one and document it. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/03_context_management_brief.md`.)
 
 ## 5. Tool layer / ACI
 
 Five well-designed tools beat fifty. Decide:
 
 - Rough tool count and boundaries
-- MCP server vs. custom — if MCP, invoke `design-mcp-server` next to walk transport, auth, tool surface, schema discipline, error model, and testing strategy. See `docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation
+- MCP server vs. custom — if MCP, invoke `design-mcp-server` next to walk transport, auth, tool surface, schema discipline, error model, and testing strategy. See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation
 - For each tool: what shape does the *agent* see (not the human)?
 - Permission scope per tool
 - Idempotency
 
-ACI (Agent–Computer Interface) quality dominates raw model capability for coding agents. (See `docs/agentic-patterns/01_harness_engineering_brief.md`.)
+ACI (Agent–Computer Interface) quality dominates raw model capability for coding agents. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/01_harness_engineering_brief.md`.)
 
 ## 6. Verification gates
 
@@ -77,7 +77,7 @@ For each gate:
 - Verifier-LM (cheaper model) or rule-based?
 - The failure mode it prevents
 
-Hard gates stall on legitimate variation; soft gates miss errors. Pick one and instrument it. (See `docs/agentic-patterns/05_harness_architectures_brief.md`.)
+Hard gates stall on legitimate variation; soft gates miss errors. Pick one and instrument it. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/05_harness_architectures_brief.md`.)
 
 ## 7. Per-stage sampling & model choice
 
@@ -103,7 +103,7 @@ Sensible defaults by stage type:
 
 Reasoning effort: bump for planner and verifier stages; default off for executor (latency cost rarely pays back on tool calls). Max tokens: tighter caps force more loop iterations and finer-grained recovery — useful when verification gates are strong, harmful when they're weak.
 
-Cost compounds: a planner running frontier+high-reasoning at every turn is the single fastest way to a surprise bill. Pick the tier per stage, not per harness. (See `docs/agentic-patterns/04_prompt_management_brief.md` for self-consistency sampling cost.)
+Cost compounds: a planner running frontier+high-reasoning at every turn is the single fastest way to a surprise bill. Pick the tier per stage, not per harness. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/04_prompt_management_brief.md` for self-consistency sampling cost.)
 
 ## Hand-off
 

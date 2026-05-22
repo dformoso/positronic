@@ -145,6 +145,8 @@ The two pieces install independently — most users want both.
 /plugin install skills@positronic
 ```
 
+This also ships the `docs/agentic-patterns/` reference corpus — several skills cite it at runtime via `${CLAUDE_SKILL_DIR}`-resolved paths, so no separate copy is needed.
+
 ### 2. Behavioral floor (AGENTS.md)
 
 Ask your coding agent to copy `AGENTS.md` (and `CLAUDE.md` if Claude Code is your primary tool) from this repo into either:
