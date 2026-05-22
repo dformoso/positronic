@@ -46,7 +46,7 @@ Test high-importance, low-evidence assumptions first. Push back if the user conf
 
 **Step 4 — Falsifiable hypothesis.** For the top assumption: "We believe [Target User] experiences [Specific Friction] because [Root Cause]. If we provide [Core Capability], then [Measurable Change in Behavior] will occur." Reject vague hypotheses. Set kill criteria: the exact threshold — a number and a behavior — that means pivot or die.
 
-**Step 5 — Cheapest prototype.** What is the lowest-effort artifact that tests the top assumption? Options: static mock (value prop and mental model), interactive prototype (usability), Wizard of Oz (human-operated back-end, best for AI features before the algorithm exists), Concierge MVP (you deliver the service manually, no UI), Flintstoning (fake automation behind real UI).
+**Step 5 — Cheapest prototype.** What is the lowest-effort artifact that tests the top assumption? Options: static mock (value prop and mental model), interactive prototype (usability), Wizard of Oz (human-operated back-end, best for AI features before the algorithm exists), Concierge MVP (you deliver the service manually, no UI), Flintstoning (fake automation behind real UI). If the eventual product implies a high-friction form factor (native mobile, hardware, browser extension, app-store-gated), also ask: should we validate on a cheaper surface (web app, CLI, hosted prototype) before committing to the expensive one? Surface the tradeoff and let the user decide.
 
 **Step 6 — Route to the right pre-PRD path.** Based on what surfaced above:
 

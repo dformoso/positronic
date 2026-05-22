@@ -21,11 +21,13 @@ If `/judge-idea` ran on the winner, ensure its verdict was **proceed** before wr
 
 1. Explore the repo if you haven't already.
 
-2. Write the PRD using the template below. Save as `prds/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `prds/` if missing). Commit it. Do not submit it as a GitHub issue.
+2. **Test-surface check.** If the solution implies a high-friction form factor (native mobile, hardware, browser extension, app-store-gated), surface the tradeoff before writing: is there a cheaper surface (web app, CLI, hosted prototype) that validates the same hypothesis first? Get the user's call. Document the decision in the PRD.
 
-3. Length and density: ≤ 5 pages — preferably less. Every sentence must carry information. No padding, no repetition, no restating the obvious. Tables wherever possible.
+3. Write the PRD using the template below. Save as `prds/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `prds/` if missing). Commit it. Do not submit it as a GitHub issue.
 
-4. Present the saved PRD and ask the user to review. Wait for approval before they run `/to-spec`.
+4. Length and density: ≤ 5 pages — preferably less. Every sentence must carry information. No padding, no repetition, no restating the obvious. Tables wherever possible.
+
+5. Present the saved PRD and ask the user to review. Wait for approval before they run `/to-spec`.
 
 <prd-template>
 
