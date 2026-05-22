@@ -12,13 +12,15 @@
 # Usage: implement-issue.sh <issue-number> <title>
 #
 # Env vars:
-#   CLAUDE_CMD          override claude binary (default: claude)
-#   GH_CMD              override gh binary (default: gh)
-#   GIT_CMD             override git binary (default: git)
-#   MAX_ATTEMPTS        max attempts before giving up (default: 3)
-#   RETRY_WAIT_SECONDS  seconds between credit-exhaustion retries (default: 1800)
-#   WORKTREE_BASE       parent dir for worktrees (default: parent of repo root)
-#   AFK_WORKTREE        set to 0 to run in cwd without a worktree (default: 1)
+#   CLAUDE_CMD                    override claude binary (default: claude)
+#   GH_CMD                        override gh binary (default: gh)
+#   GIT_CMD                       override git binary (default: git)
+#   MAX_ATTEMPTS                  max attempts before giving up (default: 3)
+#   RETRY_WAIT_SECONDS            wait for transient errors / no reset hint (default: 1800)
+#   SESSION_LIMIT_WAIT_SECONDS    fallback wait when limit has no parsable reset (default: 21600)
+#   WAIT_DISABLED                 set to 1 to skip the pause (tests)
+#   WORKTREE_BASE                 parent dir for worktrees (default: parent of repo root)
+#   AFK_WORKTREE                  set to 0 to run in cwd without a worktree (default: 1)
 set -euo pipefail
 
 NUM="$1"
@@ -28,10 +30,13 @@ GH_CMD="${GH_CMD:-gh}"
 GIT_CMD="${GIT_CMD:-git}"
 MAX_ATTEMPTS="${MAX_ATTEMPTS:-3}"
 RETRY_WAIT="${RETRY_WAIT_SECONDS:-1800}"
+SESSION_LIMIT_WAIT="${SESSION_LIMIT_WAIT_SECONDS:-21600}"
 AFK_WORKTREE="${AFK_WORKTREE:-1}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PREAMBLE_FILE="$(cd "$SCRIPT_DIR/.." && pwd)/AGENT_PREAMBLE.md"
+# shellcheck source=lib-limit-wait.sh
+. "$SCRIPT_DIR/lib-limit-wait.sh"
 
 log() { echo "[implement-issue] $*"; }
 
@@ -102,9 +107,10 @@ while [ "$attempt" -lt "$MAX_ATTEMPTS" ]; do
 
   [ "$exit_code" -eq 0 ] && break
 
-  if echo "$output" | grep -qiE "credit|insufficient.fund|quota|overload|rate.limit"; then
-    log "#${NUM}: credit exhaustion — waiting ${RETRY_WAIT}s (attempt ${attempt}/${MAX_ATTEMPTS})"
-    sleep "${RETRY_WAIT}"
+  wait_seconds=$(detect_limit_wait_seconds "$output" "$RETRY_WAIT" "$SESSION_LIMIT_WAIT")
+  if [ -n "$wait_seconds" ]; then
+    log "#${NUM}: usage limit (attempt ${attempt}/${MAX_ATTEMPTS})"
+    pause_with_heartbeat "$wait_seconds" "implement-issue #${NUM}"
     continue
   fi
 

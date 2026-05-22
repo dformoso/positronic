@@ -192,8 +192,9 @@ while true; do
   done
 
   # Heartbeat: every 60s, name which wave issues are still running.
-  # Closes the AGENTS.md §7 "show progress for >2s ops" gap — without it the
-  # orchestrator goes silent for the duration of the slowest agent.
+  # If implement-issue.sh emitted a "pausing until HH:MM" line because of a
+  # usage limit, label that issue paused — otherwise the orchestrator looks
+  # stuck when in fact every agent is sleeping waiting for the limit to reset.
   wave_started=$(date +%s)
   (
     while sleep 60; do
@@ -201,7 +202,17 @@ while true; do
       still=""
       for p in "${pids[@]}"; do
         if kill -0 "$p" 2>/dev/null; then
-          still+="${still:+ }#${pid_to_num[$p]}"
+          n="${pid_to_num[$p]}"
+          status="#${n}"
+          log_file="$LOGS_DIR/issue-${n}.log"
+          if [ -f "$log_file" ]; then
+            last=$(grep -E 'usage limit hit — pausing|resuming after usage-limit reset' "$log_file" 2>/dev/null | tail -1)
+            if echo "$last" | grep -q 'pausing until'; then
+              until_at=$(echo "$last" | grep -oE 'until [0-9]{1,2}:[0-9]{2}' | head -1)
+              status="#${n} (paused, ${until_at})"
+            fi
+          fi
+          still+="${still:+ }${status}"
         fi
       done
       [ -n "$still" ] && echo "[run-parallel] still running (${elapsed_min}m elapsed): $still"

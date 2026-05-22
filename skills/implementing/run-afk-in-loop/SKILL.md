@@ -195,6 +195,22 @@ Print the wave summary:
 Wave [N/total] complete — #X ✓, #Y ⏸ blocked, #Z ✗ failed
 ```
 
+### 6. Pause if any agent hit a usage limit
+
+Before returning to step 1, scan the wave's logs for a session-limit signature. If one is present, parse the reset time and sleep until then — otherwise the next wave will fast-fail every issue against the same limit and drain your next session window.
+
+```bash
+# shellcheck source=scripts/lib-limit-wait.sh
+. skills/implementing/run-afk-in-loop/scripts/lib-limit-wait.sh
+combined=$(cat "$LOGS_DIR"/issue-*.log 2>/dev/null)
+wait_seconds=$(detect_limit_wait_seconds "$combined")
+if [ -n "$wait_seconds" ]; then
+  pause_with_heartbeat "$wait_seconds" "run-afk-in-loop"
+fi
+```
+
+This honors the same env vars as the wrapper scripts: `RETRY_WAIT_SECONDS` (transient errors / no reset hint, default 30m), `SESSION_LIMIT_WAIT_SECONDS` (fallback when the limit has no parsable reset, default 6h), and `WAIT_DISABLED=1` to skip the pause for tests.
+
 Then return to step 1.
 
 ### Completion summary
@@ -211,7 +227,7 @@ List any open HITL issues and any open AFK issues that are still blocked (e.g. b
 
 ## Running in parallel (unattended)
 
-For unattended parallel execution with per-issue credit-exhaustion retry:
+For unattended parallel execution with per-issue usage-limit retry:
 
 ```bash
 bash skills/implementing/run-afk-in-loop/scripts/run-parallel.sh
@@ -219,12 +235,24 @@ bash skills/implementing/run-afk-in-loop/scripts/run-parallel.sh
 
 Set `CONCURRENCY=N` (default: 4) to control how many issues run simultaneously per wave. The script implements the same workflow described above, including worktree isolation, preamble injection, marker parsing, and sequential merge-back.
 
-## Running with credit-exhaustion retry (sequential)
+## Running with usage-limit retry (sequential)
 
-For sequential execution wrapping the slash invocation in a credit-retry loop:
+For sequential execution wrapping the slash invocation in a retry loop:
 
 ```bash
 bash skills/implementing/run-afk-in-loop/scripts/run-afk-loop.sh
 ```
 
-This invokes `claude --print "/run-afk-in-loop"` and retries the whole loop on credit exhaustion. The slash command itself executes the workflow above.
+This invokes `claude --print "/run-afk-in-loop"` and retries the whole loop when a usage limit is hit. The slash command itself executes the workflow above.
+
+## Usage-limit handling
+
+The inline workflow (step 6) and both wrapper scripts share `lib-limit-wait.sh`, which parses claude's error output (no extra claude calls) and pauses until the limit resets, then auto-resumes:
+
+- **Session limit with a reset hint** ("Your limit will reset at 3pm" / "15:00" / "(UTC)"): parses the wall-clock time and sleeps until then, with a 60s clock-skew buffer.
+- **Usage / session limit without a parsable hint**: falls back to `SESSION_LIMIT_WAIT_SECONDS` (default `21600` = 6h) — long enough to outlast the 5-hour session window.
+- **Transient errors** (credit, quota, overload, rate-limit): falls back to `RETRY_WAIT_SECONDS` (default `1800` = 30m).
+
+While paused, the script prints `[label] usage limit hit — pausing until HH:MM (~N min). Will auto-resume.`, a heartbeat every 60s (or every 5m for waits >10m), and `resuming after usage-limit reset.` when the wait is over. In `run-parallel.sh`, the wave heartbeat labels each paused issue with its reset time so the orchestrator never goes silent.
+
+Tests can set `WAIT_DISABLED=1` to skip the actual sleep while keeping the detection logic exercised.
