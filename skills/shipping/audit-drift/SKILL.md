@@ -1,10 +1,10 @@
 ---
-name: audit-docs
+name: audit-drift
 description: Audit the project's doc graph (prds/, specs/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase.
 disable-model-invocation: true
 ---
 
-# Audit Docs
+# Audit Drift
 
 Static sweep across the project's doc graph. Detects drift. Reports only — never auto-fixes. Mirrors `/review-pr`'s posture.
 
@@ -14,7 +14,7 @@ Complementary, not redundant, with two existing skills:
 |---|---|---|
 | `align-with-docs` | Defining, interview-driven | **Prevents** drift — sharpens terms inline as decisions crystallize |
 | `judge-idea` | After PRD/SPEC | **Stress-tests** the idea — adversarial pass on the artifact |
-| `audit-docs` (this) | Shipping, on demand | **Detects** drift across the full doc graph — finds what the others missed |
+| `audit-drift` (this) | Shipping, on demand | **Detects** drift across the full doc graph — finds what the others missed |
 
 ## Process
 

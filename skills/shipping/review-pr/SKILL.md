@@ -1,6 +1,6 @@
 ---
 name: review-pr
-description: Review the current branch against main before shipping. Use when the user wants a PR review, code quality check, or pre-merge sanity pass.
+description: Review the current branch against main before shipping. Includes a prompt-file audit when the diff touches prompts, SKILL.md bodies, or MCP tool descriptions. Use when the user wants a PR review, code quality check, or pre-merge sanity pass.
 disable-model-invocation: true
 ---
 
@@ -38,6 +38,17 @@ Read every changed file in full. For each, check against the AGENTS.md principle
 
 For diffs touching both halves of the stack or removing a feature, grep the whole repo (not just the changed files) for endpoint names, type names, route IDs, fixtures, demo data, prompt mentions, and doc references. Half-removed concepts won't show up in a file-by-file walk — they survive in the files the diff didn't touch.
 
+### 2b. Prompt audit (when the diff touches prompt files)
+
+Prompt files include system prompts, agent instructions, SKILL.md bodies, prompt templates, and MCP tool descriptions. LLM prompts are code that nothing else reviews — rules go vague, examples reference deleted features, tool lists drift from what's wired up. Four checks:
+
+- **Rule sharpness** — every rule should answer when it fires, what the model does, and when it skips. "Be careful with X" or "prefer Y" are vibes — rewrite or delete.
+- **Stale references** — grep for few-shot examples for deleted features, tool names no longer registered, renamed concepts, output fields no longer parsed downstream.
+- **Tool-list drift** — if the prompt has a tool catalogue: every registered tool appears with a "call this when …" rule; every listed tool is actually registered; each tool has an example unless the rule is sharp enough.
+- **Output-format drift** — if the prompt prescribes structured output: every parser-read field is described; every prompt-mentioned field is consumed (or marked optional); examples use exact parser field names.
+
+**MCP tool descriptions also count.** Clients embed `f"{tool.name}: {tool.description}"` for semantic search — concrete domain nouns beat generic verbs ("Get GitHub pull request details" > "Use this tool to retrieve information about pull requests"). Tool name `[a-z0-9_]+`, no embedded server name (clients namespace as `${server}_${tool}`). Annotations (`readOnlyHint`, `idempotentHint`, `destructiveHint`, `openWorldHint`) drive client security gating; omission gets worst-case defaults. See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/06_mcp_design_brief.md`.
+
 ### 3. Report
 
 Output a review with two sections:
@@ -47,6 +58,8 @@ Output a review with two sections:
 **Worth noting** — minor things that aren't blockers but the author should know. Keep this short. If it's purely stylistic with no functional impact, skip it.
 
 Do not summarise what the code does. Do not praise things that are fine. The author can read the diff.
+
+**Doc-graph nudge** — if `prds/`, `specs/`, or `docs/adr/` exist in the repo, append: "Consider `/audit-drift` next for whole-graph doc drift (glossary inconsistencies, dead refs, ADRs overtaken by SPEC, orphan ADRs)."
 
 ### 4. Resolve
 

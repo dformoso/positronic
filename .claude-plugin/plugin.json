@@ -17,9 +17,7 @@
     "./skills/implementing/run-afk-in-loop",
     "./skills/diagnosing/diagnose",
     "./skills/shipping/review-pr",
-    "./skills/shipping/audit-docs",
-    "./skills/shipping/audit-prompt",
-    "./skills/meta/add-a-skill",
+    "./skills/shipping/audit-drift",
     "./skills/meta/github-triage",
     "./skills/meta/deepen-modules"
   ]
