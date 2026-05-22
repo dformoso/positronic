@@ -20,7 +20,7 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 5. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `specs/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `specs/` if missing). Commit it.
 
-6. Length and density: ≤ 5 pages. Tables wherever possible. Every sentence must carry information.
+6. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information.
 
 7. Present the saved SPEC and wait for the user's approval before they run `/to-issues`.
 
