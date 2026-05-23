@@ -30,7 +30,7 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet.
    - **Zero-to-one with market uncertainty** → it prompts `/research-market` (forum + competitive evidence into `research/`) → `/ideate` (ten ranked one-pagers, you pick) → `/judge-idea` (adversarial gate; verdict is proceed, loop-back, or pivot) → `/to-prd`.
    - **Established space** → it prompts `/to-prd` directly; the research arc is skipped.
 3. **If a custom LLM harness is on the table**, `pick-harness-shape` fires before `/to-spec` and walks the load-bearing decisions (substrate, loop topology, memory, tool layer, gates) — biased toward off-the-shelf when one fits. When the tool layer means designing your own MCP server, `design-mcp-server` walks the server-design decisions (transport, auth, schema discipline, error model, testing) — grounded in `docs/agentic-patterns/06_mcp_design_brief.md`.
-4. **`/to-spec`** synthesizes the PRD plus harness decisions into a versioned implementation SPEC in `specs/`. **`/align-with-docs`** is an optional detour to reconcile the plan against project domain docs (CONTEXT.md, ADRs).
+4. **`/to-spec`** synthesizes the PRD plus harness decisions into a versioned implementation SPEC in `specs/`.
 5. **`/to-issues`** breaks the SPEC into independently-grabbable GitHub issues, labeling each `afk` (Claude can do it solo) or `hitl` (needs you in the loop).
 6. **`/run-afk-in-loop`** works through unblocked `afk` issues in parallel waves. Each issue runs through `test-driven-dev`, which auto-fires on implementation work. UI work also triggers `ui-taste`; bugs during implementation auto-fire `diagnose`.
 7. **`/review-pr`** before the branch ships — flags must-fix and worth-noting items, including a prompt-file audit when the diff touches prompts or MCP tool descriptions. **`/audit-drift`** for projects with versioned PRDs/SPECs/ADRs — sweeps the doc graph for glossary inconsistencies, dead cross-references, ADRs overtaken by the latest SPEC, and orphan ADRs.
@@ -52,7 +52,6 @@ Skills are organized by phase (per AGENTS.md §6). Invocation modes: `model-invo
 | `to-prd` | slash-only | defining | Synthesize the current conversation into a versioned PRD in `prds/` |
 | `to-spec` | slash-only | defining | Synthesize the latest PRD + harness decisions into a versioned implementation SPEC in `specs/` |
 | `to-issues` | slash-only | defining | Break a plan into independently-grabbable GitHub issues; labels each `afk` or `hitl` |
-| `align-with-docs` | slash-only | defining | Reconcile a plan against the project's domain docs; update CONTEXT.md / ADRs inline |
 | `test-driven-dev` | model-invokable | implementing | Test-driven development with red-green-refactor |
 | `ui-taste` | model-invokable | implementing | Opinionated visual rules; fires on UI work; avoids the generic, cookie-cutter look |
 | `run-afk-in-loop` | slash-only | implementing | Work through all unblocked AFK issues in parallel waves |

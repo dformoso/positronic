@@ -8,11 +8,10 @@ disable-model-invocation: true
 
 Static sweep across the project's doc graph. Detects drift. Reports only — never auto-fixes. Mirrors `/review-pr`'s posture.
 
-Complementary, not redundant, with two existing skills:
+Complementary, not redundant, with `judge-idea`:
 
 | Skill | When it fires | What it does |
 |---|---|---|
-| `align-with-docs` | Defining, interview-driven | **Prevents** drift — sharpens terms inline as decisions crystallize |
 | `judge-idea` | After PRD/SPEC | **Stress-tests** the idea — adversarial pass on the artifact |
 | `audit-drift` (this) | Shipping, on demand | **Detects** drift across the full doc graph — finds what the others missed |
 
