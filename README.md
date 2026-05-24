@@ -33,7 +33,7 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet.
 4. **`/to-spec`** synthesizes the PRD plus harness decisions into a versioned implementation SPEC in `specs/`.
 5. **`/to-issues`** breaks the SPEC into independently-grabbable GitHub issues, labeling each `afk` (Claude can do it solo) or `hitl` (needs you in the loop).
 6. **`/run-afk-in-loop`** works through unblocked `afk` issues in parallel waves. Each issue runs through `test-driven-dev`, which auto-fires on implementation work. UI work also triggers `ui-taste`; bugs during implementation auto-fire `diagnose`.
-7. **`/review-pr`** before the branch ships — flags must-fix and worth-noting items, including a prompt-file audit when the diff touches prompts or MCP tool descriptions. **`/audit-drift`** for projects with versioned PRDs/SPECs/ADRs — sweeps the doc graph for glossary inconsistencies, dead cross-references, ADRs overtaken by the latest SPEC, and orphan ADRs.
+7. **`/review-pr`** before the branch ships — flags must-fix and worth-noting items, including a prompt-file audit when the diff touches prompts or MCP tool descriptions. **`/audit-drift`** for projects with versioned PRDs/SPECs/ADRs — sweeps the doc graph for glossary inconsistencies, dead cross-references, ADRs overtaken by the latest SPEC, and orphan ADRs. **`/audit-failure-modes`** before a release cut on a maturing system — parallel agents per surface (external deps, concurrency, persistence, resource, config, security, frontend) produce a MECE list of latent failure modes ranked P0/P1/P2.
 
 Skip steps when the phase is already clear: a bug report drops straight into `diagnose`; a known-good plan can jump to `/to-spec`; a finished branch can go right to `/review-pr`.
 
@@ -58,6 +58,7 @@ Skills are organized by phase (per AGENTS.md §6). Invocation modes: `model-invo
 | `diagnose` | model-invokable | diagnosing | Disciplined loop for hard bugs and performance regressions |
 | `review-pr` | slash-only | shipping | Review the current branch before it ships; flags must-fix and worth-noting items |
 | `audit-drift` | slash-only | shipping | Sweep the project's doc graph (PRDs/SPECs/ADRs/CONTEXT.md) for drift; reports must-fix and worth-noting |
+| `audit-failure-modes` | slash-only | shipping | Pre-mortem of the system; lists latent failure modes by surface, ranks P0/P1/P2 |
 | `github-triage` | slash-only | meta | Triage GitHub issues through a label-based state machine |
 | `deepen-modules` | slash-only | meta | Find shallow modules and propose how to deepen them |
 

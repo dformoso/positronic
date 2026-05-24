@@ -17,6 +17,7 @@
     "./skills/diagnosing/diagnose",
     "./skills/shipping/review-pr",
     "./skills/shipping/audit-drift",
+    "./skills/shipping/audit-failure-modes",
     "./skills/meta/github-triage",
     "./skills/meta/deepen-modules"
   ]

@@ -95,7 +95,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
   - **Custom LLM harness on the table.** Default to custom whenever it offers a real advantage — off-the-shelf is the fallback. `define` hands off to `pick-harness-shape` to walk substrate, topology, memory, tools, and gates.
 - **Implementing** — spec is decided → run `test-driven-dev` for a single issue. For the full backlog, prompt the user to run `/run-afk-in-loop`, which works through unblocked AFK issues in parallel waves. When implementing UI, `ui-taste` fires automatically.
 - **Diagnosing** — something is broken or regressed → run `diagnose`.
-- **Shipping** — PR prep, review, cleanup → prompt the user to run `/review-pr` (which also audits prompt files in the diff). For projects with PRDs/SPECs/ADRs, also prompt `/audit-drift` to sweep the doc graph.
+- **Shipping** — PR prep, review, cleanup → prompt the user to run `/review-pr` (which also audits prompt files in the diff). For projects with PRDs/SPECs/ADRs, also prompt `/audit-drift` to sweep the doc graph. Before a release cut on a maturing system, prompt `/audit-failure-modes` to enumerate latent failure modes by surface.
 
 Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
 
