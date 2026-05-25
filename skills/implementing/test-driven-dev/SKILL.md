@@ -50,6 +50,7 @@ Before writing any code:
 - [ ] List the behaviors to test, prioritized (not implementation steps)
 - [ ] Identify opportunities for [deep modules](deep-modules.md) (small interface, deep implementation)
 - [ ] Design interfaces for [testability](interface-design.md)
+- [ ] If the slice touches web UI, the tracer-bullet test is a Playwright CUJ (real browser, real flow) — not a component unit test
 
 State the plan inline (interface, top behaviors, what's out of scope) and proceed. Ask only if a scope question would change the slice — the upstream issue is the contract; don't relitigate it.
 
@@ -104,6 +105,7 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 [ ] For regression tests: stash the fix and confirm the test fails with the actual production symptom
 [ ] Every external dependency the code calls has at least one failure-mode test
 [ ] Tests that hit paid / external services skip on environmental failure, fail only on code regression
+[ ] For UI behavior: the test drives the rendered page in Playwright, not a mocked component tree
 [ ] Code is minimal for this test
 [ ] No speculative features added
 ```
