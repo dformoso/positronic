@@ -6,7 +6,7 @@ A personal AI-coding framework — opinionated, solo.
 
 - **Product management** — the `define` skill surfaces assumptions before any code is written; `/to-prd`, `/to-spec`, `/to-issues` lock them down as versioned artifacts. For zero-to-one work, an optional research arc precedes the PRD: `/research-market` → `/ideate` → `/judge-idea`.
 - **Software engineering** — eight behavioral rules (below) and test-driven development (red → green → refactor) where tests verify behavior through public interfaces, not implementation details.
-- **Agent harness engineering** — `pick-harness-shape` plus a reference corpus of frontier briefs (`docs/agentic-patterns/`) help pick a custom harness when it's genuinely useful (and an off-the-shelf one otherwise), then surface the load-bearing decisions.
+- **Agent harness engineering** — `pick-harness-shape` plus a reference corpus of frontier briefs (`docs/agentic-patterns/`) help pick a custom harness when it's genuinely useful (and an off-the-shelf one otherwise), then lock the load-bearing decisions into a versioned `harness/` artifact that `/to-spec` reads.
 
 **The behavioral floor** — eight rules Claude follows on every turn:
 
@@ -29,8 +29,8 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet.
 2. **`define` picks the route based on what it heard:**
    - **Zero-to-one with market uncertainty** → it prompts `/research-market` (forum + competitive evidence into `research/`) → `/ideate` (ten ranked one-pagers, you pick) → `/judge-idea` (adversarial gate; verdict is proceed, loop-back, or pivot) → `/to-prd`.
    - **Established space** → it prompts `/to-prd` directly; the research arc is skipped.
-3. **If a custom LLM harness is on the table**, `pick-harness-shape` fires before `/to-spec` and walks the load-bearing decisions (substrate, loop topology, memory, tool layer, gates) — biased toward off-the-shelf when one fits. When the tool layer means designing your own MCP server, `design-mcp-server` walks the server-design decisions (transport, auth, schema discipline, error model, testing) — grounded in `docs/agentic-patterns/06_mcp_design_brief.md`.
-4. **`/to-spec`** synthesizes the PRD plus harness decisions into a versioned implementation SPEC in `specs/`.
+3. **If a custom LLM harness is on the table**, `pick-harness-shape` fires after `/to-prd` and before `/to-spec`. It reads the PRD's constraints, walks the load-bearing decisions (substrate, loop topology, memory, tool layer, gates) — biased toward off-the-shelf when one fits — and writes a versioned `harness/` artifact that `/to-spec` reads. When the tool layer means designing your own MCP server, `design-mcp-server` walks the server-design decisions (transport, auth, schema discipline, error model, testing) — grounded in `docs/agentic-patterns/06_mcp_design_brief.md`.
+4. **`/to-spec`** synthesizes the latest PRD plus the latest `harness/` artifact (if present) into a versioned implementation SPEC in `specs/`.
 5. **`/to-issues`** breaks the SPEC into independently-grabbable GitHub issues, labeling each `afk` (Claude can do it solo) or `hitl` (needs you in the loop).
 6. **`/run-afk-in-loop`** works through unblocked `afk` issues in parallel waves. Each issue runs through `test-driven-dev`, which auto-fires on implementation work. UI work also triggers `ui-taste`; bugs during implementation auto-fire `diagnose`.
 7. **`/review-pr`** before the branch ships — flags must-fix and worth-noting items, including a prompt-file audit when the diff touches prompts or MCP tool descriptions. **`/audit-drift`** for projects with versioned PRDs/SPECs/ADRs — sweeps the doc graph for glossary inconsistencies, dead cross-references, ADRs overtaken by the latest SPEC, and orphan ADRs. **`/audit-failure-modes`** before a release cut on a maturing system — parallel agents per surface (external deps, concurrency, persistence, resource, config, security, frontend) produce a MECE list of latent failure modes ranked P0/P1/P2.
@@ -44,13 +44,13 @@ Skills are organized by phase (per AGENTS.md §6). Invocation modes: `model-invo
 | Skill | Invocation | Phase | What it does |
 | --- | --- | --- | --- |
 | `define` | model-invokable | defining | Defining-phase orchestrator — surfaces assumptions, frames a falsifiable hypothesis, routes to the right pre-PRD path |
-| `pick-harness-shape` | model-invokable | defining | Pick the harness shape for an LLM/agent system — custom when genuinely useful, off-the-shelf otherwise |
+| `pick-harness-shape` | model-invokable | defining | Pick the harness shape for an LLM/agent system — custom when genuinely useful, off-the-shelf otherwise; writes a versioned `harness/` artifact that `/to-spec` reads |
 | `design-mcp-server` | model-invokable | defining | Walk the design decisions for a new MCP server — transport, auth, tool surface, schema discipline, state model, error model, testing |
 | `research-market` | slash-only | defining | Mine forums + competitive landscape into a versioned `research/` artifact |
 | `ideate` | slash-only | defining | Generate, rank, and pick a product idea grounded in `research/` |
 | `judge-idea` | slash-only | defining | Adversarial pass on a winner / PRD / SPEC; verdict is proceed, loop-back, or pivot |
 | `to-prd` | slash-only | defining | Synthesize the current conversation into a versioned PRD in `prds/` |
-| `to-spec` | slash-only | defining | Synthesize the latest PRD + harness decisions into a versioned implementation SPEC in `specs/` |
+| `to-spec` | slash-only | defining | Synthesize the latest PRD + latest `harness/` artifact (if present) into a versioned implementation SPEC in `specs/` |
 | `to-issues` | slash-only | defining | Break a plan into independently-grabbable GitHub issues; labels each `afk` or `hitl` |
 | `test-driven-dev` | model-invokable | implementing | Test-driven development with red-green-refactor |
 | `ui-taste` | model-invokable | implementing | Opinionated visual rules; fires on UI work; avoids the generic, cookie-cutter look |

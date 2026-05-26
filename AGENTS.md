@@ -92,7 +92,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **Defining** — fuzzy goal, no spec yet → run `define`. Once define converges:
   - **Zero-to-one with market uncertainty.** Prompt the user to run `/research-market` (forum + competitive evidence), `/ideate` (10 ranked one-pagers, user picks), `/judge-idea` (adversarial gate), then `/to-prd`, `/to-spec`, `/to-issues`.
   - **Established space.** Prompt the user to run `/to-prd`, `/to-spec`, `/to-issues` directly.
-  - **Custom LLM harness on the table.** Default to custom whenever it offers a real advantage — off-the-shelf is the fallback. `define` hands off to `pick-harness-shape` to walk substrate, topology, memory, tools, and gates.
+  - **Custom LLM harness on the table.** Default to custom whenever it offers a real advantage — off-the-shelf is the fallback. After `/to-prd`, `define` hands off to `pick-harness-shape`, which reads the PRD and walks substrate, topology, memory, tools, and gates, then writes a versioned `harness/` artifact that `/to-spec` reads.
 - **Implementing** — spec is decided → run `test-driven-dev` for a single issue. For the full backlog, prompt the user to run `/run-afk-in-loop`, which works through unblocked AFK issues in parallel waves. When implementing UI, `ui-taste` fires automatically.
 - **Diagnosing** — something is broken or regressed → run `diagnose`.
 - **Shipping** — PR prep, review, cleanup → prompt the user to run `/review-pr` (which also audits prompt files in the diff). For projects with PRDs/SPECs/ADRs, also prompt `/audit-drift` to sweep the doc graph. Before a release cut on a maturing system, prompt `/audit-failure-modes` to enumerate latent failure modes by surface.

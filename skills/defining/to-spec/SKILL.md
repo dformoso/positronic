@@ -1,10 +1,10 @@
 ---
 name: to-spec
-description: Turn the current conversation, the most recent PRD, and (if it ran) pick-harness-shape's decisions into an implementation SPEC. Save it as a versioned local file in specs/. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics).
+description: Turn the most recent PRD and (if present) the most recent harness/ artifact into an implementation SPEC. Save it as a versioned local file in specs/. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics).
 disable-model-invocation: true
 ---
 
-Synthesize the conversation, the most recent PRD, and (if it ran) pick-harness-shape's decisions into a SPEC. Do NOT re-interview — work from prior decisions.
+Synthesize the most recent PRD and (if present) the most recent `harness/` artifact into a SPEC. Do NOT re-interview — work from prior decisions.
 
 The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observability, security. The PRD owns *what and why* — don't duplicate it here.
 
@@ -12,7 +12,7 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 1. Read the most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. If none exists, prompt the user to run `/to-prd` first and stop.
 
-2. If `pick-harness-shape` ran, restate the picked shape (substrate, topology, memory, tool layer, gates) at the top of the SPEC.
+2. Read the most recent harness artifact: `ls harness/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Harness shape" section restates its picks (substrate, topology, memory, tool layer, gates, per-stage sampling) — do not re-derive them, and do not contradict them silently. If the SPEC needs to deviate, surface the conflict to the user before writing. If no harness artifact exists and the section matrix below indicates one is needed (custom agent / multi-agent / computer use), stop and prompt the user to run `pick-harness-shape` first.
 
 3. Sketch modules and integration points. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation.
 
@@ -52,7 +52,7 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 ## Harness shape
 
-Substrate, topology, memory, tool layer, gate strategy. One paragraph max. Cite which named patterns from `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` were chosen.
+Restate the picks from the most recent `harness/<file>.md` — substrate, topology, memory, tool layer, gate strategy, per-stage sampling. One paragraph max plus a pointer (`See harness/<file>.md`) so the full rationale and rejected alternatives are one click away. Cite which named patterns from `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` were chosen.
 
 ## Modules & interfaces
 

@@ -9,6 +9,14 @@ Reference: `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` carries the emp
 
 Ask one question at a time. Surface your recommended answer with each.
 
+## 0. Read the PRD
+
+Before any picks, read the most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and business constraints (on-prem requirements, sensitive code paths, multi-agent decomposition reasons, trust boundaries) are the inputs that drive sections 1–7 — picking without them is picking blind.
+
+If no PRD exists, stop and prompt the user to run `/to-prd` first. **Exception:** if the harness IS the product or differentiator (case 6 in section 1), the picks may legitimately shape the PRD rather than follow from it. Surface this to the user and let them override before proceeding.
+
+Record the PRD path; it goes into the artifact (section 8).
+
 ## 1. Custom vs. off-the-shelf
 
 Lean custom whenever it offers a real advantage. Off-the-shelf coding agents (Claude Code, Cursor, Codex, Cline) are the fallback — pick one only when the work is plain code editing in a familiar stack and none of the cases below apply.
@@ -107,6 +115,80 @@ Reasoning effort: bump for planner and verifier stages; default off for executor
 
 Cost compounds: a planner running frontier+high-reasoning at every turn is the single fastest way to a surprise bill. Pick the tier per stage, not per harness. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/04_prompt_management_brief.md` for self-consistency sampling cost.)
 
+## 8. Save the artifact
+
+Once the seven sections above have been answered, write the picks to `harness/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `harness/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+
+Use the template below. Every section must carry information: cite the pattern brief that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
+
+<harness-template>
+
+## Source PRD
+
+`prds/<file>.md` — the PRD whose constraints drove these picks. (Or "harness-first override: no PRD yet" with a one-sentence reason, if section 0's exception applied.)
+
+## TL;DR
+
+One paragraph naming the picked substrate, topology, memory model, rough tool count, gate strategy, and the planner's model tier. A reader should be able to skip the rest and still know the shape.
+
+## Custom vs off-the-shelf
+
+**Picked:** custom | off-the-shelf (`<which agent>`)
+**Why:** one or two sentences. If custom, which case(s) from section 1 applied.
+
+## Substrate
+
+**Picked:** Claude Agent SDK | OpenAI Agents SDK | Google ADK | smolagents | fork of `<harness>`
+**Why:**
+**Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`
+
+## Loop topology
+
+**Picked:** Single ReAct | Planner-Executor | Reason-Plan-ReAct | Multi-agent (orchestrator) | Multi-agent (A2A)
+**Why:** for multi-agent, name the real decomposition reason — independent lifecycles, trust boundaries, or parallelism gain >2×.
+**Cited pattern:** `docs/agentic-patterns/05_harness_architectures_brief.md`, `docs/agentic-patterns/02_role_design_brief.md`
+
+## Memory & state
+
+**Approach:** None | Long context | Memory-as-action | Hierarchical | Episodic+semantic+procedural
+**Compaction policy:** when context gets summarized vs. truncated.
+**Cited pattern:** `docs/agentic-patterns/03_context_management_brief.md`
+
+## Tool layer / ACI
+
+**Rough count and boundaries:**
+**MCP vs custom:** if MCP, note whether `design-mcp-server` should fire next.
+**Per-tool agent-facing shape:** brief notes — what the *agent* sees, not the human.
+**Permissions & idempotency:**
+**Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`, `docs/agentic-patterns/06_mcp_design_brief.md` (if MCP)
+
+## Verification gates
+
+| Gate | Format / schema | Hard / Soft | Verifier-LM or rule | Failure mode prevented |
+|---|---|---|---|---|
+
+**Cited pattern:** `docs/agentic-patterns/05_harness_architectures_brief.md`
+
+## Per-stage sampling & model choice
+
+| Stage | Model tier | Temperature | Reasoning effort | Max tokens / step |
+|---|---|---|---|---|
+
+**Cited pattern:** `docs/agentic-patterns/04_prompt_management_brief.md`
+
+## Rejected alternatives
+
+| Alternative | Why rejected |
+|---|---|
+
+Prevents future re-suggestion. Include at minimum the off-the-shelf option (if custom was picked) and any topology / substrate seriously considered.
+
+## Open questions
+
+Decisions deferred to `/to-spec` (e.g., exact module boundaries, schema specifics) or things that surfaced but couldn't be settled with current information.
+
+</harness-template>
+
 ## Hand-off
 
-Summarise the picked shape: substrate, topology, memory model, rough tool layer, gate strategy, and per-stage model + sampling choices. Then prompt the user to run `/to-prd` (if not yet done) and `/to-spec` to document the decisions.
+Present the saved `harness/<file>.md` and ask the user to review. Once approved, prompt them to run `/to-spec` — it will read this file alongside the PRD automatically.
