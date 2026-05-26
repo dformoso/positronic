@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 Turn the current conversation, codebase understanding, and (if they exist) the most recent ideation winner + research artifact into a PRD. Do NOT interview the user — synthesize what you already know.
 
-The PRD answers *what and why*. Implementation decisions (modules, schema, API contracts) and detailed test plans live in `/to-spec`, not here.
+The PRD answers *what and why* — including the product surface behaviour under Functional Requirements (data shapes the user sees, channels, autonomy rules, queues, integrations). Implementation decisions (modules, code-level schema, API contracts, test plans, rollout, observability) live in `/to-spec`, not here.
 
 ## Inputs
 
@@ -25,7 +25,7 @@ If `/judge-idea` ran on the winner, ensure its verdict was **proceed** before wr
 
 3. Write the PRD using the template below. Save as `prds/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `prds/` if missing). Commit it. Do not submit it as a GitHub issue.
 
-4. Length and density: ≤ 5 pages — preferably less. Every sentence must carry information. No padding, no repetition, no restating the obvious. Tables wherever possible.
+4. Length and density: ≤ 5 pages — preferably less. The **vision** — Target User + Solution Overview together — must fit in ≤ 1 page: tight but comprehensive. The vision is the contract `/to-spec` and implementation work against; drift from it produces unusable output. Functional Requirements is the section that scales with product surface — use tables only, no prose, drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
 
 5. Present the saved PRD and ask the user to review. Wait for approval before they run `/to-spec`.
 
@@ -35,25 +35,13 @@ If `/judge-idea` ran on the winner, ensure its verdict was **proceed** before wr
 
 The problem in the user's words. Two to four sentences max.
 
-## Solution
+## Target User
 
-The solution in user-facing terms. Two to four sentences max.
+A specific, named persona (or representative composite) that captures who this product is for. Their work, their world, the moments where this product enters their life, the constraints that shape their choices. Concrete beats generic — *"Nathan: a solo plumber in metropolitan or peri-urban Australia, 5–25 years in the trade, already pays for ServiceM8 or Tradify, hands wet/dirty/gloved during the day"* beats *"small business owner"*. **Half a page max.** (This and Solution Overview together are the vision — ≤ 1 page combined.)
 
-## User Stories
+## Goals & Success Metrics
 
-A numbered list covering every significant actor and workflow. Each in the format:
-
-1. As an <actor>, I want a <feature>, so that <benefit>
-
-<user-story-example>
-1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
-</user-story-example>
-
-Be comprehensive but not exhaustive — cut stories that are obvious consequences of others.
-
-## Success Metrics
-
-How we know the feature is delivered and working. One row per metric.
+Lead with an **anchoring promise** — one sentence naming the visceral outcome the user feels ("no admin after 5pm", "ship in under 60 seconds", "never lose a customer to silence"). Then **at most three** metrics. No more — pick the ones that, if they move, the product is working.
 
 | Metric | Target | How measured |
 |---|---|---|
@@ -61,13 +49,65 @@ How we know the feature is delivered and working. One row per metric.
 
 Behavioral and outcome metrics are stronger than activity metrics. "% of users completing first CUJ within 24h" beats "page views".
 
-## Risks & Open Questions
+## Solution Overview
 
-| Item | Type (risk / open question) | Impact if wrong | Plan to resolve |
+What we're building, in user-facing terms. Form factor (web app / PWA / CLI / API / native), the structural pieces (the panes, surfaces, or objects the user sees), and — if AI is involved — the autonomy contract (what the agent does without asking, what it always asks first). Enough detail to anchor scope, not enough to lock implementation. **Half a page max.**
+
+## Functional Requirements
+
+The product surface defined component-by-component, in tables. Cover every relevant component so `/to-spec` has unambiguous "what" to turn into "how". Use the table set below as a checklist — include the ones that apply, drop the rest, add domain-specific ones if needed. Prose only when a table can't carry the meaning.
+
+**Data model.** The entities the user touches and what they hold. Implementation-level schema (indexes, constraints, migrations) goes to `/to-spec`.
+
+| Entity | Key fields | Relationships |
+|---|---|---|
+| | | |
+
+**Channels / surfaces / form factors.** Every place the product receives input or emits output (channels for messaging products, surfaces for multi-pane apps, endpoints for APIs, screens for mobile).
+
+| Channel/Surface | Inbound behaviour | Outbound behaviour | Notes |
 |---|---|---|---|
 | | | | |
 
-If `/judge-idea` produced findings worth carrying into implementation, list them here.
+**Agent autonomy matrix.** (If AI is involved.) For every action the agent can take: default behaviour, confidence gate, HITL trigger. Anything that touches the user externally or commits resources defaults to HITL until explicitly justified.
+
+| Action | Default | Confidence gate | HITL trigger |
+|---|---|---|---|
+| | | | |
+
+**Queues / approval flows.** (If the product holds work for human review.) What each queue holds, its lifecycle, how items surface.
+
+| Queue | Holds | Lifecycle | Surfacing |
+|---|---|---|---|
+| | | | |
+
+**Notification / digest cadence.** (If users get pushed updates.) Available modes, default, and override rules.
+
+| Mode | Default? | Behaviour |
+|---|---|---|
+| | | |
+
+**Layout variations.** (If form factor splits across devices/contexts.) How each pane or screen differs by surface, and the design intent behind the split.
+
+| Pane/Screen | Surface A | Surface B | Intent |
+|---|---|---|---|
+| | | | |
+
+**Integrations & migration.** Third parties the product reads from or writes to, plus how users bring existing data in.
+
+| Integration | Direction | MVP behaviour |
+|---|---|---|
+| | | |
+
+## Key User Journeys
+
+Numbered CUJs. Each named, **two sentences max**, naming actor + trigger + flow + outcome. Comprehensive but not exhaustive — cut journeys that are obvious consequences of others.
+
+1. **<Short name>.** <Two sentences max>.
+
+<cuj-example>
+1. **First inbound from a new customer.** Mrs Chen rings at 2:14pm; Nathan doesn't answer, so AI voicemail takes the message and auto-sends an acknowledgement SMS. At the 4pm digest Nathan picks a slot from a draft reply and taps send.
+</cuj-example>
 
 ## Non-Goals
 
@@ -77,8 +117,18 @@ Who and what we are explicitly **not** serving with this PRD. Adjacent personas,
 
 Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep.
 
+## Risks & Open Questions
+
+**Top 5 only.** The load-bearing risks and open questions — the ones that, if wrong, change the product.
+
+| Item | Type (risk / open question) | Impact if wrong | Plan to resolve |
+|---|---|---|---|
+| | | | |
+
+If `/judge-idea` produced findings worth carrying into implementation, list them here.
+
 ## Further Notes
 
-Any further notes about the feature.
+Any further notes about the feature — pricing direction, distribution thinking, UX constraints, compliance, the 12-month directional bet, source research pointers.
 
 </prd-template>
