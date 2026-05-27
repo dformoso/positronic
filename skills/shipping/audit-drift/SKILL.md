@@ -1,6 +1,6 @@
 ---
 name: audit-drift
-description: Audit the project's doc graph (prds/, harness/, surfaces/, specs/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase.
+description: Audit the project's doc graph (prds/, harness/, surfaces/, mcp-servers/, specs/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase.
 disable-model-invocation: true
 ---
 
@@ -24,6 +24,7 @@ latest_prd=$(ls prds/[0-9]*.md 2>/dev/null | sort | tail -1)
 latest_harness=$(ls harness/[0-9]*.md 2>/dev/null | sort | tail -1)
 latest_surfaces=$(ls surfaces/[0-9]*.md 2>/dev/null | sort | tail -1)
 latest_spec=$(ls specs/[0-9]*.md 2>/dev/null | sort | tail -1)
+mcp_files=$(ls mcp-servers/*.md 2>/dev/null)   # multiple files possible — one per server
 ```
 
 Glossary sources:
@@ -42,17 +43,17 @@ If both `latest_prd` and `latest_spec` are empty, stop and say so — there's no
 
 #### 2.1. Glossary drift — *worth-noting*
 
-For each `CONTEXT.md` line of the form `_Avoid_: term1, term2, …`, search the latest PRD, harness, surfaces, and SPEC for those terms (skip any var that's empty):
+For each `CONTEXT.md` line of the form `_Avoid_: term1, term2, …`, search the latest PRD, harness, surfaces, SPEC, and every MCP-server design file for those terms (skip any var that's empty):
 
 ```bash
-grep -nE "\b(term1|term2)\b" "$latest_prd" "$latest_harness" "$latest_surfaces" "$latest_spec" 2>/dev/null
+grep -nE "\b(term1|term2)\b" "$latest_prd" "$latest_harness" "$latest_surfaces" "$latest_spec" $mcp_files 2>/dev/null
 ```
 
 Report each hit with the canonical term to use instead. Skip hits inside fenced code blocks.
 
 #### 2.2. Dead cross-references — *must-fix*
 
-Walk every markdown file in `prds/`, `harness/`, `surfaces/`, `specs/`, `docs/`, plus root `CONTEXT.md` and `CONTEXT-MAP.md`. For each `[text](path)`:
+Walk every markdown file in `prds/`, `harness/`, `surfaces/`, `mcp-servers/`, `specs/`, `docs/`, plus root `CONTEXT.md` and `CONTEXT-MAP.md`. For each `[text](path)`:
 
 - Skip if `path` starts with `http`.
 - If `path` contains `#`, split into file + anchor. Verify the file exists and the anchor matches a heading (slugified: lowercase, spaces → hyphens, punctuation stripped).

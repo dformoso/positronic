@@ -1,6 +1,6 @@
 ---
 name: design-mcp-server
-description: Walk the design decisions for a new MCP (Model Context Protocol) server before any code is written. Covers transport, auth, tool-surface shape, schema discipline, state model, capability declaration, error model, annotations, and testing. Use when the user is designing an MCP server — not consuming one.
+description: Walk the design decisions for a new MCP (Model Context Protocol) server and write a versioned `mcp-servers/` artifact that `/to-spec` reads. Covers transport, auth, tool-surface shape, schema discipline, state model, capability declaration, error model, annotations, and testing. Use when the user is designing an MCP server — not consuming one.
 ---
 
 You are picking the design for a new MCP server. The schema is the contract — no client will validate args for you. Pick deliberately.
@@ -8,6 +8,17 @@ You are picking the design for a new MCP server. The schema is the contract — 
 Reference: `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/06_mcp_design_brief.md` carries the empirical foundation, cross-cut from 5 popular agent frameworks (mastra, langgraph, pydantic-ai, mcp-use, mcp-agent). Cite ranked techniques as you make recommendations.
 
 Ask one question at a time. Surface your recommended answer with each.
+
+## 0. Read the PRD (and harness, if invoked from pick-harness-shape)
+
+Before any picks, read:
+
+- The most recent PRD, if any: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and integration constraints anchor the design — picking blind invites rework.
+- The most recent harness artifact, if any: `ls harness/[0-9]*.md | sort | tail -1`. When invoked from `pick-harness-shape`'s hand-off, this names the tool count, naming convention, and permission scope the harness expects — the MCP design slots into that contract.
+
+If no PRD exists, surface that to the user — `design-mcp-server` can run standalone but the resulting picks are weaker. If the user confirms standalone use, proceed and note "standalone — no PRD" in the artifact's Sources field.
+
+Record the paths; they go into the artifact (section 10).
 
 ## 1. Confirm MCP is the right surface
 
@@ -129,9 +140,10 @@ Use the template below. Every section must carry information: cite the named pat
 
 <mcp-design-template>
 
-## Source PRD
+## Sources
 
-`prds/<file>.md` — the PRD whose constraints drove these picks. (Or "no PRD yet — design-mcp-server invoked standalone" with a one-sentence reason.)
+- `prds/<file>.md` — the PRD whose constraints drove these picks. (Or "standalone — no PRD" with a one-sentence reason if invoked without a PRD.)
+- `harness/<file>.md` — if invoked from `pick-harness-shape`, the harness whose §5 tool-layer pick led to this design.
 
 ## TL;DR
 

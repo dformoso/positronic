@@ -16,7 +16,7 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 3. Read the most recent surfaces artifact: `ls surfaces/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Product surfaces" section restates its picks (nav, account, onboarding, settings, integration placement, error states, compliance) and the SPEC's Modules section should reflect them — do not re-derive, and do not contradict silently. If the SPEC needs to deviate, surface the conflict before writing. If the product has persistent UI surfaces and no surfaces artifact exists, stop and prompt the user to run `pick-surfaces` first.
 
-4. Read the most recent MCP-server design (if any): `ls mcp-servers/*.md 2>/dev/null | sort | tail -1`. If one exists, the SPEC's "Tool layer / ACI" section restates its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
+4. Read all MCP-server designs (if any): `ls mcp-servers/*.md 2>/dev/null`. Multi-server projects keep one artifact per server (filename `<server-slug>-<ts>.md`); read every file. For each, the SPEC's "Tool layer / ACI" section adds a paragraph restating its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) plus a pointer to the file — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
 
 5. Sketch modules and integration points. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation.
 
@@ -85,7 +85,7 @@ Nodes + edges. For each node: input, output, LLM-or-not, retry policy, idempoten
 
 For each tool: name, MCP / custom, the shape the *agent* sees (not the human), idempotency, permission scope. Five well-designed tools beat fifty.
 
-If a `mcp-servers/<file>.md` exists, restate its picks here as one paragraph plus a pointer (`See mcp-servers/<file>.md`) so the full rationale and rejected alternatives stay one click away.
+If `mcp-servers/<file>.md` artifacts exist, add one paragraph per server restating its picks plus a pointer (`See mcp-servers/<file>.md`) so the full rationale and rejected alternatives stay one click away. Multi-server projects produce multiple files (one per server) — restate each.
 
 If the SPEC is for an MCP **server** (you're producing tools other agents consume), the entry also locks down the public-API contract:
 

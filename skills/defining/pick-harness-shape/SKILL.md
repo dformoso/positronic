@@ -132,9 +132,10 @@ Use the template below. Every section must carry information: cite the pattern b
 
 <harness-template>
 
-## Source PRD
+## Sources
 
-`prds/<file>.md` — the PRD whose constraints drove these picks. (Or "harness-first override: no PRD yet" with a one-sentence reason, if section 0's exception applied.)
+- `prds/<file>.md` — the PRD whose constraints drove these picks. (Or "harness-first override: no PRD yet" with a one-sentence reason, if section 0's exception applied.)
+- `surfaces/<file>.md` — if read in §0, the UI surfaces these tool/gate picks slot into.
 
 ## TL;DR
 
