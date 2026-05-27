@@ -1,10 +1,10 @@
 ---
 name: to-spec
-description: Turn the most recent PRD and (if present) the most recent harness/ artifact into an implementation SPEC. Save it as a versioned local file in specs/. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics).
+description: Turn the most recent PRD and (if present) the most recent harness/ and surfaces/ artifacts into an implementation SPEC. Save it as a versioned local file in specs/. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics, product surfaces).
 disable-model-invocation: true
 ---
 
-Synthesize the most recent PRD and (if present) the most recent `harness/` artifact into a SPEC. Do NOT re-interview — work from prior decisions.
+Synthesize the most recent PRD and (if present) the most recent `harness/` and `surfaces/` artifacts into a SPEC. Do NOT re-interview — work from prior decisions.
 
 The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observability, security. The PRD owns *what and why* — don't duplicate it here.
 
@@ -14,21 +14,26 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 2. Read the most recent harness artifact: `ls harness/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Harness shape" section restates its picks (substrate, topology, memory, tool layer, gates, per-stage sampling) — do not re-derive them, and do not contradict them silently. If the SPEC needs to deviate, surface the conflict to the user before writing. If no harness artifact exists and the section matrix below indicates one is needed (custom agent / multi-agent / computer use), stop and prompt the user to run `pick-harness-shape` first.
 
-3. Sketch modules and integration points. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation.
+3. Read the most recent surfaces artifact: `ls surfaces/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Product surfaces" section restates its picks (nav, account, onboarding, settings, integration placement, error states, compliance) and the SPEC's Modules section should reflect them — do not re-derive, and do not contradict silently. If the SPEC needs to deviate, surface the conflict before writing. If the product has persistent UI surfaces and no surfaces artifact exists, stop and prompt the user to run `pick-surfaces` first.
 
-4. Confirm with the user which modules need tests; capture them in the Test plan section.
+4. Read the most recent MCP-server design (if any): `ls mcp-servers/*.md 2>/dev/null | sort | tail -1`. If one exists, the SPEC's "Tool layer / ACI" section restates its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
 
-5. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `specs/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `specs/` if missing). Commit it.
+5. Sketch modules and integration points. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation.
 
-6. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information.
+6. Confirm with the user which modules need tests; capture them in the Test plan section.
 
-7. Present the saved SPEC and wait for the user's approval before they run `/to-issues`.
+7. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `specs/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `specs/` if missing). Commit it.
+
+8. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information.
+
+9. Present the saved SPEC and wait for the user's approval before they run `/to-issues`.
 
 ## Section applicability
 
 | Section | Web/CRUD | LLM pipeline | Custom agent | Multi-agent | Computer use |
 |---|:---:|:---:|:---:|:---:|:---:|
 | Harness shape (from pick-harness-shape) | | | ✓ | ✓ | ✓ |
+| Product surfaces (from pick-surfaces — UI products only) | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Modules & interfaces | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Data model / schema | ✓ | ✓ | ✓ | ✓ | ✓ |
 | API contracts | ✓ | ✓ | ✓ | ✓ | ✓ |
@@ -54,6 +59,10 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 Restate the picks from the most recent `harness/<file>.md` — substrate, topology, memory, tool layer, gate strategy, per-stage sampling. One paragraph max plus a pointer (`See harness/<file>.md`) so the full rationale and rejected alternatives are one click away. Cite which named patterns from `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` were chosen.
 
+## Product surfaces
+
+Restate the picks from the most recent `surfaces/<file>.md` — nav, account lifecycle, onboarding, settings, integration placement, error/system states, compliance touchpoints. One paragraph plus a pointer (`See surfaces/<file>.md`) so the full rationale and rejected alternatives stay one click away. The Modules section below should reflect these surfaces (e.g., `onboarding/`, `settings/`) rather than scattering the logic.
+
 ## Modules & interfaces
 
 For each module: name, responsibility, interface (inputs / outputs), depth (deep vs shallow). Look for opportunities to extract deep modules that can be tested in isolation.
@@ -75,6 +84,8 @@ Nodes + edges. For each node: input, output, LLM-or-not, retry policy, idempoten
 ## Tool layer / ACI
 
 For each tool: name, MCP / custom, the shape the *agent* sees (not the human), idempotency, permission scope. Five well-designed tools beat fifty.
+
+If a `mcp-servers/<file>.md` exists, restate its picks here as one paragraph plus a pointer (`See mcp-servers/<file>.md`) so the full rationale and rejected alternatives stay one click away.
 
 If the SPEC is for an MCP **server** (you're producing tools other agents consume), the entry also locks down the public-API contract:
 

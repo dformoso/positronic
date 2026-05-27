@@ -1,36 +1,45 @@
 ---
 name: pick-harness-shape
-description: Pick the harness shape for a custom LLM/agent system. Invoked by define when the project smells like a custom harness. Walks substrate, loop topology, memory, tool layer, and gate strategy — picking a custom harness when it's genuinely useful, an off-the-shelf one otherwise. Use when the user is designing an agentic system that doesn't fit a single LLM call or a deterministic pipeline.
+description: Pick the harness shape for an LLM/agent system. Invoked by define when the project may need reliability beyond conversational use — programmatic gates, contracts, audit, autonomous execution. First decides whether a custom harness is needed at all, then walks substrate, loop topology, memory, tool layer, and gate strategy. Use when the user is designing a system that doesn't fit a single LLM call or a deterministic pipeline.
 ---
 
-You are picking the harness shape for a custom LLM/agent system. The harness is the runtime stack around the LLM: tool dispatch, scheduling, memory, verification gates. Harness changes alone can swing benchmark scores 6× on the same model — these decisions are load-bearing.
+You are picking the harness shape for an LLM/agent system. The harness is the runtime stack around the LLM — tool dispatch, scheduling, memory, verification gates, audit. It is what makes a system trustworthy when there's no human in the loop catching mistakes. Harness changes alone can swing benchmark scores 6× on the same model; these decisions are load-bearing.
 
 Reference: `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` carries the empirical foundation. Cite the named pattern and its evidence as you make recommendations. Pull the relevant brief for each section below.
 
 Ask one question at a time. Surface your recommended answer with each.
 
-## 0. Read the PRD
+## 0. Read the PRD (and surfaces, if any)
 
-Before any picks, read the most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and business constraints (on-prem requirements, sensitive code paths, multi-agent decomposition reasons, trust boundaries) are the inputs that drive sections 1–7 — picking without them is picking blind.
+Before any picks, read:
+
+- The most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and business constraints (on-prem requirements, sensitive code paths, multi-agent decomposition reasons, trust boundaries) are the inputs that drive sections 1–7 — picking without them is picking blind.
+- The most recent surfaces artifact, if any: `ls surfaces/[0-9]*.md | sort | tail -1`. When the product has UI, the harness's tool layer (§5) and gates (§6) should slot into known surfaces rather than re-deriving them.
 
 If no PRD exists, stop and prompt the user to run `/to-prd` first. **Exception:** if the harness IS the product or differentiator (case 6 in section 1), the picks may legitimately shape the PRD rather than follow from it. Surface this to the user and let them override before proceeding.
 
-Record the PRD path; it goes into the artifact (section 8).
+Record the PRD path (and surfaces path, if read); they go into the artifact (section 8).
 
-## 1. Custom vs. off-the-shelf
+## 1. Do you need a custom harness at all?
 
-Lean custom whenever it offers a real advantage. Off-the-shelf coding agents (Claude Code, Cursor, Codex, Cline) are the fallback — pick one only when the work is plain code editing in a familiar stack and none of the cases below apply.
+A custom harness exists to make an LLM system reliable when there's no human in the verification loop — gates, contracts, programmatic verification, audit, structured routing. If your system doesn't need that, don't build one.
 
-Cases where custom is the right call:
+**Skip the harness when:**
 
-- Tool surface, routing, memory, or verification gates that an off-the-shelf agent can't expose
-- Regulated industry (financial, healthcare, government) requiring on-prem or audit
-- Sensitive code paths needing custom routing (local model for sensitive files, frontier model for the rest)
-- Non-coding agent work (support, ops, research, drafting) where coding agents don't apply
-- Multi-agent workflow with independent lifecycles or trust boundaries — not just "multiple things happen"
-- Harness behavior is itself the product or differentiator
+- You're a dev doing dev work — Claude Code, Cursor, Codex, and Cline already are the harness. Use them.
+- Your application needs one LLM call (generation, summarization, classification, extraction) — hit the API directly.
+- Your application is a chat surface where the user is the verification loop — minimal chat loop, no harness machinery.
 
-If any apply, go custom. If none do, surface that off-the-shelf likely fits — but when in doubt, lean custom.
+**Build a custom harness when:**
+
+- The system runs without a human in the loop — scheduled jobs, background workers, autonomous bots, customer-facing agents
+- Bounded failure modes are mandatory — regulated industry (financial, healthcare, government), audit trails, irreversible side effects
+- Verification must be programmatic — gates, schema checks, verifier-LM judgments the agent can't skip
+- The agent picks its own next step across multiple turns with tool calls and feedback
+- Multi-agent with real decomposition — independent lifecycles, trust boundaries, or parallelism gain >2×
+- The harness itself is the product or differentiator
+
+If any "build" condition fires, continue through sections 2–7 to pick the shape. If none do, stop here and use the simpler thing.
 
 ## 2. Substrate
 
@@ -71,7 +80,7 @@ Compaction policy: when does context get summarized vs. truncated? Pick one and 
 Five well-designed tools beat fifty. Decide:
 
 - Rough tool count and boundaries
-- MCP server vs. custom — if MCP, invoke `design-mcp-server` next to walk transport, auth, tool surface, schema discipline, error model, and testing strategy. See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation
+- MCP server vs. custom — if MCP, record the rough count and naming convention here; `design-mcp-server` runs *after* this skill completes to walk transport, auth, schema discipline, error model, and testing strategy in depth and write its own `mcp-servers/<file>.md` artifact. See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation
 - For each tool: what shape does the *agent* see (not the human)?
 - Permission scope per tool
 - Idempotency
@@ -131,10 +140,10 @@ Use the template below. Every section must carry information: cite the pattern b
 
 One paragraph naming the picked substrate, topology, memory model, rough tool count, gate strategy, and the planner's model tier. A reader should be able to skip the rest and still know the shape.
 
-## Custom vs off-the-shelf
+## Why a custom harness
 
-**Picked:** custom | off-the-shelf (`<which agent>`)
-**Why:** one or two sentences. If custom, which case(s) from section 1 applied.
+**Triggers from §1:** which "build" condition(s) fired.
+**One-sentence reason:** the specific reliability requirement (or domain / differentiation reason) that made the simpler path insufficient.
 
 ## Substrate
 
@@ -157,7 +166,7 @@ One paragraph naming the picked substrate, topology, memory model, rough tool co
 ## Tool layer / ACI
 
 **Rough count and boundaries:**
-**MCP vs custom:** if MCP, note whether `design-mcp-server` should fire next.
+**MCP vs custom:** if MCP, note that `design-mcp-server` will run after this skill to write its own `mcp-servers/<file>.md` artifact.
 **Per-tool agent-facing shape:** brief notes — what the *agent* sees, not the human.
 **Permissions & idempotency:**
 **Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`, `docs/agentic-patterns/06_mcp_design_brief.md` (if MCP)
@@ -181,7 +190,7 @@ One paragraph naming the picked substrate, topology, memory model, rough tool co
 | Alternative | Why rejected |
 |---|---|
 
-Prevents future re-suggestion. Include at minimum the off-the-shelf option (if custom was picked) and any topology / substrate seriously considered.
+Prevents future re-suggestion. Include at minimum the "no harness" path (and why it was rejected) along with any topology / substrate seriously considered.
 
 ## Open questions
 
@@ -191,4 +200,7 @@ Decisions deferred to `/to-spec` (e.g., exact module boundaries, schema specific
 
 ## Hand-off
 
-Present the saved `harness/<file>.md` and ask the user to review. Once approved, prompt them to run `/to-spec` — it will read this file alongside the PRD automatically.
+Present the saved `harness/<file>.md` and ask the user to review. Once approved:
+
+- If the tool layer (§5) chose MCP, prompt them to run `design-mcp-server` next — it writes a versioned `mcp-servers/<file>.md` that `/to-spec` reads.
+- Otherwise, prompt them to run `/to-spec` — it will read this file alongside the PRD automatically.

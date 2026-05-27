@@ -58,13 +58,13 @@ total=$(echo "$issues" | jq '[.[] | select(.labels[].name == "afk")] | length')
 done_count=$(echo "$issues" | jq '[.[] | select(.labels[].name == "afk" and .state == "CLOSED")] | length')
 ```
 
-Resolve the latest SPEC and PRD (if those directories exist). Use `sort -V` so `10.md` ranks above `2.md`:
+Resolve the latest SPEC and PRD (if those directories exist):
 
 ```bash
 spec_path=""
 prd_path=""
-[ -d specs ] && spec_path=$(ls specs/[0-9]*.md 2>/dev/null | sort -V | tail -1 || true)
-[ -d prds ]  && prd_path=$(ls prds/[0-9]*.md  2>/dev/null | sort -V | tail -1 || true)
+[ -d specs ] && spec_path=$(ls specs/[0-9]*.md 2>/dev/null | sort | tail -1 || true)
+[ -d prds ]  && prd_path=$(ls prds/[0-9]*.md  2>/dev/null | sort | tail -1 || true)
 ```
 
 Print a rich announcement for the user. For each issue in the wave, fetch the body and surface the title, the "What to build" section, any "Exemplar to mirror" / "Decisions taken" / "Shared conventions" sections present, and the source documents that will be passed:

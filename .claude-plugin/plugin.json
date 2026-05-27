@@ -4,6 +4,7 @@
   "skills": [
     "./skills/defining/define",
     "./skills/defining/pick-harness-shape",
+    "./skills/defining/pick-surfaces",
     "./skills/defining/design-mcp-server",
     "./skills/defining/research-market",
     "./skills/defining/ideate",

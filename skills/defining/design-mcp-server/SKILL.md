@@ -121,6 +121,94 @@ See `skills/implementing/test-driven-dev/mcp-testing.md` for code patterns.
 | **`logging/setLevel` handler** | If your server emits internal logs at runtime, accept the spec's `setLevel` so clients can throttle. |
 | **Error message text** | Make reconnect-able. mastra's `isReconnectableMCPError` is a substring match on `error.message.toLowerCase()` for `'session'`, `'not connected'`, etc. (`error-utils.ts`). JSON-RPC codes with no recognisable text never trigger retry. |
 
-## 10. Hand-off
+## 10. Save the artifact
 
-Summarise the picked shape: transport, auth, tool surface (count + naming convention), other primitives, state model, capability set, error model, annotation policy, testing strategy. Then prompt the user to run `/to-prd` (if not yet done) and `/to-spec`. The SPEC's `Tool layer / ACI` section is where this lands as a versioned contract.
+Once the sections above have been answered, write the picks to `mcp-servers/<server-slug>-YYYY-MM-DD-HH-mm-SS.md` (current local time; create `mcp-servers/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+
+Use the template below. Every section must carry information: cite the named pattern that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
+
+<mcp-design-template>
+
+## Source PRD
+
+`prds/<file>.md` — the PRD whose constraints drove these picks. (Or "no PRD yet — design-mcp-server invoked standalone" with a one-sentence reason.)
+
+## TL;DR
+
+One paragraph naming transport, auth, rough tool count, return-shape policy, and state model. A reader should be able to skip the rest and still know the shape.
+
+## Why MCP
+
+**Triggers from §1:** which "use MCP" condition(s) fired (multi-framework consumers / out-of-process / shipping as product).
+**One-sentence reason:**
+
+## Transport
+
+**Picked:** stdio | Streamable HTTP | SSE-only | WebSocket | stdio + HTTP
+**Why:**
+**Cited pattern:** `docs/agentic-patterns/06_mcp_design_brief.md`
+
+## Auth
+
+**Picked:** None | Static bearer | OAuth 2.1 (PKCE, DCR/CIMD)
+**Why:**
+
+## Tool surface
+
+**Rough count and boundaries:**
+**Naming convention:** verb_noun, `[a-z0-9_]+`, server name never embedded.
+**Per-tool schema discipline:** notes on `inputSchema` (single-type fields, no `oneOf`), `outputSchema` (published), `annotations` (all four hints set), return shape (consistent `structuredContent`), failure mode (`CallToolResult(isError=True)`, never thrown).
+
+## Other primitives
+
+| Primitive | Decision | Why |
+|---|---|---|
+| Resources | yes/no | |
+| Resource templates | yes/no | |
+| Prompts | yes/no | |
+| Sampling | yes/no | |
+
+## State and lifecycle
+
+**Picked:** Stateless | Per-session (Streamable HTTP) | Persistent stdio process
+**Cold-start policy:** lazy-init expectations.
+**Shutdown behavior:** SIGTERM handler bounds.
+**`list_changed` notifications:** emit on tools/resources mutation.
+
+## Capability declaration
+
+**Advertised in `initialize`:** which capabilities are declared.
+**`MethodNotFound` policy:** return code on unsupported methods.
+
+## Observability
+
+**Logs:** structured JSON to stderr (stdio) or stdout (HTTP); tag with `tool`, `session_id`, `request_id`. Never log credentials, PII, or auth headers.
+**`_meta` on responses:** what's included.
+**Reconnect-able error text:** substring strategy for `'session'`, `'not connected'`, etc.
+
+## Testing strategy
+
+| Test | Included? | Why |
+|---|---|---|
+| Conformance suite in CI | yes/no | |
+| Real-server integration | yes/no | |
+| Pathological-schema fixture | yes/no | |
+| Fault-isolation test | yes/no | |
+| Startup schema validation | yes/no | |
+
+## Rejected alternatives
+
+| Alternative | Why rejected |
+|---|---|
+
+Include at minimum: "in-process tool instead of MCP" (and why it was rejected), plus any transport / auth seriously considered.
+
+## Open questions
+
+Decisions deferred to `/to-spec` or things that surfaced but couldn't be settled with current information.
+
+</mcp-design-template>
+
+## 11. Hand-off
+
+Present the saved `mcp-servers/<file>.md` and ask the user to review. Once approved, prompt them to run `/to-prd` (if not yet done) and `/to-spec` — `/to-spec`'s `Tool layer / ACI` section reads this file automatically.
