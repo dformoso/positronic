@@ -8,12 +8,15 @@ disable-model-invocation: true
 
 Static sweep across the project's doc graph. Detects drift. Reports only — never auto-fixes. Mirrors `/review-pr`'s posture.
 
-Complementary, not redundant, with `judge-idea`:
+Positions within the shipping phase:
 
-| Skill | When it fires | What it does |
-|---|---|---|
-| `judge-idea` | After PRD/SPEC | **Stress-tests** the idea — adversarial pass on the artifact |
-| `audit-drift` (this) | Shipping, on demand | **Detects** drift across the full doc graph — finds what the others missed |
+| Skill | Scope | When it fires | What it does |
+|---|---|---|---|
+| `/review-pr` | Current diff | Before a branch ships | Catches what's wrong or risky in the change |
+| `/audit-drift` (this) | Doc graph | Shipping, on demand | Detects drift across PRDs/SPECs/ADRs |
+| `/audit-failure-modes` | Whole system | Before a release cut | Lists latent failure modes; ranks by correctness/reliability/polish |
+
+Complementary, not redundant, with `judge-idea` from the defining phase — that adversarially stress-tests an artifact, while audit-drift detects mechanical drift across the full doc graph.
 
 ## Process
 
@@ -46,6 +49,7 @@ If both `latest_prd` and `latest_spec` are empty, stop and say so — there's no
 For each `CONTEXT.md` line of the form `_Avoid_: term1, term2, …`, search the latest PRD, harness, surfaces, SPEC, and every MCP-server design file for those terms (skip any var that's empty):
 
 ```bash
+# $mcp_files intentionally unquoted: word-splits into multiple grep file args
 grep -nE "\b(term1|term2)\b" "$latest_prd" "$latest_harness" "$latest_surfaces" "$latest_spec" $mcp_files 2>/dev/null
 ```
 

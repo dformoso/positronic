@@ -121,7 +121,7 @@ The default — confirm with the user once you've drafted it:
 4. **Fault-isolation test.** Spawn one broken server alongside healthy ones; assert healthy ones still serve (mastra `:917-988`).
 5. **Startup schema validation.** Fail loudly on boot if any tool's `inputSchema` is malformed. Catches drift before clients see it.
 
-See `skills/implementing/test-driven-dev/mcp-testing.md` for code patterns.
+See [mcp-testing.md](../../implementing/test-driven-dev/mcp-testing.md) for code patterns.
 
 ## 9. Observability
 

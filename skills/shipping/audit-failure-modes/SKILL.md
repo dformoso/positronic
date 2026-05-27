@@ -8,11 +8,11 @@ disable-model-invocation: true
 
 Prospective diagnosis. Walk the system and list how it could break — before it does. Reports only — never auto-fixes. Mirrors `/review-pr`'s and `/audit-drift`'s posture.
 
-| Skill | Scope | What it does |
-|---|---|---|
-| `/review-pr` | Current diff | Catches what's wrong or risky in the change |
-| `/audit-drift` | Doc graph | Detects drift across PRDs/SPECs/ADRs |
-| `audit-failure-modes` (this) | Whole system | Lists latent failure modes; ranks by correctness/reliability/polish |
+| Skill | Scope | When it fires | What it does |
+|---|---|---|---|
+| `/review-pr` | Current diff | Before a branch ships | Catches what's wrong or risky in the change |
+| `/audit-drift` | Doc graph | Shipping, on demand | Detects drift across PRDs/SPECs/ADRs |
+| `/audit-failure-modes` (this) | Whole system | Before a release cut | Lists latent failure modes; ranks by correctness/reliability/polish |
 
 ## Process
 

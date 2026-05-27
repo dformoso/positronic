@@ -13,7 +13,7 @@ description: Test-driven development with red-green-refactor loop. Use when user
 
 **Bad tests** are coupled to implementation. They mock internal collaborators, test private methods, or verify through external means (like querying a database directly instead of using the interface). The warning sign: your test breaks when you refactor, but behavior hasn't changed. If you rename an internal function and tests fail, those tests were testing implementation, not behavior.
 
-See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
+See [tests.md](tests.md) for examples, [mocking.md](mocking.md) for mocking guidelines, and [mcp-testing.md](mcp-testing.md) for MCP server tests.
 
 ## Anti-Pattern: Horizontal Slices
 
@@ -49,7 +49,7 @@ Before writing any code:
 - [ ] State the interface shape — what the public API will look like
 - [ ] List the behaviors to test, prioritized (not implementation steps)
 - [ ] Identify opportunities for [deep modules](deep-modules.md) (small interface, deep implementation)
-- [ ] Design interfaces for [testability](interface-design.md)
+- [ ] Design interfaces for [testability](interface-testability.md)
 - [ ] If the slice touches web UI, the tracer-bullet test is a Playwright CUJ (real browser, real flow) — not a component unit test
 
 State the plan inline (interface, top behaviors, what's out of scope) and proceed. Ask only if a scope question would change the slice — the upstream issue is the contract; don't relitigate it.
