@@ -133,7 +133,3 @@ When the project uses [Google ADK](https://adk.dev) or deploys to Google Cloud, 
 
 - Pick a CUJ from the PRD, or invent one if none is specified — surface which you chose.
 - "It compiles" and "tests pass" are not verification for UI work. Drive the actual flow in a real browser.
-
----
-
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
