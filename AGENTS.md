@@ -119,17 +119,9 @@ Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt th
 
 ## Stack-specific rules
 
-The rules above are universal. The rules below apply only when the stack matches.
+The rules above are universal. The rule below applies only when the stack matches.
 
-### Cloud Deployments
-
-**For Google ADK or Google Cloud projects, prompt the user to install — don't install yourself.**
-
-When the project uses [Google ADK](https://adk.dev) or deploys to Google Cloud, prompt the user to install [`google-agents-cli`](https://github.com/google/agents-cli) and register the relevant skills. See the README for install commands and the skill list.
-
-### Web UI
-
-**If the project renders in a browser (website, webapp, or web-mocked mobile app), install Playwright and verify at least one critical user journey before reporting work complete.**
+**Web UI — if the project renders in a browser (website, webapp, or web-mocked mobile app), install Playwright and verify at least one critical user journey before reporting work complete.**
 
 - Pick a CUJ from the PRD, or invent one if none is specified — surface which you chose.
 - "It compiles" and "tests pass" are not verification for UI work. Drive the actual flow in a real browser.
