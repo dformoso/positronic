@@ -26,9 +26,18 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 
 3. Write the PRD using the template below. Save as `prds/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `prds/` if missing). Commit it. Do not submit it as a GitHub issue.
 
-4. Length and density: ≤ 6 pages — preferably less. The **vision** — Target User + Solution Overview together — must fit in ≤ 1 page: tight but comprehensive. The vision is the contract `/to-spec` and implementation work against; drift from it produces unusable output. Functional Requirements is the section that scales with product surface — use tables only, no prose, drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
+4. Length and density: ≤ 6 pages — preferably less. Target User + Solution Overview together must fit in ≤ 1 page: tight but comprehensive. These two anchor the contract `/to-spec` and implementation work against; drift from them produces unusable output. Functional Requirements is the section that scales with product surface — drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
 
-5. Present the saved PRD and ask the user to review. Then prompt for the next step in this order:
+5. **Style.** Two registers. **Functional Requirements** is the technical tier — vendor names, SDK names, regulatory mechanics, OAuth flows, MMS pricing — packed into tables, not prose. Every other section (**Problem Statement**, **Target User**, **Goals & Success Metrics**, **Solution Overview**, **Key User Journeys**, **Non-Goals**, **Out of Scope**, **Risks & Open Questions**, **Further Notes**) is plain English — someone matching the target persona could follow it without a glossary.
+
+   - No vendor, SDK, protocol, or regulatory jargon outside Functional Requirements. Names like "Twilio Voice SDK", "CallKit-integrated", "OAuth flow" belong in cells. Solution Overview says what the user experiences; Functional Requirements says how.
+   - No inline tutorials inside parentheses. If a term needs a definition, pick a plainer word or move the definition into Functional Requirements.
+   - No nested parentheticals, no em-dash asides inside parentheses. One layer of detail per sentence; more layers means a bullet list or table row.
+   - Name concrete artifacts, not abstract actions. "Drafts customers, jobs, quotes, invoices" beats "structures inbound". Common offenders: *absorbs*, *structures* (as verb), *processes*, *handles* — usually a sign you haven't named the artifact yet.
+   - Cross-cutting / multi-channel behaviour → short lede + one bullet per channel. A paragraph that tries to describe four channels at once is unreadable.
+   - Name surfaces with real product nouns (e.g. Convos, Triage, Ledger, To-Approve — not "data pane / agent pane / approvals pane"). Bold every mention in Solution Overview and Key User Journeys.
+
+6. Present the saved PRD and ask the user to review. Then prompt for the next step in this order:
    - If the product has persistent UI surfaces, prompt them to run `pick-ui-surfaces`.
    - If the project involves a custom LLM/agent harness, prompt them to run `pick-harness-shape` (after `pick-ui-surfaces`, if both apply).
    - Otherwise, prompt them to run `/to-spec`.
@@ -41,7 +50,7 @@ The problem in the user's words. Two to four sentences max.
 
 ## Target User
 
-A specific, named persona (or representative composite) that captures who this product is for. Their work, their world, the moments where this product enters their life, the constraints that shape their choices. Concrete beats generic — *"Nathan: a solo plumber in metropolitan or peri-urban Australia, 5–25 years in the trade, already pays for ServiceM8 or Tradify, hands wet/dirty/gloved during the day"* beats *"small business owner"*. **Half a page max.** (This and Solution Overview together are the vision — ≤ 1 page combined.)
+A specific, named persona (or representative composite) that captures who this product is for. Their work, their world, the moments where this product enters their life, the constraints that shape their choices. Concrete beats generic — *"Nathan: a solo plumber in metropolitan or peri-urban Australia, 5–25 years in the trade, already pays for ServiceM8 or Tradify, hands wet/dirty/gloved during the day"* beats *"small business owner"*. **Half a page max.**
 
 ## Goals & Success Metrics
 
@@ -59,21 +68,21 @@ What we're building, in user-facing terms. Form factor (web app / PWA / CLI / AP
 
 ## Key User Journeys
 
-Numbered CUJs. Each named, **two sentences max**, naming actor + trigger + flow + outcome. Comprehensive but not exhaustive — cut journeys that are obvious consequences of others.
+Numbered CUJs. Each named, **two sentences max**, naming actor + trigger + flow + outcome. **Every journey names the surface(s) the user touches** (bolded — `**Convos**`, `**To-Approve**`, etc.) and the device when it differs from the surface's default. A reader should be able to point at which tab the user is on at each step. Comprehensive but not exhaustive — cut journeys that are obvious consequences of others.
 
-1. **<Short name>.** <Two sentences max>.
+1. **<Short name>.** <Two sentences max, surface-stamped, device-stamped where it matters>.
 
 <cuj-example>
-1. **First inbound from a new customer.** Mrs Chen rings at 2:14pm; Nathan doesn't answer, so AI voicemail takes the message and auto-sends an acknowledgement SMS. At the 4pm digest Nathan picks a slot from a draft reply and taps send.
+1. **First inbound from a new customer.** Mrs Chen rings at 2:14pm; Nathan doesn't answer, so AI voicemail takes the message and the agent sends an acknowledgement SMS in **Convos**. At the 4pm digest Nathan opens **To-Approve** on his phone, taps the draft reply card, and sends.
 </cuj-example>
 
 ## Non-Goals
 
-Who and what we are explicitly **not** serving with this PRD. Adjacent personas, use cases, and platforms that might seem in scope but aren't. Sharpens the segment.
+**Top 5 only.** Who and what we are explicitly **not** serving with this PRD. Adjacent personas, use cases, and platforms that might seem in scope but aren't. Sharpens the segment.
 
 ## Out of Scope
 
-Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep.
+**Top 5 only.** Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep.
 
 ## Functional Requirements
 
