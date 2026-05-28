@@ -14,7 +14,7 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 2. Read the most recent harness artifact: `ls harness/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Harness shape" section restates its picks (substrate, topology, memory, tool layer, gates, per-stage sampling) — do not re-derive them, and do not contradict them silently. If the SPEC needs to deviate, surface the conflict to the user before writing. If no harness artifact exists and the section matrix below indicates one is needed (custom agent / multi-agent / computer use), stop and prompt the user to run `pick-harness-shape` first.
 
-3. Read the most recent surfaces artifact: `ls surfaces/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Product surfaces" section restates its picks (nav, account, onboarding, settings, integration placement, error states, compliance) and the SPEC's Modules section should reflect them — do not re-derive, and do not contradict silently. If the SPEC needs to deviate, surface the conflict before writing. If the product has persistent UI surfaces and no surfaces artifact exists, stop and prompt the user to run `pick-surfaces` first.
+3. Read the most recent surfaces artifact: `ls surfaces/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Product surfaces" section restates its picks (visual identity, nav, account, onboarding, settings, integration placement, error states, compliance) and the SPEC's Modules section should reflect them — do not re-derive, and do not contradict silently. If the SPEC needs to deviate, surface the conflict before writing. If the product has persistent UI surfaces and no surfaces artifact exists, stop and prompt the user to run `pick-ui-surfaces` first.
 
 4. Read all MCP-server designs (if any): `ls mcp-servers/*.md 2>/dev/null`. Multi-server projects keep one artifact per server (filename `<server-slug>-<ts>.md`); read every file. For each, the SPEC's "Tool layer / ACI" section adds a paragraph restating its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) plus a pointer to the file — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
 
@@ -33,7 +33,7 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 | Section | Web/CRUD | LLM pipeline | Custom agent | Multi-agent | Computer use |
 |---|:---:|:---:|:---:|:---:|:---:|
 | Harness shape (from pick-harness-shape) | | | ✓ | ✓ | ✓ |
-| Product surfaces (from pick-surfaces — UI products only) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Product surfaces (from pick-ui-surfaces — UI products only) | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Modules & interfaces | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Data model / schema | ✓ | ✓ | ✓ | ✓ | ✓ |
 | API contracts | ✓ | ✓ | ✓ | ✓ | ✓ |
@@ -62,6 +62,8 @@ Restate the picks from the most recent `harness/<file>.md` — substrate, topolo
 ## Product surfaces
 
 Restate the picks from the most recent `surfaces/<file>.md` — nav, account lifecycle, onboarding, settings, integration placement, error/system states, compliance touchpoints. One paragraph plus a pointer (`See surfaces/<file>.md`) so the full rationale and rejected alternatives stay one click away. The Modules section below should reflect these surfaces (e.g., `onboarding/`, `settings/`) rather than scattering the logic.
+
+Restate the **visual identity** inline as a table (who, feel, signature, accent + ramp, neutrals, spacing base, fonts, depth/motion) — not just a pointer. The implementing agent reads this SPEC, not the surfaces artifact, so the locked values must live here for every UI issue to inherit one identity; `ui-taste` reads them at build time and applies them.
 
 ## Modules & interfaces
 
@@ -156,7 +158,7 @@ Who can do what. Authentication mechanism. Authorization checks at boundaries. S
 
 Selectors or anchor strategy. CAPTCHA / login handling. Drift-detection plan — the DOM will change.
 
-For frontend implementation, `ui-taste` will fire automatically and apply the visual rules. No need to restate them here — flag any project-specific overrides only.
+For frontend implementation, `test-driven-dev` invokes `ui-taste`, which reads the locked visual identity (from the Product surfaces section above) and applies the visual rules. No need to restate the rules here — flag any project-specific overrides only.
 
 ## Out of scope
 

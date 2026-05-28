@@ -51,6 +51,7 @@ Before writing any code:
 - [ ] Identify opportunities for [deep modules](deep-modules.md) (small interface, deep implementation)
 - [ ] Design interfaces for [testability](interface-testability.md)
 - [ ] If the slice touches web UI, the tracer-bullet test is a Playwright CUJ (real browser, real flow) — not a component unit test
+- [ ] If the slice touches user-facing UI, invoke `ui-taste` before styling — it applies the visual rules and reads the locked style from the SPEC's Product surfaces section (the `pick-ui-surfaces` picks `/to-spec` restated)
 
 State the plan inline (interface, top behaviors, what's out of scope) and proceed. Ask only if a scope question would change the slice — the upstream issue is the contract; don't relitigate it.
 

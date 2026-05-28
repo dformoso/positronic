@@ -9,15 +9,13 @@ Opinionated visual rules. Apply them when you write or change UI. If three or mo
 
 These rules are safe defaults, not laws. Break them when you have a reason; surface the reason.
 
-## Before you start
+## Work from the locked style
 
-Name three things before generating a new surface or restyling a page:
+The visual identity — who, feel, signature, accent, neutrals, spacing base, fonts, depth/motion — is decided once, up front, by `pick-ui-surfaces` and restated in the SPEC's "Product surfaces" section. **Read it and apply it. Do not re-pick it per surface** — that is what makes parallel-built screens diverge.
 
-- **Who.** The actual user — not "users." A teacher at 7am is not a developer debugging at midnight.
-- **Feel.** In specific words. "Warm like a notebook," "cold like a terminal," "dense like a trading floor." Never "clean and modern" — every AI says that.
-- **Signature.** One element — visual, structural, or interactive — that could only exist for THIS product. If you can't name one, you haven't designed yet.
+If no identity is recorded (the SPEC has none and there's no `surfaces/` artifact), you're working pre-identity: name the who, feel, and signature yourself — feel in specific words ("warm like a notebook," never "clean and modern"), signature being one element only this product would have — record them so the next surface inherits them, then proceed.
 
-Skip for isolated tweaks (one button colour, a typo) where the direction is already set.
+Skip this for isolated tweaks (one button colour, a typo) where the direction is already set.
 
 ## 1. One primary thing per surface
 
@@ -33,17 +31,17 @@ Strip colour before you start. Force the layout to work on hierarchy alone — s
 
 ## 3. Spacing is hierarchy
 
-Related things sit closer. Unrelated things sit farther. Inner padding ≤ outer margin. Use a fixed scale — `4, 8, 12, 16, 24, 32, 48, 64` — and never invent arbitrary values. Pick a base (8 for consumer, 4 for dense tools like Linear/Raycast) and commit.
+Related things sit closer. Unrelated things sit farther. Inner padding ≤ outer margin. Apply the spacing base from the locked identity (4 or 8) on the fixed scale — `4, 8, 12, 16, 24, 32, 48, 64` — and never invent arbitrary values.
 
 Uniform spacing is the #1 tell of generic UI. Vary it deliberately.
 
 ## 4. No pure black, no pure white
 
-`#000` on `#fff` is harsh and flat. Body text wants near-black (e.g. `#111`–`#1f2937`). Background neutrals want a slight tint — warm or cool, pick one. Dark mode surfaces start at `#121212`, never `#000`; raise lightness with elevation, don't add shadows.
+`#000` on `#fff` is harsh and flat. Body text wants near-black (e.g. `#111`–`#1f2937`). Background neutrals carry the warm-or-cool tint from the locked identity. Dark mode surfaces start at `#121212`, never `#000`; raise lightness with elevation, don't add shadows.
 
 ## 5. Two fonts max, four sizes max
 
-One font for body, optionally one for display. System font stacks are fine — most users won't notice, and you skip a network request.
+Use the body and optional display fonts from the locked identity (two max). System font stacks are fine — most users won't notice, and you skip a network request.
 
 - Body text ≥ 16px. Body line-height ~1.5. Heading line-height ~1.2.
 - Line length 45–75 characters — use `max-width: 65ch` as a default. Wider than 80 and the eye loses the next line.
@@ -51,7 +49,7 @@ One font for body, optionally one for display. System font stacks are fine — m
 
 ## 6. Colour is a system, not picks
 
-One accent hue, expressed at multiple lightness steps (50–950 ramp). Semantic roles defined once — success, warning, danger, info — and reused. Saturated colour only on small areas (badges, focus rings, charts), never large surfaces. In dark mode, drop saturation by ~20 points so colours don't vibrate.
+Apply the accent hue and its 50–950 ramp from the locked identity; reuse the semantic roles it defines — success, warning, danger, info. Saturated colour only on small areas (badges, focus rings, charts), never large surfaces. In dark mode, drop saturation by ~20 points so colours don't vibrate.
 
 ## 7. WCAG AA is the floor
 

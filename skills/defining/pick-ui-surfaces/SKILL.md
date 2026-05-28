@@ -1,9 +1,9 @@
 ---
-name: pick-surfaces
-description: Pick the user-facing structural shape for a product with persistent UI surfaces. Invoked by define after /to-prd when the product has a UI. Walks nav, account, onboarding, settings, integration placement, error states, and compliance touchpoints — writes a versioned surfaces/ artifact that /to-spec reads. Use when the product has persistent UI surfaces (web app, mobile, dashboard, extension). Skip for CLI, API, library, or headless.
+name: pick-ui-surfaces
+description: Pick the user-facing shape for a product with persistent UI — both its visual identity and its structure. Invoked by define after /to-prd when the product has a UI. Walks visual identity (feel, signature, accent, type, spacing), nav, account, onboarding, settings, integration placement, error states, and compliance — writes a versioned surfaces/ artifact that /to-spec reads. Use when the product has persistent UI surfaces (web app, mobile, dashboard, extension). Skip for CLI, API, library, or headless.
 ---
 
-You are picking the user-facing structural shape for a product with persistent UI surfaces. These decisions — nav, account flow, onboarding, settings, error states — get skipped at the PRD level because they're not vision-shaping, and at the SPEC level because they're not implementation. They land here.
+You are picking the user-facing shape for a product with persistent UI surfaces — both its **visual identity** (the look every surface inherits) and its **structure** (nav, account flow, onboarding, settings, error states). These decisions get skipped at the PRD level because they're not vision-shaping, and at the SPEC level because they're not implementation. They land here.
 
 Ask one question at a time. Surface a recommended answer with each, grounded in the PRD's user, form factor, and constraints.
 
@@ -11,17 +11,32 @@ Ask one question at a time. Surface a recommended answer with each, grounded in 
 
 If the product is a CLI, API, library, or otherwise headless (no persistent UI), stop here — there's no surface shape to pick. Tell the user and exit without writing an artifact.
 
-Run pick-surfaces only when the user lives inside a persistent UI: web app, mobile app, dashboard, browser extension, or similar.
+Run pick-ui-surfaces only when the user lives inside a persistent UI: web app, mobile app, dashboard, browser extension, or similar.
 
 ## 1. Read the PRD
 
-Before any picks, read the most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's target user, form factor, external channels, integrations, and any compliance constraints are the inputs that drive sections 2–9 — picking without them is picking blind.
+Before any picks, read the most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's target user, form factor, external channels, integrations, and any compliance constraints are the inputs that drive sections 2–10 — picking without them is picking blind.
 
 If no PRD exists, stop and prompt the user to run `/to-prd` first.
 
-Record the PRD path; it goes into the artifact (section 10).
+Record the PRD path; it goes into the artifact (section 11).
 
-## 2. Navigation & shell
+## 2. Visual identity
+
+The look every surface inherits — decided once here so parallel implementers don't each invent one (they would diverge). `ui-taste` reads these picks at build time and applies them; it does not re-pick them per screen. Recommend a feel and signature grounded in the PRD's user before asking — don't start the user from blank.
+
+| Field | Pick | Note |
+|---|---|---|
+| Who | the actual user, one line | not "users" — a teacher at 7am ≠ a dev at midnight |
+| Feel | specific words ("warm like a notebook") | never "clean and modern" — every AI says that |
+| Signature | one element only this product would have | visual, structural, or interactive; can't name one? keep digging |
+| Accent | one hue + 50–950 ramp; semantic roles (success/warning/danger/info) | saturated colour on small areas only |
+| Neutrals | warm or cool tint; near-black + off-white | never #000/#fff; dark surfaces start at #121212 |
+| Spacing base | 4 (dense tools) or 8 (consumer) | one scale: 4, 8, 12, 16, 24, 32, 48, 64 |
+| Fonts | body + optional display, two max | system stack is fine; body ≥16px |
+| Depth & motion | one border colour, two shadow sizes, motion budget | elevation as hierarchy; animate only to communicate |
+
+## 3. Navigation & shell
 
 The persistent chrome the user lives inside.
 
@@ -37,7 +52,7 @@ Also decide: global search? command palette? in-app notifications inbox (the bel
 
 Per-device layout differences live here — not in the PRD.
 
-## 3. Account & access lifecycle
+## 4. Account & access lifecycle
 
 For each moment, pick a mechanism and a default:
 
@@ -52,7 +67,7 @@ For each moment, pick a mechanism and a default:
 
 For B2B/regulated products, lean toward SSO + required MFA. For consumer, lean toward OAuth + optional MFA. Read the PRD's target user and any compliance constraints (often in *Further Notes*) before recommending.
 
-## 4. Onboarding & first-run
+## 5. Onboarding & first-run
 
 What the user sees before, during, and after the first CUJ.
 
@@ -71,7 +86,7 @@ Common moments to consider:
 
 Hard pushback on long tours: every tour step is a tax on time-to-value. Default to no tour; rely on empty states with inline CTAs.
 
-## 5. Settings & preferences
+## 6. Settings & preferences
 
 One row per section, not per individual setting:
 
@@ -87,12 +102,12 @@ Common sections:
 - Security (password, MFA, sessions, devices, API keys)
 - Workspace / org (members, roles, invites) — if multi-user
 - Privacy (analytics opt-out, third-party sharing)
-- Theme / accessibility (light/dark, font size, motion)
+- Theme / accessibility (light/dark toggle, font size, motion) — the user-facing switch, not the palette itself (that's the visual identity)
 - Danger zone (delete workspace, delete account)
 
 Default policy: ship privacy-protective defaults (analytics off, sharing off) and convenience defaults for productivity (autosave on).
 
-## 6. Integration placement
+## 7. Integration placement
 
 For each integration named in the PRD's *Integrations & migration* table, decide where in the UX it surfaces and when it's presented:
 
@@ -105,7 +120,7 @@ When options: required at signup / required at first feature use / optional, pro
 
 Status indicators (badges, health dashboards, broken-connection banners) decide here too.
 
-## 7. Error & system states
+## 8. Error & system states
 
 What the user sees when things go wrong or aren't there yet.
 
@@ -126,7 +141,7 @@ Common states:
 
 Recovery path matters more than copy: every error state needs a way out (retry, sign in, contact support, switch plan).
 
-## 8. Help, support, status
+## 9. Help, support, status
 
 Brief — where do users get help?
 
@@ -137,7 +152,7 @@ Brief — where do users get help?
 
 Drop this section if the product is internal-only or pre-launch.
 
-## 9. Compliance touchpoints
+## 10. Compliance touchpoints
 
 Drop if not regulated and not consumer-facing in regulated regions.
 
@@ -155,7 +170,7 @@ Common:
 
 If the PRD names a regulated industry (financial, healthcare, government) or EU/UK users, this section is mandatory.
 
-## 10. Save the artifact
+## 11. Save the artifact
 
 Once the sections above have been answered, write the picks to `surfaces/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `surfaces/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
@@ -169,7 +184,20 @@ Length and density: as long as you need — preferably tight. Tables only, no pr
 
 ## TL;DR
 
-One paragraph naming the nav shape, signup mechanism, settings section count, error-state strategy, and any compliance touchpoints. A reader should be able to skip the rest and still know the shape.
+One paragraph naming the feel + signature, nav shape, signup mechanism, settings section count, error-state strategy, and any compliance touchpoints. A reader should be able to skip the rest and still know the shape.
+
+## Visual identity
+
+| Field | Picked |
+|---|---|
+| Who | |
+| Feel | |
+| Signature | |
+| Accent + ramp | |
+| Neutrals (tint, near-black, off-white) | |
+| Spacing base | |
+| Fonts (body / display) | |
+| Depth & motion | |
 
 ## Navigation & shell
 
@@ -219,7 +247,7 @@ Brief — in-app docs surface, contact mechanism, status page.
 | Alternative | Why rejected |
 |---|---|
 
-Prevents future re-suggestion. Include at minimum the nav shape and account flow seriously considered.
+Prevents future re-suggestion. Include at minimum the feel, nav shape, and account flow seriously considered.
 
 ## Open questions
 

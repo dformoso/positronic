@@ -2,12 +2,12 @@
 
 A personal AI-coding framework — opinionated, solo.
 
-**What positronic does** — four layers across the lifecycle of a software project:
+**What positronic does** — carries a software project from a fuzzy idea to shipped code across four concerns:
 
-- **Product management** — the `define` skill surfaces assumptions before any code is written; `/to-prd`, `/to-spec`, `/to-issues` lock them down as versioned artifacts. For zero-to-one work, an optional research arc precedes the PRD: `/research-market` → `/ideate` → `/judge-idea`.
-- **Software engineering** — eight behavioral rules (below) and test-driven development (red → green → refactor) where tests verify behavior through public interfaces, not implementation details.
-- **Agent harness engineering** — `pick-harness-shape` plus a reference corpus of frontier briefs (`docs/agentic-patterns/`) help decide whether a custom harness is needed at all (the cut-line is reliability — gates and contracts replacing human-in-the-loop verification), then lock the load-bearing decisions into a versioned `harness/` artifact that `/to-spec` reads. When the tool layer means building an MCP server, `design-mcp-server` walks the server-design decisions and writes a versioned `mcp-servers/` artifact that `/to-spec` also reads.
-- **Product surface engineering** — `pick-surfaces` walks the load-bearing UX decisions for products with persistent UI (nav, account lifecycle, onboarding, settings, integration placement, error states, compliance) and writes a versioned `surfaces/` artifact that `/to-spec` reads. Skip for CLI, API, library, or headless.
+- **Product management** — surface the assumptions an idea depends on, then lock them into versioned PRDs, specs, and issues.
+- **Software engineering** — a behavioral floor (below) plus test-driven development that verifies behavior through public interfaces, not implementation details.
+- **Agent-harness engineering** — decide whether a custom LLM/agent harness is warranted (the cut-line is reliability beyond conversational use), then lock its load-bearing shape.
+- **Product-surface engineering** — for products with a UI, lock the structure and visual identity once, before any screen is built.
 
 **The behavioral floor** — eight rules Claude follows on every turn:
 
@@ -20,68 +20,53 @@ A personal AI-coding framework — opinionated, solo.
 7. **User-Facing Reliability** — show progress on operations >2s; map external failures to one-sentence actionable messages, not raw exceptions.
 8. **Secret & Data Hygiene** — never commit secrets; never log credentials, PII, or auth headers.
 
-`AGENTS.md` is read by Claude Code and [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide) (since v1.20.3); other tools (Cursor, Codex) are converging on the same convention. The `skills/` system is Claude Code only — for cross-tool skill reach, use [`google-agents-cli`](#google-cloud-and-adk). Cloud lean: [Google Cloud](https://cloud.google.com/) + [Google ADK](https://adk.dev).
+`AGENTS.md` is read by Claude Code and [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide) (since v1.20.3); other tools (Cursor, Codex) are converging on the same convention. The `skills/` system is Claude Code only.
 
 ## A typical user journey
 
-You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet.
+You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each stage writes a versioned artifact the next one reads:
 
-1. **`define` fires automatically.** It interviews you on the problem, surfaces hidden assumptions, frames a falsifiable hypothesis, and routes you to the right pre-PRD path.
-2. **`define` picks the route based on what it heard:**
-   - **Zero-to-one with market uncertainty** → it prompts `/research-market` (forum + competitive evidence into `research/`) → `/ideate` (ten ranked one-pagers, you pick) → `/judge-idea` (adversarial gate; verdict is proceed, loop-back, or pivot) → `/to-prd`.
-   - **Established space** → it prompts `/to-prd` directly; the research arc is skipped.
-3. **If the product has persistent UI surfaces**, `pick-surfaces` fires after `/to-prd` (and before `pick-harness-shape` if both apply). It walks the load-bearing UX decisions — nav, account lifecycle, onboarding, settings, integration placement, error states, compliance touchpoints — and writes a versioned `surfaces/` artifact that `/to-spec` reads. Skip for CLI, API, library, or headless.
-4. **If a custom LLM harness is on the table**, `pick-harness-shape` fires after `/to-prd` (and after `pick-surfaces` if both apply) and before `/to-spec`. It first decides whether a custom harness is needed at all (the cut-line is reliability beyond conversational use), then walks the load-bearing decisions (substrate, loop topology, memory, tool layer, gates) and writes a versioned `harness/` artifact that `/to-spec` reads. When the tool layer means designing your own MCP server, `design-mcp-server` walks the server-design decisions (transport, auth, schema discipline, error model, testing) and writes a versioned `mcp-servers/` artifact that `/to-spec` reads — grounded in `docs/agentic-patterns/06_mcp_design_brief.md`.
-5. **`/to-spec`** synthesizes the latest PRD plus the latest `harness/`, `surfaces/`, and `mcp-servers/` artifacts (if present) into a versioned implementation SPEC in `specs/`.
-6. **`/to-issues`** breaks the SPEC into independently-grabbable GitHub issues, labeling each `afk` (Claude can do it solo) or `hitl` (needs you in the loop).
-7. **`/run-afk-in-loop`** works through unblocked `afk` issues in parallel waves. Each issue runs through `test-driven-dev`, which auto-fires on implementation work. UI work also triggers `ui-taste`; bugs during implementation auto-fire `diagnose`.
-8. **`/review-pr`** before the branch ships — flags must-fix and worth-noting items, including a prompt-file audit when the diff touches prompts or MCP tool descriptions. **`/audit-drift`** for projects with versioned PRDs/SPECs/ADRs — sweeps the doc graph for glossary inconsistencies, dead cross-references, ADRs overtaken by the latest SPEC, and orphan ADRs. **`/audit-failure-modes`** before a release cut on a maturing system — parallel agents per surface (external deps, concurrency, persistence, resource, config, security, frontend) produce a MECE list of latent failure modes ranked P0/P1/P2.
+| # | Stage | Run | Writes |
+| --- | --- | --- | --- |
+| 1 | Frame the problem | `define` (auto-fires) | a falsifiable hypothesis + a route |
+| 2 | Research *(zero-to-one only)* | `/research-market` → `/ideate` → `/judge-idea` | `research/`, a chosen idea |
+| 3 | Lock *what & why* | `/to-prd` | `prds/` |
+| 4 | Lock the UI *(if it has one)* | `pick-ui-surfaces` | `surfaces/` |
+| 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `harness/`, `mcp-servers/` |
+| 6 | Lock *how* | `/to-spec` | `specs/` |
+| 7 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` |
+| 8 | Build | `/run-afk-in-loop` → `test-driven-dev` (+ `ui-taste`, `diagnose`) | merged code |
+| 9 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
 
-Skip steps when the phase is already clear: a bug report drops straight into `diagnose`; a known-good plan can jump to `/to-spec`; a finished branch can go right to `/review-pr`.
+When both apply, stage 4 runs before stage 5 — harness picks then slot into known surfaces. Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`.
 
 ## Skills
 
-Skills are organized by phase (per AGENTS.md §6). Invocation modes: `model-invokable` = Claude auto-fires the skill when a prompt matches its description; `slash-only` = user types `/skill-name` to invoke, zero per-turn context cost.
+Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt matches its description; `slash` = you type `/name` (zero per-turn context cost). **Reads / Writes** name the versioned artifacts each consumes and produces.
 
-| Skill | Invocation | Phase | What it does |
-| --- | --- | --- | --- |
-| `define` | model-invokable | defining | Defining-phase orchestrator — surfaces assumptions, frames a falsifiable hypothesis, routes to the right pre-PRD path |
-| `pick-harness-shape` | model-invokable | defining | Decide whether a custom LLM/agent harness is needed (cut-line is reliability beyond conversational use), then pick its shape; writes a versioned `harness/` artifact that `/to-spec` reads |
-| `pick-surfaces` | model-invokable | defining | Walk the load-bearing UX decisions for products with persistent UI (nav, account lifecycle, onboarding, settings, integration placement, error states, compliance); writes a versioned `surfaces/` artifact that `/to-spec` reads |
-| `design-mcp-server` | model-invokable | defining | Walk the design decisions for a new MCP server (transport, auth, tool surface, schema discipline, state model, error model, testing); writes a versioned `mcp-servers/` artifact that `/to-spec` reads |
-| `research-market` | slash-only | defining | Mine forums + competitive landscape into a versioned `research/` artifact |
-| `ideate` | slash-only | defining | Generate, rank, and pick a product idea grounded in `research/` |
-| `judge-idea` | slash-only | defining | Adversarial pass on a winner / PRD / SPEC; verdict is proceed, loop-back, or pivot |
-| `to-prd` | slash-only | defining | Synthesize the current conversation into a versioned PRD in `prds/` |
-| `to-spec` | slash-only | defining | Synthesize the latest PRD + latest `harness/`, `surfaces/`, and `mcp-servers/` artifacts (if present) into a versioned implementation SPEC in `specs/` |
-| `to-issues` | slash-only | defining | Break a plan into independently-grabbable GitHub issues; labels each `afk` or `hitl` |
-| `test-driven-dev` | model-invokable | implementing | Test-driven development with red-green-refactor |
-| `ui-taste` | model-invokable | implementing | Opinionated visual rules; fires on UI work; avoids the generic, cookie-cutter look |
-| `run-afk-in-loop` | slash-only | implementing | Work through all unblocked AFK issues in parallel waves |
-| `diagnose` | model-invokable | diagnosing | Disciplined loop for hard bugs and performance regressions |
-| `review-pr` | slash-only | shipping | Review the current branch before it ships; flags must-fix and worth-noting items |
-| `audit-drift` | slash-only | shipping | Sweep the project's doc graph (PRDs/SPECs/ADRs/CONTEXT.md) for drift; reports must-fix and worth-noting |
-| `audit-failure-modes` | slash-only | shipping | Pre-mortem of the system; lists latent failure modes by surface, ranks P0/P1/P2 |
-| `github-triage` | slash-only | meta | Triage GitHub issues through a label-based state machine |
-| `deepen-modules` | slash-only | meta | Find shallow modules and propose how to deepen them |
+| Skill | Invocation | Phase | Reads | Writes | What it does |
+| --- | --- | --- | --- | --- | --- |
+| `define` | model | defining | — | — | Surface assumptions, frame a hypothesis, route to the right path |
+| `research-market` | slash | defining | — | `research/` | Mine forums + competitive landscape |
+| `ideate` | slash | defining | `research/` | — | Ten ranked one-pagers; you pick the winner |
+| `judge-idea` | slash | defining | winner / PRD / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
+| `to-prd` | slash | defining | conversation | `prds/` | Synthesize the *what & why* |
+| `pick-ui-surfaces` | model | defining | `prds/` | `surfaces/` | Lock the UI's structure + visual identity |
+| `pick-harness-shape` | model | defining | `prds/`, `surfaces/` | `harness/` | Decide + shape a custom LLM harness |
+| `design-mcp-server` | model | defining | `prds/`, `harness/` | `mcp-servers/` | Design an MCP server you'll build |
+| `to-spec` | slash | defining | `prds/`, `harness/`, `surfaces/`, `mcp-servers/` | `specs/` | Lock the implementation contract |
+| `to-issues` | slash | defining | `specs/` | GitHub issues | Break the SPEC into `afk` / `hitl` issues |
+| `test-driven-dev` | model | implementing | `specs/` | code + tests | Red-green-refactor on one issue |
+| `ui-taste` | model | implementing | `surfaces/` | styled UI | Apply the locked visual identity + taste rules |
+| `run-afk-in-loop` | slash | implementing | issues, `specs/` | merged code | Work the AFK backlog in parallel waves |
+| `diagnose` | model | diagnosing | — | fix + regression test | Reproduce → minimise → fix hard bugs |
+| `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |
+| `audit-drift` | slash | shipping | doc graph | drift report | Sweep PRDs/SPECs/ADRs for drift |
+| `audit-failure-modes` | slash | shipping | the system | P0/P1/P2 list | Pre-mortem of latent failure modes |
+| `github-triage` | slash | meta | GitHub issues | labels | Label-based triage state machine |
+| `deepen-modules` | slash | meta | code | proposals | Find shallow modules and deepen them |
 
-The system prompt sees `AGENTS.md` plus descriptions of `model-invokable` skills only. `slash-only` skills load on invoke — **zero per-turn context cost**.
-
-## Layout
-
-```text
-.
-├── AGENTS.md          # behavioral floor (cross-tool, always on)
-├── CLAUDE.md          # @AGENTS.md import (Claude Code)
-├── .claude-plugin/    # plugin.json registers skills
-├── docs/              # reference corpus (frontier briefs on agentic patterns)
-└── skills/               # organized by phase (defining / implementing /
-    ├── defining/         #   diagnosing / shipping / meta). Each SKILL.md
-    ├── implementing/     #   sets `disable-model-invocation: true` for
-    ├── diagnosing/       #   slash-only; absence = auto-fires on relevant
-    ├── shipping/         #   prompts.
-    └── meta/
-```
+The system prompt sees `AGENTS.md` plus the descriptions of `model` skills only; `slash` skills load on invoke.
 
 ## AFK loop
 
@@ -95,10 +80,6 @@ bash skills/implementing/run-afk-in-loop/scripts/run-afk-loop.sh
 
 Env vars: `RETRY_WAIT_SECONDS` (default 1800), `MAX_ATTEMPTS` (default 20).
 
-## Adding a skill
-
-Copy an existing skill folder under the right phase (`defining/`, `implementing/`, `diagnosing/`, `shipping/`, `meta/`), rename it, edit the SKILL.md frontmatter (`disable-model-invocation: true` for slash-only; omit for auto-fires), then register the path in `.claude-plugin/plugin.json`.
-
 ## MCP servers
 
 [MCP](https://modelcontextprotocol.io/) servers add Claude Code capabilities. Same lean-context discipline as skills: install only what you use.
@@ -109,29 +90,6 @@ Copy an existing skill folder under the right phase (`defining/`, `implementing/
 | [GitHub](https://github.com/github/github-mcp-server) | Issues, PRs, repo search | See the official install guide |
 
 Add others (Postgres, SQLite, Context7) per-project. User-level MCPs go in `~/.claude.json`; project-level in `.mcp.json`.
-
-## Google Cloud and ADK
-
-For Google Cloud or [Google ADK](https://adk.dev) projects, install [`google-agents-cli`](https://github.com/google/agents-cli) per-project — multi-tool by construction (Claude Code, Gemini CLI, Codex, Antigravity).
-
-```bash
-uvx google-agents-cli setup       # full CLI + skills
-npx skills add google/agents-cli  # skills only
-```
-
-Skills (all prefixed `google-agents-cli-`):
-
-| Skill | What it does |
-| --- | --- |
-| `workflow` | Development lifecycle, code preservation, model selection |
-| `adk-code` | ADK Python API — agents, tools, orchestration, callbacks |
-| `scaffold` | Project scaffolding (`create`, `enhance`, `upgrade`) |
-| `eval` | Evaluation — metrics, evalsets, LLM-as-judge, trajectory |
-| `deploy` | Deployment to Agent Runtime, Cloud Run, GKE, CI/CD |
-| `publish` | Gemini Enterprise registration |
-| `observability` | Cloud Trace, logging, third-party integrations |
-
-[`google/adk-samples`](https://github.com/google/adk-samples): sample ADK agents in Python / Java / Go / TypeScript. Reference implementations — clone what you need; don't install as a skill.
 
 ## Install
 
@@ -159,12 +117,9 @@ Both files are plain text with no dependencies; `curl` works too.
 
 ## Acknowledgments
 
-- [Andrej Karpathy](https://x.com/karpathy/status/2015883857489522876) — observations on LLM coding failure modes; four of his five original principles seeded the `AGENTS.md` floor (now eight rules), packaged into a Claude Code skill by [forrestchang](https://github.com/forrestchang/andrej-karpathy-skills).
-- [Matt Pocock](https://github.com/mattpocock/skills) — small composable skills and the SKILL.md format with progressive disclosure.
-- *Competing Against Luck* — Clayton Christensen, Taddy Hall, Karen Dillon, David Duncan. Jobs-to-be-Done methodology. Shapes how `define` frames the problem and the `/research-market` → `/ideate` arc.
-- *Good Strategy / Bad Strategy* — Richard Rumelt. The strategy kernel: diagnosis → guiding policy → coherent action. Mirrored in `define`'s insistence on surfacing assumptions and naming the phase before any code is written.
-- *Zero to One* — Peter Thiel. Zero-to-one product thinking and contrarian truths. Frames the zero-to-one branch in `define` that triggers the `/research-market` → `/ideate` → `/judge-idea` research arc.
-- *The Lean Startup* — Eric Ries (2011). Build–Measure–Learn and the validated-learning loop. Informs `define`'s falsifiable-hypothesis framing and `/judge-idea`'s proceed / loop-back / pivot verdict.
+- [Andrej Karpathy](https://x.com/karpathy/status/2015883857489522876) — observations on LLM coding failure modes that seeded the `AGENTS.md` floor, packaged into a skill by [forrestchang](https://github.com/forrestchang/andrej-karpathy-skills).
+- [Matt Pocock](https://github.com/mattpocock/skills) — the small composable SKILL.md format with progressive disclosure.
+- Jobs-to-be-Done (*Competing Against Luck*), the strategy kernel (*Good Strategy / Bad Strategy*), zero-to-one thinking (*Zero to One*), and Build–Measure–Learn (*The Lean Startup*) — shape how `define` and the `/research-market` → `/ideate` arc frame the problem.
 
 ## License
 

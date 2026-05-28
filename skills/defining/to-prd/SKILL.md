@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 Turn the current conversation, codebase understanding, and (if they exist) the most recent ideation winner + research artifact into a PRD. Do NOT interview the user — synthesize what you already know.
 
-The PRD answers *what and why* — including the product surface behaviour under Functional Requirements (data shapes the user sees, external channels, autonomy rules, queues, integrations). UX shape (nav, onboarding, settings, account lifecycle, error states) lives in `pick-surfaces`. Implementation decisions (modules, code-level schema, API contracts, test plans, rollout, observability) live in `/to-spec`, not here.
+The PRD answers *what and why* — including the product surface behaviour under Functional Requirements (data shapes the user sees, external channels, autonomy rules, queues, integrations). UX shape and visual identity (nav, onboarding, settings, account lifecycle, error states; feel, accent, type) live in `pick-ui-surfaces`. Implementation decisions (modules, code-level schema, API contracts, test plans, rollout, observability) live in `/to-spec`, not here.
 
 ## Inputs
 
@@ -29,8 +29,8 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 4. Length and density: ≤ 4 pages — preferably less. The **vision** — Target User + Solution Overview together — must fit in ≤ 1 page: tight but comprehensive. The vision is the contract `/to-spec` and implementation work against; drift from it produces unusable output. Functional Requirements is the section that scales with product surface — use tables only, no prose, drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
 
 5. Present the saved PRD and ask the user to review. Then prompt for the next step in this order:
-   - If the product has persistent UI surfaces, prompt them to run `pick-surfaces`.
-   - If the project involves a custom LLM/agent harness, prompt them to run `pick-harness-shape` (after `pick-surfaces`, if both apply).
+   - If the product has persistent UI surfaces, prompt them to run `pick-ui-surfaces`.
+   - If the project involves a custom LLM/agent harness, prompt them to run `pick-harness-shape` (after `pick-ui-surfaces`, if both apply).
    - Otherwise, prompt them to run `/to-spec`.
 
 <prd-template>
@@ -67,7 +67,7 @@ The product surface defined component-by-component, in tables. Cover every relev
 |---|---|---|
 | | | |
 
-**External channels & touchpoints.** Every place the product receives input or emits output to the outside world (SMS, email, voice, API endpoints, push notifications, webhooks). Internal app surfaces — nav, panes, screens — go to `pick-surfaces`.
+**External channels & touchpoints.** Every place the product receives input or emits output to the outside world (SMS, email, voice, API endpoints, push notifications, webhooks). Internal app surfaces — nav, panes, screens — go to `pick-ui-surfaces`.
 
 | Channel | Inbound behaviour | Outbound behaviour | Notes |
 |---|---|---|---|
@@ -79,19 +79,19 @@ The product surface defined component-by-component, in tables. Cover every relev
 |---|---|---|---|
 | | | | |
 
-**Queues / approval flows.** (If the product holds work for human review.) What each queue holds and its lifecycle. UX placement — where the user sees the queue, badge counts, full-page vs drawer — goes to `pick-surfaces`.
+**Queues / approval flows.** (If the product holds work for human review.) What each queue holds and its lifecycle. UX placement — where the user sees the queue, badge counts, full-page vs drawer — goes to `pick-ui-surfaces`.
 
 | Queue | Holds | Lifecycle |
 |---|---|---|
 | | | |
 
-**Notification / digest cadence.** (If users get pushed updates.) Available modes, default, and override rules. The in-app notifications inbox — bell icon, read/unread state — goes to `pick-surfaces`.
+**Notification / digest cadence.** (If users get pushed updates.) Available modes, default, and override rules. The in-app notifications inbox — bell icon, read/unread state — goes to `pick-ui-surfaces`.
 
 | Mode | Default? | Behaviour |
 |---|---|---|
 | | | |
 
-**Integrations & migration.** Third parties the product reads from or writes to, plus how users bring existing data in. UX placement — where in the app, when presented to the user — is captured in `pick-surfaces`, not here.
+**Integrations & migration.** Third parties the product reads from or writes to, plus how users bring existing data in. UX placement — where in the app, when presented to the user — is captured in `pick-ui-surfaces`, not here.
 
 | Integration | Direction | MVP behaviour |
 |---|---|---|
