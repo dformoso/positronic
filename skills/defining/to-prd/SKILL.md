@@ -26,7 +26,7 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 
 3. Write the PRD using the template below. Save as `prds/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `prds/` if missing). Commit it. Do not submit it as a GitHub issue.
 
-4. Length and density: ≤ 4 pages — preferably less. The **vision** — Target User + Solution Overview together — must fit in ≤ 1 page: tight but comprehensive. The vision is the contract `/to-spec` and implementation work against; drift from it produces unusable output. Functional Requirements is the section that scales with product surface — use tables only, no prose, drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
+4. Length and density: ≤ 6 pages — preferably less. The **vision** — Target User + Solution Overview together — must fit in ≤ 1 page: tight but comprehensive. The vision is the contract `/to-spec` and implementation work against; drift from it produces unusable output. Functional Requirements is the section that scales with product surface — use tables only, no prose, drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
 
 5. Present the saved PRD and ask the user to review. Then prompt for the next step in this order:
    - If the product has persistent UI surfaces, prompt them to run `pick-ui-surfaces`.
@@ -56,6 +56,24 @@ Behavioral and outcome metrics are stronger than activity metrics. "% of users c
 ## Solution Overview
 
 What we're building, in user-facing terms. Form factor (web app / PWA / CLI / API / native), the structural pieces (the panes, surfaces, or objects the user sees), and — if AI is involved — the autonomy contract (what the agent does without asking, what it always asks first). Enough detail to anchor scope, not enough to lock implementation. **Half a page max.**
+
+## Key User Journeys
+
+Numbered CUJs. Each named, **two sentences max**, naming actor + trigger + flow + outcome. Comprehensive but not exhaustive — cut journeys that are obvious consequences of others.
+
+1. **<Short name>.** <Two sentences max>.
+
+<cuj-example>
+1. **First inbound from a new customer.** Mrs Chen rings at 2:14pm; Nathan doesn't answer, so AI voicemail takes the message and auto-sends an acknowledgement SMS. At the 4pm digest Nathan picks a slot from a draft reply and taps send.
+</cuj-example>
+
+## Non-Goals
+
+Who and what we are explicitly **not** serving with this PRD. Adjacent personas, use cases, and platforms that might seem in scope but aren't. Sharpens the segment.
+
+## Out of Scope
+
+Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep.
 
 ## Functional Requirements
 
@@ -97,24 +115,6 @@ The product surface defined component-by-component, in tables. Cover every relev
 |---|---|---|
 | | | |
 
-## Key User Journeys
-
-Numbered CUJs. Each named, **two sentences max**, naming actor + trigger + flow + outcome. Comprehensive but not exhaustive — cut journeys that are obvious consequences of others.
-
-1. **<Short name>.** <Two sentences max>.
-
-<cuj-example>
-1. **First inbound from a new customer.** Mrs Chen rings at 2:14pm; Nathan doesn't answer, so AI voicemail takes the message and auto-sends an acknowledgement SMS. At the 4pm digest Nathan picks a slot from a draft reply and taps send.
-</cuj-example>
-
-## Non-Goals
-
-Who and what we are explicitly **not** serving with this PRD. Adjacent personas, use cases, and platforms that might seem in scope but aren't. Sharpens the segment.
-
-## Out of Scope
-
-Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep.
-
 ## Risks & Open Questions
 
 **Top 5 only.** The load-bearing risks and open questions — the ones that, if wrong, change the product.
@@ -127,6 +127,6 @@ If `/judge-idea` produced findings worth carrying into implementation, list them
 
 ## Further Notes
 
-Any further notes about the feature — pricing direction, distribution thinking, UX constraints, compliance, the 12-month directional bet, source research pointers.
+Any further notes about the feature — pricing direction, distribution thinking, UX constraints, compliance, the 12-month directional bet, source research pointers. **Half a page max.**
 
 </prd-template>
