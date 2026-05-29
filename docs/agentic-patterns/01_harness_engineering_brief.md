@@ -15,7 +15,7 @@ Three things crystallized in 2025-2026:
 | Rank | Technique | Why it matters | Best for |
 |------|-----------|---------------|----------|
 | 1 | **Tool layer + ACI design** (OpenHands) | Agent–Computer Interface quality dominates raw model capability | Coding, computer use |
-| 2 | **Planner / Executor split** | Decouples high-level planning from low-level action; reduces failure blast radius | Long-horizon tasks (>20 steps) |
+| 2 | **Planner / Executor split** | Decouples high-level planning from low-level action; reduces failure blast radius | Long-horizon tasks (>20 steps; sizing note in 05 brief) |
 | 3 | **Verification gates / contracts** | Catches errors mid-trajectory rather than at the end | Anything tool-using |
 | 4 | **Reflection / repair loops** (Reflexion-style) | Turns failures into next-attempt context | Bounded retry budgets |
 | 5 | **Externalized harness artifacts** (NLAH, skill files) | Portability, A/B testing, shareability | Multi-tenant systems |

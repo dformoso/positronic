@@ -65,13 +65,30 @@ How many reasoning loci, and how is work split across them? Cost and coordinatio
 
 | Rung | What it adds over the rung above | Use when | Failure mode |
 |---|---|---|---|
-| **Single ReAct loop** | — (the substrate) | Default. ≤ ~10 actions; one agent with many tools handles "multiple things" without coordination cost. | Drifts on long horizons — no global plan to return to. |
-| **Planner / Executor** | Separates *what to do* (plan) from *how to do it* (execute) — one role-switching agent or two. | Tasks > ~20 actions; multi-file edits; research with sub-tasks. | Plan brittleness — a one-shot plan can't survive execution surprises; plans must be replan-able. |
+| **Single ReAct loop** | — (the substrate) | Default. Flat or independent work — one agent with many tools handles "multiple things" without coordination cost. Rule of thumb: up to ~10–20 actions for a frontier model (see note). | Drifts on long horizons — no global plan to return to. |
+| **Planner / Executor** | Separates *what to do* (plan) from *how to do it* (execute) — one role-switching agent or two. | Steps interdepend or the task decomposes into sub-tasks — multi-file edits, research with sub-goals — or expected length nears the reliability ceiling (note). | Plan brittleness — a one-shot plan can't survive execution surprises; plans must be replan-able. |
 | **+ Supervisor (Reason-Plan-ReAct)** | A supervisor watches execution and replans on deviation. | Non-trivial / enterprise tasks where execution success isn't knowable in advance. The pattern most production systems converge on. | Supervisor cost every turn; replan thrash on a noisy deviation signal. |
 | **Multi-agent (orchestrator / hub-and-spoke)** | Multiple agents, non-overlapping roles, one orchestrator. | The workflow *obviously* decomposes into specialists **and** there's a real reason: independent lifecycles, trust boundaries, or parallelism gain > 2×. | Coordination overhead; cost multiplies; shared-state and message-channel failures. |
 | **Multi-agent (peer-to-peer / A2A)** | Agents in separate runtimes coordinating over a protocol. | Cross-org agents that can't share a process or runtime. | All of the above, plus cross-agent prompt injection and protocol-level failure surface. |
 
+**The action counts are derived, not a law.** Over N roughly-independent steps, whole-task success ≈ p^N (p = per-step reliability), so the horizon before you drop below a target success S is N ≈ ln(S) / ln(p). At a frontier model's ~99% per-step that's ~10 actions for 90% task success and ~20 for ~82% — which is where the band comes from. A weaker model, a harder task, or self-conditioning (models grow more error-prone after seeing their own mistakes) all pull the crossover into single digits, and the frontier keeps moving — so treat the count as the *output* of your per-step reliability and success target, and the real trigger as whether steps *interdepend*. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/05_harness_architectures_brief.md`.)
+
 **Hard pushback on multi-agent.** A single agent with multiple tools handles "multiple things" without coordination overhead, and industry consensus (Anthropic, OpenAI essays) is to use multi-agent sparingly — most "multi-agent wins" come from clean role decomposition that role-switching in one agent achieves just as well. Demand a real decomposition reason before leaving the single-agent rungs: independent lifecycles, trust boundaries, or measured parallelism gain > 2×. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/05_harness_architectures_brief.md` and `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/02_role_design_brief.md`.)
+
+### If Axis A is multi-locus: decompose the roles
+
+Supervisor or either multi-agent rung means you now have more than one role. **Add roles as *phases* in one agent first** (planner → executor → critic) — cheaper, shared context, and `02_role_design` ranks this the right default for cost-sensitive systems. Split into separate *agents* only when §1's decomposition reason (independent lifecycles, trust boundaries, parallelism > 2×) actually demands it. These decisions feed §6 (gates), §7 (per-role tool scope), §8 (per-role sampling), and the artifact:
+
+| Decision | Default | Why / cite |
+|---|---|---|
+| **Role set & count** | 3–5 non-overlapping roles; name each (planner, executor, critic/verifier, retriever/researcher, router, synthesizer) | More than ~5 adds cost without specialization gain; fewer under-specializes. `02_role_design_brief.md` |
+| **Contract per role, not persona** | Inputs, outputs, allowed tools, stop condition, prohibitions | Free-form "you are an expert X" is near-random and can *hurt* accuracy (PRISM, "Helpful Assistant"). Contracts win. |
+| **Boundaries & comms** | Hard boundaries + artifact passing for repeatable workflows; dialog only for prototypes | MetaGPT (artifacts) beats AutoGen (dialog) on repeatable pipelines; dialog drifts and bleeds roles. |
+| **Topology shape** | Sequential pipeline if stages are ordered; parallel workers only for *independent* sub-tasks; hierarchical past ~5 roles | Parallel beats sequential only when sub-tasks are genuinely independent. `05_harness_architectures_brief.md` |
+| **Cross-role memory** | Artifacts only — role A sees role B's deliverable, not its reasoning | Lower coupling, higher specialization than shared dialog history. |
+| **Assignment** | Static for production; dynamic routing only for heterogeneous query mixes | Dynamic adds routing-failure modes and a harder eval surface. |
+
+Treat role + tool privilege as one design: a role's contract bounds which §5 tools it may call, and that binding *is* the trust boundary §7 names. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/02_role_design_brief.md`.)
 
 ### Axis B — Improvement & recovery loop (iteration)
 
@@ -137,7 +154,7 @@ ReAct is *defined* as "loop until a stop condition" — name that condition here
 - **Sandbox / blast radius** — what can the agent's execution actually touch (filesystem, network, secrets, prod vs. staging), and what's the damage if a tool call goes wrong?
 - **Irreversible-action gating** — which actions are irreversible or high-stakes (writes, payments, deletes, external sends), and what gates them: a hard gate (§6), human approval, or a dry-run-first contract?
 - **Prompt-injection posture** — untrusted input (tool results, retrieved docs, user content) can carry instructions. What's the defense: input provenance, restricted tool scope on untrusted turns, output filtering?
-- **Multi-agent surface** — if Axis A is multi-agent, cross-agent prompt injection and message-channel tampering are live risks. Name the trust boundary between agents.
+- **Multi-agent surface** — if Axis A is multi-agent, cross-agent prompt injection and message-channel tampering are live risks. Name the trust boundary between agents, and bind each role to only the §5 tools its contract allows — that per-role scope is the boundary.
 - **Audit trail** — for regulated or auditable deployments, what's logged immutably, and is it enough to reconstruct any decision after the fact?
 
 Skip the rows that don't apply, but say *why* — "no irreversible actions; all tools read-only" is a real answer that belongs in the artifact. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/01_harness_engineering_brief.md`.)
@@ -146,7 +163,7 @@ Skip the rows that don't apply, but say *why* — "no irreversible actions; all 
 
 Harness behavior depends as much on per-stage parameters as on topology. Provider defaults (often `T=1.0`, latest frontier model, no reasoning budget) are rarely optimal — planner and verifier stages in particular benefit from explicit, lower-variance settings.
 
-For each stage in the topology picked in section 3, decide:
+For each role/stage in §3's role set (planner, executor, verifier, …), decide:
 
 - **Model tier** — frontier / mid / cheap
 - **Temperature** (and/or top-p)
@@ -213,6 +230,18 @@ One paragraph naming the picked substrate, the Axis A structure and Axis B impro
 **Axis B — improvement loop:** None | Reflexion | Search (ToT / GoT / self-consistency) | Skill library | Harness self-optimization
 **Why:** for multi-agent, name the real decomposition reason — independent lifecycles, trust boundaries, or parallelism gain >2×. For any Axis B rung past Reflexion, name the reason.
 **Cited pattern:** `docs/agentic-patterns/05_harness_architectures_brief.md`, `docs/agentic-patterns/02_role_design_brief.md`
+
+## Role decomposition
+
+*(Only if Axis A is Supervisor or multi-agent; otherwise "single role — N/A".)*
+
+| Role | Contract (in → out · allowed tools · stop) | Phase or separate agent? | Model tier (→ §8) |
+|---|---|---|---|
+
+**Topology shape:** sequential | parallel workers | hierarchical | conversational — and why.
+**Communication:** artifacts | dialog; what each role sees of others.
+**Assignment:** static | dynamic.
+**Cited pattern:** `docs/agentic-patterns/02_role_design_brief.md`
 
 ## Memory & state
 

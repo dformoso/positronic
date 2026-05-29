@@ -40,6 +40,10 @@ Three pattern-level shifts:
 | **Skill library (Voyager)** | Compounding gains over time | Skill management; mis-application risks |
 | **Modular harness** | Easy to swap components | Risk of integration drift |
 
+## Sizing note: the ReAct → planner threshold
+
+"Tasks >20 actions" (rank 2 above) is a rule of thumb, not a constant. Whole-task success over N near-independent steps ≈ p^N (p = per-step reliability), so the usable horizon is N ≈ ln(S) / ln(p) for a target success S — ~10 actions at p=0.99 / S=0.90, ~20 at p=0.99 / S≈0.82, but only ~2–14 at p=0.95. Self-conditioning makes real p *decay* over a trajectory (*The Illusion of Diminishing Returns*, arXiv:2509.09677), and the frontier horizon itself doubles ~every 7 months (METR, *Measuring AI Ability to Complete Long Tasks*, arXiv:2503.14499). So it's model- and task-dependent — trigger the planner on step *interdependence*, not a raw count.
+
 ## Open questions on the frontier
 
 - **When does multi-agent beat single-agent + tools?** Anthropic's recent essays argue *rarely*. Surveys show wins on heavy decomposable workflows. The threshold is not formalized.

@@ -22,7 +22,7 @@ The interesting question in 2026 is no longer "use ReAct?" — it's "what wraps 
 
 **2. Planner-executor is the dominant long-horizon pattern.**
 
-Tasks longer than ~20 actions consistently benefit from splitting *what to do* (planning) from *how to do it* (execution).
+Tasks that outrun the single-loop reliability horizon benefit from splitting *what to do* (planning) from *how to do it* (execution) — empirically ~20 actions for a frontier model, but the crossover scales with per-step reliability (see the sizing note below).
 
 - **Plan-and-Act (2025)**: cleanest recent statement. Planner produces high-level steps; executor translates each into environment-specific actions.
 - **Reason-Plan-ReAct (2025)**: hybrid where a Reasoner-Planner Agent handles planning and meta-analysis, while one or more Proxy-Execution Agents use ReAct for tool interactions. Adds a supervisory layer over execution.
@@ -137,8 +137,11 @@ Harness as composition of swappable components: tool layer, memory layer, planne
 | Long-horizon | Drifts | Stays on plan |
 | Debugging | Easy | Harder |
 | Implementation | Simple | More moving parts |
-| Best below | ~10 actions | ~10 actions |
+| Best below | ~10 actions (clear win) | — |
+| Gray zone | ~10–20 actions (depends on p) | ~10–20 actions (depends on p) |
 | Best above | — | ~20+ actions |
+
+**Sizing the threshold.** These counts assume a frontier model at ~99% per-step reliability. Whole-task success over N near-independent steps ≈ p^N, so the horizon before dropping below a target success S is N ≈ ln(S)/ln(p): ~10 actions for 90% success at p=0.99, ~20 for ~82%, but only ~2–14 at p=0.95. Self-conditioning — models grow more error-prone after observing their own mistakes — makes real p decay as the trajectory lengthens, so effective horizons run shorter than the i.i.d. math (*The Illusion of Diminishing Returns*, arXiv:2509.09677, 2025). The frontier horizon itself moves, roughly doubling every 7 months (METR, arXiv:2503.14499, 2025). Treat the count as derived from per-step reliability and success target; trigger the planner on step *interdependence*, not a raw number.
 
 ### Plan-once vs. iterative plan/replan
 

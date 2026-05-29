@@ -55,7 +55,7 @@ The OpenHands SDK (2025) achieves 72% on SWE-Bench Verified using Claude Sonnet 
 - **Agent–Computer Interface (ACI)** abstraction: tools that match how *agents* operate, not how humans do.
 - **Structured memory** with episodic and semantic stores.
 - **Verification gates** (tests pass, lint clean, type check) that become explicit contracts.
-- **Planner-executor split** for tasks longer than ~20 actions.
+- **Planner-executor split** for tasks longer than ~20 actions (rule of thumb; the crossover scales with per-step reliability — see the sizing note in `05_harness_architectures_brief.md`).
 - **Child-agent delegation** for parallelizable subtasks.
 
 This pattern is converging across products (Cursor's composer, Cognition's Devin successors, Claude Code, Replit Agent, OpenAI's o1-style coding agent). Independent inventions are hitting similar shapes — strong evidence the design is finding a local optimum.
