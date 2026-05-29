@@ -8,8 +8,8 @@
     {
       "name": "skills",
       "source": {
-        "source": "github",
-        "repo": "dformoso/positronic"
+        "source": "url",
+        "url": "https://github.com/dformoso/positronic.git"
       },
       "description": "A curated set of skills for Claude Code. See plugin.json for the active set."
     }
