@@ -1,6 +1,6 @@
 ---
 name: pick-harness-shape
-description: Pick the harness shape for an LLM/agent system. Invoked by define when the project may need reliability beyond conversational use — programmatic gates, contracts, audit, autonomous execution. First decides whether a custom harness is needed at all, then walks substrate, loop topology, memory, tool layer, and gate strategy. Use when the user is designing a system that doesn't fit a single LLM call or a deterministic pipeline.
+description: Pick the harness shape for an LLM/agent system. Invoked by define when the project may need reliability beyond conversational use — programmatic gates, contracts, audit, autonomous execution. First decides whether a custom harness is needed at all, then walks substrate, topology, memory, tools, gates and recovery, security, and observability. Use when the user is designing a system that doesn't fit a single LLM call or a deterministic pipeline.
 ---
 
 You are picking the harness shape for an LLM/agent system. The harness is the runtime stack around the LLM — tool dispatch, scheduling, memory, verification gates, audit. It is what makes a system trustworthy when there's no human in the loop catching mistakes. Harness changes alone can swing benchmark scores 6× on the same model; these decisions are load-bearing.
@@ -13,12 +13,12 @@ Ask one question at a time. Surface your recommended answer with each.
 
 Before any picks, read:
 
-- The most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and business constraints (on-prem requirements, sensitive code paths, multi-agent decomposition reasons, trust boundaries) are the inputs that drive sections 1–7 — picking without them is picking blind.
+- The most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and business constraints (on-prem requirements, sensitive code paths, multi-agent decomposition reasons, trust boundaries) are the inputs that drive sections 1–9 — picking without them is picking blind.
 - The most recent surfaces artifact, if any: `ls surfaces/[0-9]*.md | sort | tail -1`. When the product has UI, the harness's tool layer (§5) and gates (§6) should slot into known surfaces rather than re-deriving them.
 
 If no PRD exists, stop and prompt the user to run `/to-prd` first. **Exception:** if the harness IS the product or differentiator (case 6 in section 1), the picks may legitimately shape the PRD rather than follow from it. Surface this to the user and let them override before proceeding.
 
-Record the PRD path (and surfaces path, if read); they go into the artifact (section 8).
+Record the PRD path (and surfaces path, if read); they go into the artifact (section 10).
 
 ## 1. Do you need a custom harness at all?
 
@@ -39,7 +39,7 @@ A custom harness exists to make an LLM system reliable when there's no human in 
 - Multi-agent with real decomposition — independent lifecycles, trust boundaries, or parallelism gain >2×
 - The harness itself is the product or differentiator
 
-If any "build" condition fires, continue through sections 2–7 to pick the shape. If none do, stop here and use the simpler thing.
+If any "build" condition fires, continue through sections 2–9 to pick the shape. If none do, stop here and use the simpler thing.
 
 ## 2. Substrate
 
@@ -48,22 +48,44 @@ If any "build" condition fires, continue through sections 2–7 to pick the shap
 | Claude Agent SDK | Anthropic-first; deepest tool integration |
 | OpenAI Agents SDK | OpenAI-first; Responses API |
 | Google ADK | Google Cloud / Gemini-first; strong eval integration |
+| LangGraph / LangChain | Cross-provider; explicit graph-shaped control flow; largest tool ecosystem (Mastra is the TypeScript analog) |
 | smolagents | Lightweight, hackable; research-grade |
-| Fork existing harness (pi.dev, OpenClaw) | Cross-provider routing; on-prem; multi-tenant |
+| Thin custom loop (no framework) | Full control, minimal deps, you own every gate — when a framework's structure fights the task |
+| Fork existing harness (pi.dev, OpenClaw) | On-prem; multi-tenant; deep modification of an existing agent |
 
-Default to the SDK matching the provider already in use. Forking is for genuinely cross-provider or regulated cases. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/01_harness_engineering_brief.md`.)
+Default to the SDK matching the provider already in use; reach for LangGraph when you need cross-provider routing or graph-shaped control flow, a thin custom loop when a framework's structure fights the task, and a fork only for on-prem / multi-tenant / regulated cases. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/01_harness_engineering_brief.md`.)
 
-## 3. Loop topology
+## 3. Topology — two axes
 
-| Topology | Use when |
-|---|---|
-| Single ReAct loop with tools | Default. Coordination overhead of multi-agent rarely earns its cost. |
-| Planner / Executor split | Tasks >20 steps; multi-file edits; research with sub-tasks |
-| Planner + Executor + Supervisor (Reason-Plan-ReAct) | Enterprise tasks needing both deliberation and reactive action |
-| Multi-agent (orchestrator / hub-and-spoke) | Workflow obviously decomposes into specialists with non-overlapping responsibilities AND distinct lifecycles or trust boundaries |
-| Multi-agent (peer-to-peer / A2A) | Cross-org agents in separate runtimes |
+ReAct (reason → act → observe, loop until a stop condition) is the universal substrate; every harness has one somewhere. The question is no longer "use ReAct?" but "what wraps it?" — and the wrapping moves along **two independent axes** with ReAct at the origin of both. Pick a rung on each; they compose freely (single-ReAct + bounded retry is the common coding-agent shape; Reason-Plan-ReAct + search is the common research shape). Climb only as far as task horizon and stakes demand — every rung adds cost and failure modes.
 
-Hard pushback on multi-agent: a single agent with multiple tools handles "multiple things" without coordination overhead. Demand a real decomposition reason — independent lifecycles, trust boundaries, or parallelism gain >2×. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/05_harness_architectures_brief.md` and `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/02_role_design_brief.md`.)
+### Axis A — Division of labor (structure)
+
+How many reasoning loci, and how is work split across them? Cost and coordination overhead climb monotonically down the table.
+
+| Rung | What it adds over the rung above | Use when | Failure mode |
+|---|---|---|---|
+| **Single ReAct loop** | — (the substrate) | Default. ≤ ~10 actions; one agent with many tools handles "multiple things" without coordination cost. | Drifts on long horizons — no global plan to return to. |
+| **Planner / Executor** | Separates *what to do* (plan) from *how to do it* (execute) — one role-switching agent or two. | Tasks > ~20 actions; multi-file edits; research with sub-tasks. | Plan brittleness — a one-shot plan can't survive execution surprises; plans must be replan-able. |
+| **+ Supervisor (Reason-Plan-ReAct)** | A supervisor watches execution and replans on deviation. | Non-trivial / enterprise tasks where execution success isn't knowable in advance. The pattern most production systems converge on. | Supervisor cost every turn; replan thrash on a noisy deviation signal. |
+| **Multi-agent (orchestrator / hub-and-spoke)** | Multiple agents, non-overlapping roles, one orchestrator. | The workflow *obviously* decomposes into specialists **and** there's a real reason: independent lifecycles, trust boundaries, or parallelism gain > 2×. | Coordination overhead; cost multiplies; shared-state and message-channel failures. |
+| **Multi-agent (peer-to-peer / A2A)** | Agents in separate runtimes coordinating over a protocol. | Cross-org agents that can't share a process or runtime. | All of the above, plus cross-agent prompt injection and protocol-level failure surface. |
+
+**Hard pushback on multi-agent.** A single agent with multiple tools handles "multiple things" without coordination overhead, and industry consensus (Anthropic, OpenAI essays) is to use multi-agent sparingly — most "multi-agent wins" come from clean role decomposition that role-switching in one agent achieves just as well. Demand a real decomposition reason before leaving the single-agent rungs: independent lifecycles, trust boundaries, or measured parallelism gain > 2×. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/05_harness_architectures_brief.md` and `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/02_role_design_brief.md`.)
+
+### Axis B — Improvement & recovery loop (iteration)
+
+How does the system beat a single forward pass? Each rung extends the reach of the improvement loop — within-step → within-task → across a task family → across harness versions — and each needs a stronger eval signal than the one above (which is why §9 is load-bearing here). Orthogonal to Axis A: pick independently.
+
+| Rung | What it adds | Use when | Cost / caveat |
+|---|---|---|---|
+| **None** | Single forward pass per step. | Cheap, well-verified steps; failures are uninformative (rate limits, noise). | — |
+| **Reflexion (retry with feedback)** | On failure, the agent writes verbal self-feedback into the next attempt's context. | Bounded-retry tasks where failures carry signal. The cheapest real win above plain ReAct. | Needs an informative failure signal and a retry ceiling (§6) or it loops. |
+| **Search (Tree / Graph of Thoughts, self-consistency)** | Explore multiple branches/paths, evaluate, prune. | Combinatorial / search problems with *cheap evaluation of partial states*. | N× cost; needs a usable evaluator; diminishing returns past depth ~5 / ~40 samples. |
+| **Skill library (Voyager)** | Agent accumulates reusable code/skills across tasks. | Lifelong or repeated-task-family agents. | Skill management is its own sub-problem — when to add, consolidate, retire. |
+| **Harness self-optimization (Meta-Harness / AutoHarness)** | The harness itself becomes the search target — topology, prompts, gates. | Repeated workload with a strong, transferable eval signal. | Bottlenecked entirely on eval quality; cheap evals overfit the harness. |
+
+Most projects pick **None** or **Reflexion** and stop; Search and above are for narrow task classes. Name the reason in the artifact if you climb past Reflexion. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/05_harness_architectures_brief.md`.)
 
 ## 4. Memory & state
 
@@ -87,18 +109,40 @@ Five well-designed tools beat fifty. Decide:
 
 ACI (Agent–Computer Interface) quality dominates raw model capability for coding agents. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/01_harness_engineering_brief.md`.)
 
-## 6. Verification gates
+## 6. Verification gates, recovery & budget
 
-For each gate:
+Gates are the trust substrate for everything above plain ReAct on both axes — you can't safely retry, prune a search branch, or let an agent act unattended without a verifier. For each gate:
 
 - Format and schema
 - Hard or soft?
 - Verifier-LM (cheaper model) or rule-based?
 - The failure mode it prevents
+- **What happens when it fires** — the recovery action (retry with feedback, replan, escalate to a human, abort) and the **retry ceiling** before giving up. A gate with no defined recovery just stalls.
 
-Hard gates stall on legitimate variation; soft gates miss errors. Pick one and instrument it. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/05_harness_architectures_brief.md`.)
+Hard gates stall on legitimate variation; soft gates miss errors. Pick one per gate and instrument it. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/05_harness_architectures_brief.md`.)
 
-## 7. Per-stage sampling & model choice
+**Global stop & budget envelope.** Separate from per-gate retries, set hard outer bounds or the harness runs away:
+
+- **Max loop iterations** / actions per task
+- **Token budget** per task, plus a **child-agent quota** if Axis A is multi-agent
+- **Wall-clock** ceiling
+- **Terminal stop condition** — what counts as done, and what the agent does when it hits a bound unfinished (return partial and flag, or hard-fail)
+
+ReAct is *defined* as "loop until a stop condition" — name that condition here instead of leaving it implicit.
+
+## 7. Security & trust boundary
+
+§1 justified the harness partly on irreversible side effects, regulated domains, and trust boundaries — so design for them rather than leaving permissions at the per-tool granularity of §5. Decide:
+
+- **Sandbox / blast radius** — what can the agent's execution actually touch (filesystem, network, secrets, prod vs. staging), and what's the damage if a tool call goes wrong?
+- **Irreversible-action gating** — which actions are irreversible or high-stakes (writes, payments, deletes, external sends), and what gates them: a hard gate (§6), human approval, or a dry-run-first contract?
+- **Prompt-injection posture** — untrusted input (tool results, retrieved docs, user content) can carry instructions. What's the defense: input provenance, restricted tool scope on untrusted turns, output filtering?
+- **Multi-agent surface** — if Axis A is multi-agent, cross-agent prompt injection and message-channel tampering are live risks. Name the trust boundary between agents.
+- **Audit trail** — for regulated or auditable deployments, what's logged immutably, and is it enough to reconstruct any decision after the fact?
+
+Skip the rows that don't apply, but say *why* — "no irreversible actions; all tools read-only" is a real answer that belongs in the artifact. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/01_harness_engineering_brief.md`.)
+
+## 8. Per-stage sampling & model choice
 
 Harness behavior depends as much on per-stage parameters as on topology. Provider defaults (often `T=1.0`, latest frontier model, no reasoning budget) are rarely optimal — planner and verifier stages in particular benefit from explicit, lower-variance settings.
 
@@ -124,9 +168,20 @@ Reasoning effort: bump for planner and verifier stages; default off for executor
 
 Cost compounds: a planner running frontier+high-reasoning at every turn is the single fastest way to a surprise bill. Pick the tier per stage, not per harness. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/04_prompt_management_brief.md` for self-consistency sampling cost.)
 
-## 8. Save the artifact
+## 9. Observability & evaluation
 
-Once the seven sections above have been answered, write the picks to `harness/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `harness/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+The shape above is a hypothesis until you can watch it run and measure whether it works — harness changes alone swing benchmark scores up to 6× on the same model, so you can't tune blind. Decide the *posture* now; the mechanism can defer to `/to-spec`, the way §5 defers tool internals to `design-mcp-server`.
+
+- **Trajectory instrumentation** — is every model call, tool call, gate result, and replan logged and replayable? Replay is the single most valuable debugging tool; without it you can't tell which §3 rung you actually need.
+- **Success signal** — what's the verifiable definition of a good run? Tie it to the PRD's CUJs and any eval the project already has.
+- **Harness-level eval** — is there a held-out task set the harness runs against before changes ship? Per-task metrics don't transfer between harnesses; budget for building this signal.
+- **Production monitoring** — for an always-on harness: cost-per-success, trajectory length, gate hit-rate, drift, and the threshold that pages someone.
+
+For most teams this is the highest-leverage layer beyond ReAct — the instrument that tells you whether climbing §3 helped. Don't optimize topology before it exists. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/01_harness_engineering_brief.md`.)
+
+## 10. Save the artifact
+
+Once the sections above have been answered, write the picks to `harness/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `harness/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
 Use the template below. Every section must carry information: cite the pattern brief that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
 
@@ -139,7 +194,7 @@ Use the template below. Every section must carry information: cite the pattern b
 
 ## TL;DR
 
-One paragraph naming the picked substrate, topology, memory model, rough tool count, gate strategy, and the planner's model tier. A reader should be able to skip the rest and still know the shape.
+One paragraph naming the picked substrate, the Axis A structure and Axis B improvement loop, memory model, rough tool count, gate + recovery strategy, security posture, observability plan, and the planner's model tier. A reader should be able to skip the rest and still know the shape.
 
 ## Why a custom harness
 
@@ -148,14 +203,15 @@ One paragraph naming the picked substrate, topology, memory model, rough tool co
 
 ## Substrate
 
-**Picked:** Claude Agent SDK | OpenAI Agents SDK | Google ADK | smolagents | fork of `<harness>`
+**Picked:** Claude Agent SDK | OpenAI Agents SDK | Google ADK | LangGraph | smolagents | thin custom loop | fork of `<harness>`
 **Why:**
 **Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`
 
-## Loop topology
+## Topology
 
-**Picked:** Single ReAct | Planner-Executor | Reason-Plan-ReAct | Multi-agent (orchestrator) | Multi-agent (A2A)
-**Why:** for multi-agent, name the real decomposition reason — independent lifecycles, trust boundaries, or parallelism gain >2×.
+**Axis A — structure:** Single ReAct | Planner-Executor | Reason-Plan-ReAct | Multi-agent (orchestrator) | Multi-agent (A2A)
+**Axis B — improvement loop:** None | Reflexion | Search (ToT / GoT / self-consistency) | Skill library | Harness self-optimization
+**Why:** for multi-agent, name the real decomposition reason — independent lifecycles, trust boundaries, or parallelism gain >2×. For any Axis B rung past Reflexion, name the reason.
 **Cited pattern:** `docs/agentic-patterns/05_harness_architectures_brief.md`, `docs/agentic-patterns/02_role_design_brief.md`
 
 ## Memory & state
@@ -172,12 +228,23 @@ One paragraph naming the picked substrate, topology, memory model, rough tool co
 **Permissions & idempotency:**
 **Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`, `docs/agentic-patterns/06_mcp_design_brief.md` (if MCP)
 
-## Verification gates
+## Verification gates, recovery & budget
 
-| Gate | Format / schema | Hard / Soft | Verifier-LM or rule | Failure mode prevented |
-|---|---|---|---|---|
+| Gate | Format / schema | Hard / Soft | Verifier-LM or rule | Failure mode prevented | Recovery action + retry ceiling |
+|---|---|---|---|---|---|
 
+**Stop & budget envelope:** max iterations / actions, token budget (+ child-agent quota if multi-agent), wall-clock ceiling, terminal stop condition.
 **Cited pattern:** `docs/agentic-patterns/05_harness_architectures_brief.md`
+
+## Security & trust boundary
+
+**Sandbox / blast radius:**
+**Irreversible-action gating:**
+**Prompt-injection posture:**
+**Multi-agent trust surface:** (if Axis A is multi-agent)
+**Audit trail:** (if regulated / auditable)
+Skip rows that don't apply — state why.
+**Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`
 
 ## Per-stage sampling & model choice
 
@@ -185,6 +252,14 @@ One paragraph naming the picked substrate, topology, memory model, rough tool co
 |---|---|---|---|---|
 
 **Cited pattern:** `docs/agentic-patterns/04_prompt_management_brief.md`
+
+## Observability & evaluation
+
+**Trajectory instrumentation:** what's logged and replayable.
+**Success signal:** verifiable definition of a good run (ties to PRD CUJs).
+**Harness-level eval:** held-out task set, or note it's deferred to `/to-spec`.
+**Production monitoring:** (if always-on) cost-per-success, trajectory length, gate hit-rate, drift thresholds.
+**Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`
 
 ## Rejected alternatives
 

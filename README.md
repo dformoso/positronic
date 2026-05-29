@@ -72,7 +72,7 @@ The system prompt sees `AGENTS.md` plus the descriptions of `model` skills only;
 
 `/to-issues` tags each issue `afk` or `hitl`. `/run-afk-in-loop` then works through all unblocked AFK issues in order — picking the next one, implementing it with `/test-driven-dev`, closing it, and looping until done.
 
-**Unattended runs with credit-exhaustion retry:**
+**Unattended runs with credit-exhaustion retry** — run from your positronic checkout (or by absolute path), with your target project as the current directory:
 
 ```bash
 bash skills/implementing/run-afk-in-loop/scripts/run-afk-loop.sh

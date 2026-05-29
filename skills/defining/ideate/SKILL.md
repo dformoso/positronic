@@ -39,7 +39,7 @@ Generate ten product concepts grounded in the most recent research artifact. Pro
 
 5. **Present the top 3 with tradeoffs.** Winner + 2 runners-up. For each: the idea in one sentence, why it ranked where it did, what the tradeoff is vs the others.
 
-6. **User picks.** The user names the winner (may not be #1 — they may weigh tradeoffs differently). Save:
+6. **User picks.** The user names the winner (may not be #1 — they may weigh tradeoffs differently). Save (stamp the directory once with `date +"%Y-%m-%d-%H-%M-%S"`, don't hand-write it):
    - `ideas/YYYY-MM-DD-HH-mm-SS/rubric.md` (the approved rubric — also overwrite `ideas/rubric.md` for carry-forward)
    - `ideas/YYYY-MM-DD-HH-mm-SS/1.md` … `10.md` (one-pagers, in ranked order)
    - `ideas/YYYY-MM-DD-HH-mm-SS/winner.md` (the chosen idea, marked WINNER, with the user's reasoning if they overrode the ranking)

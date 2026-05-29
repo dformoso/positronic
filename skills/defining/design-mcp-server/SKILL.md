@@ -134,7 +134,7 @@ See [mcp-testing.md](../../implementing/test-driven-dev/mcp-testing.md) for code
 
 ## 10. Save the artifact
 
-Once the sections above have been answered, write the picks to `mcp-servers/<server-slug>-YYYY-MM-DD-HH-mm-SS.md` (current local time; create `mcp-servers/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+Once the sections above have been answered, write the picks to `mcp-servers/<server-slug>-YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `mcp-servers/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
 Use the template below. Every section must carry information: cite the named pattern that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
 

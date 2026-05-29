@@ -24,7 +24,7 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 
 2. **Test-surface check.** If the solution implies a high-friction form factor (native mobile, hardware, browser extension, app-store-gated), surface the tradeoff before writing: is there a cheaper surface (web app, CLI, hosted prototype) that validates the same hypothesis first? Get the user's call. Document the decision in the PRD.
 
-3. Write the PRD using the template below. Save as `prds/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `prds/` if missing). Commit it. Do not submit it as a GitHub issue.
+3. Write the PRD using the template below. Save as `prds/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `prds/` if missing). Commit it. Do not submit it as a GitHub issue.
 
 4. Length and density: ≤ 6 pages — preferably less. Target User + Solution Overview together must fit in ≤ 1 page: tight but comprehensive. These two anchor the contract `/to-spec` and implementation work against; drift from them produces unusable output. Functional Requirements is the section that scales with product surface — drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
 
@@ -41,6 +41,8 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
    - If the product has persistent UI surfaces, prompt them to run `pick-ui-surfaces`.
    - If the project involves a custom LLM/agent harness, prompt them to run `pick-harness-shape` (after `pick-ui-surfaces`, if both apply).
    - Otherwise, prompt them to run `/to-spec`.
+
+   (`/judge-idea` can also gate the finished PRD before `/to-spec` if a bet feels unverified — optional.)
 
 <prd-template>
 

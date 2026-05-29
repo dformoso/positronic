@@ -106,3 +106,7 @@ Or "None - can start immediately" if no blockers.
 </issue-template>
 
 Do NOT close or modify any parent issue.
+
+### 6. Hand off
+
+Prompt the user to run `/run-afk-in-loop` to work the unblocked `afk` backlog in parallel waves. `hitl` issues (and any `afk` issue still blocked by one) are picked up by hand — name them so the user knows what's waiting.

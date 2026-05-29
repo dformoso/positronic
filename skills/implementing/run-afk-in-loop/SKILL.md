@@ -89,8 +89,10 @@ For each issue in the wave: create a fresh worktree on a new branch `afk/issue-<
 LOGS_DIR="${LOGS_DIR:-/tmp/afk-logs-$$}"
 mkdir -p "$LOGS_DIR"
 
-# Load the preamble once.
-preamble=$(cat skills/implementing/run-afk-in-loop/AGENT_PREAMBLE.md)
+# Load the preamble once. ${CLAUDE_SKILL_DIR} = this skill's install dir;
+# fall back to the repo-relative path when run from the positronic checkout.
+SKILL_DIR="${CLAUDE_SKILL_DIR:-skills/implementing/run-afk-in-loop}"
+preamble=$(cat "$SKILL_DIR/AGENT_PREAMBLE.md")
 
 for num in "${wave[@]}"; do
   title=$(echo "$issues" | jq -r --argjson n "$num" '.[] | select(.number == $n) | .title')
@@ -201,7 +203,7 @@ Before returning to step 1, scan the wave's logs for a session-limit signature. 
 
 ```bash
 # shellcheck source=scripts/lib-limit-wait.sh
-. skills/implementing/run-afk-in-loop/scripts/lib-limit-wait.sh
+. "${CLAUDE_SKILL_DIR:-skills/implementing/run-afk-in-loop}/scripts/lib-limit-wait.sh"
 combined=$(cat "$LOGS_DIR"/issue-*.log 2>/dev/null)
 wait_seconds=$(detect_limit_wait_seconds "$combined")
 if [ -n "$wait_seconds" ]; then
@@ -227,7 +229,7 @@ List any open HITL issues and any open AFK issues that are still blocked (e.g. b
 
 ## Running in parallel (unattended)
 
-For unattended parallel execution with per-issue usage-limit retry:
+For unattended parallel execution with per-issue usage-limit retry (run from your positronic checkout or by absolute path; the script acts on the git repo in your current directory):
 
 ```bash
 bash skills/implementing/run-afk-in-loop/scripts/run-parallel.sh
@@ -237,7 +239,7 @@ Set `CONCURRENCY=N` (default: 4) to control how many issues run simultaneously p
 
 ## Running with usage-limit retry (sequential)
 
-For sequential execution wrapping the slash invocation in a retry loop:
+For sequential execution wrapping the slash invocation in a retry loop (run from your positronic checkout or by absolute path; it acts on the git repo in your current directory):
 
 ```bash
 bash skills/implementing/run-afk-in-loop/scripts/run-afk-loop.sh

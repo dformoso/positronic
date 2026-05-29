@@ -22,11 +22,11 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 6. Confirm with the user which modules need tests; capture them in the Test plan section.
 
-7. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `specs/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `specs/` if missing). Commit it.
+7. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `specs/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `specs/` if missing). Commit it.
 
 8. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information.
 
-9. Present the saved SPEC and wait for the user's approval before they run `/to-issues`.
+9. Present the saved SPEC and wait for the user's approval before they run `/to-issues`. (If the SPEC adds load-bearing decisions worth stress-testing, mention `/judge-idea` can run adversarially on it first — optional.)
 
 ## Section applicability
 

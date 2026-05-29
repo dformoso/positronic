@@ -172,7 +172,7 @@ If the PRD names a regulated industry (financial, healthcare, government) or EU/
 
 ## 11. Save the artifact
 
-Once the sections above have been answered, write the picks to `surfaces/YYYY-MM-DD-HH-mm-SS.md` (current local time; create `surfaces/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+Once the sections above have been answered, write the picks to `surfaces/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `surfaces/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
 Length and density: as long as you need — preferably tight. Tables only, no prose, drop sections that don't apply. Every section must carry information: cite the PRD constraint that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
 
