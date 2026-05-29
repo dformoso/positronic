@@ -26,16 +26,15 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 
 3. Write the PRD using the template below. Save as `prds/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `prds/` if missing). Commit it. Do not submit it as a GitHub issue.
 
-4. Length and density: ≤ 6 pages — preferably less. Target User + Solution Overview together must fit in ≤ 1 page: tight but comprehensive. These two anchor the contract `/to-spec` and implementation work against; drift from them produces unusable output. Functional Requirements is the section that scales with product surface — drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
+4. Length and density: ≤ 5 pages — preferably less. Target User + Solution Overview together must fit in ≤ 1 page: tight but comprehensive. These two anchor the contract `/to-spec` and implementation work against; drift from them produces unusable output. Functional Requirements is the section that scales with product surface — drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
 
-5. **Style.** Two registers. **Functional Requirements** is the technical tier — vendor names, SDK names, regulatory mechanics, OAuth flows, MMS pricing — packed into tables, not prose. Every other section (**Problem Statement**, **Target User**, **Goals & Success Metrics**, **Solution Overview**, **Key User Journeys**, **Non-Goals**, **Out of Scope**, **Risks & Open Questions**, **Further Notes**) is plain English — someone matching the target persona could follow it without a glossary.
+5. **Style.** Two registers. **Functional Requirements** is the technical tier — vendor names, SDK names, regulatory mechanics, OAuth flows, MMS pricing — packed into tables, not prose. Every other section is plain English: someone matching the target persona could follow it without a glossary.
 
-   - No vendor, SDK, protocol, or regulatory jargon outside Functional Requirements. Names like "Twilio Voice SDK", "CallKit-integrated", "OAuth flow" belong in cells. Solution Overview says what the user experiences; Functional Requirements says how.
-   - No inline tutorials inside parentheses. If a term needs a definition, pick a plainer word or move the definition into Functional Requirements.
-   - No nested parentheticals, no em-dash asides inside parentheses. One layer of detail per sentence; more layers means a bullet list or table row.
-   - Name concrete artifacts, not abstract actions. "Drafts customers, jobs, quotes, invoices" beats "structures inbound". Common offenders: *absorbs*, *structures* (as verb), *processes*, *handles* — usually a sign you haven't named the artifact yet.
-   - Cross-cutting / multi-channel behaviour → short lede + one bullet per channel. A paragraph that tries to describe four channels at once is unreadable.
-   - Name surfaces with real product nouns (e.g. Convos, Triage, Ledger, To-Approve — not "data pane / agent pane / approvals pane"). Bold every mention in Solution Overview and Key User Journeys.
+   - No vendor, SDK, protocol, or regulatory jargon outside Functional Requirements. "Twilio Voice SDK", "CallKit-integrated", "OAuth flow" belong in cells. Solution Overview says what the user experiences; Functional Requirements says how.
+   - One layer of detail per sentence — no inline tutorials, nested parentheticals, or em-dash asides inside parentheses. More layers means a bullet list or table row.
+   - Name concrete artifacts, not abstract actions. "Drafts customers, jobs, quotes, invoices" beats "structures inbound". Offenders: *absorbs*, *structures*, *processes*, *handles* — usually a sign you haven't named the artifact yet.
+   - Cross-cutting / multi-channel behaviour → short lede + one bullet per channel.
+   - Name surfaces with real product nouns (Convos, Triage, Ledger, To-Approve — not "data pane / agent pane"). Bold every mention in Solution Overview and Key User Journeys.
 
 6. Present the saved PRD and ask the user to review. Then prompt for the next step in this order:
    - If the product has persistent UI surfaces, prompt them to run `pick-ui-surfaces`.
@@ -96,7 +95,7 @@ The product surface defined component-by-component, in tables. Cover every relev
 |---|---|---|
 | | | |
 
-**External channels & touchpoints.** Every place the product receives input or emits output to the outside world (SMS, email, voice, API endpoints, push notifications, webhooks). Internal app surfaces — nav, panes, screens — go to `pick-ui-surfaces`.
+**External channels & touchpoints.** Every place the product receives input or emits output to the outside world (SMS, email, voice, API endpoints, push notifications, webhooks). Internal app surfaces (nav, panes, screens) → `pick-ui-surfaces`.
 
 | Channel | Inbound behaviour | Outbound behaviour | Notes |
 |---|---|---|---|
@@ -108,19 +107,19 @@ The product surface defined component-by-component, in tables. Cover every relev
 |---|---|---|---|
 | | | | |
 
-**Queues / approval flows.** (If the product holds work for human review.) What each queue holds and its lifecycle. UX placement — where the user sees the queue, badge counts, full-page vs drawer — goes to `pick-ui-surfaces`.
+**Queues / approval flows.** (If the product holds work for human review.) What each queue holds and its lifecycle. UX placement (where seen, badge counts, full-page vs drawer) → `pick-ui-surfaces`.
 
 | Queue | Holds | Lifecycle |
 |---|---|---|
 | | | |
 
-**Notification / digest cadence.** (If users get pushed updates.) Available modes, default, and override rules. The in-app notifications inbox — bell icon, read/unread state — goes to `pick-ui-surfaces`.
+**Notification / digest cadence.** (If users get pushed updates.) Available modes, default, and override rules. The in-app notifications inbox (bell icon, read/unread state) → `pick-ui-surfaces`.
 
 | Mode | Default? | Behaviour |
 |---|---|---|
 | | | |
 
-**Integrations & migration.** Third parties the product reads from or writes to, plus how users bring existing data in. UX placement — where in the app, when presented to the user — is captured in `pick-ui-surfaces`, not here.
+**Integrations & migration.** Third parties the product reads from or writes to, plus how users bring existing data in. UX placement (where in the app, when presented) → `pick-ui-surfaces`.
 
 | Integration | Direction | MVP behaviour |
 |---|---|---|
