@@ -133,7 +133,7 @@ Which modules are tested and at what seam (unit / integration / e2e). Prior art 
 
 ## Eval / test signal
 
-How correctness is verified at the system level. Per-task pass/fail. Trajectory metrics where applicable: length, cost, gate-hit rate. Where the signal runs (CI / nightly / in-loop).
+How correctness is verified at the system level. Per-task pass/fail. Trajectory metrics where applicable: length, cost, gate-hit rate. Where the signal runs (CI / nightly / in-loop). See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/07_eval_observability_brief.md` for eval dimensions (tool-path, groundedness, hallucination) and the offline → online progression.
 
 ## External dependencies
 
@@ -148,7 +148,7 @@ How the change reaches production safely. For schema changes: forward/backward c
 
 ## Observability
 
-Logs (what gets logged, at what level), metrics (counters, latencies), traces (spans). Dashboards or alerts that need to exist before launch. Never log credentials, PII, or auth headers.
+Logs (what gets logged, at what level), metrics (counters, latencies), traces (spans) — prefer OpenTelemetry GenAI semantic conventions for agent traces (model call, tool call, agent step as spans). Dashboards or alerts that need to exist before launch. Never log credentials, PII, or auth headers. See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/07_eval_observability_brief.md`.
 
 ## Security / authn / authz
 

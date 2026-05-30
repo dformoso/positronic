@@ -194,7 +194,7 @@ The shape above is a hypothesis until you can watch it run and measure whether i
 - **Harness-level eval** — is there a held-out task set the harness runs against before changes ship? Per-task metrics don't transfer between harnesses; budget for building this signal.
 - **Production monitoring** — for an always-on harness: cost-per-success, trajectory length, gate hit-rate, drift, and the threshold that pages someone.
 
-For most teams this is the highest-leverage layer beyond ReAct — the instrument that tells you whether climbing §3 helped. Don't optimize topology before it exists. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/01_harness_engineering_brief.md`.)
+For most teams this is the highest-leverage layer beyond ReAct — the instrument that tells you whether climbing §3 helped. Don't optimize topology before it exists. (See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/07_eval_observability_brief.md` for the eval dimensions, the offline → online progression, and OTEL as the telemetry standard.)
 
 ## 10. Save the artifact
 
@@ -288,7 +288,7 @@ Skip rows that don't apply — state why.
 **Success signal:** verifiable definition of a good run (ties to PRD CUJs).
 **Harness-level eval:** held-out task set, or note it's deferred to `/to-spec`.
 **Production monitoring:** (if always-on) cost-per-success, trajectory length, gate hit-rate, drift thresholds.
-**Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`
+**Cited pattern:** `docs/agentic-patterns/07_eval_observability_brief.md`
 
 ## Rejected alternatives
 

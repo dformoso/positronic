@@ -1,6 +1,6 @@
 # Frontier Documents Index
 
-A 2-page **brief** for each topic; older topics (1–5) also have a longer **detailed** companion. Topics 1–5 are based on a 2024-2026 review of 54 papers; topic 6 is grounded in a 2026 cross-cut of five popular MCP-consuming agent frameworks.
+A 2-page **brief** for each topic; older topics (1–5) also have a longer **detailed** companion. Topics 1–5 are based on a 2024-2026 review of 54 papers; topic 6 is grounded in a 2026 cross-cut of five popular MCP-consuming agent frameworks; topic 7 is grounded in the 2025-2026 production eval/observability stacks (OpenTelemetry GenAI conventions, the Vertex/Gemini and Google ADK eval tooling) plus the LLM-as-judge and harness-optimization literature.
 
 ## The topics
 
@@ -12,6 +12,7 @@ A 2-page **brief** for each topic; older topics (1–5) also have a longer **det
 | 4 | Prompt Management & Optimization | [Brief](04_prompt_management_brief.md) | [Detailed](04_prompt_management_detailed.md) |
 | 5 | Harness Architectures | [Brief](05_harness_architectures_brief.md) | [Detailed](05_harness_architectures_detailed.md) |
 | 6 | MCP Server Design | [Brief](06_mcp_design_brief.md) | — |
+| 7 | Evaluation, Observability & Optimization | [Brief](07_eval_observability_brief.md) | — |
 
 ## Reading order suggestions
 
