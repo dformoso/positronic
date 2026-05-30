@@ -9,6 +9,10 @@ Reference: `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` carries the emp
 
 Ask one question at a time. Surface your recommended answer with each.
 
+## Amend mode
+
+If a prior `harness/[0-9]*.md` exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest harness artifact as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. If the tool layer (§5) changed, prompt `design-mcp-server`; then prompt `/to-spec`.
+
 ## 0. Read the PRD (and surfaces, if any)
 
 Before any picks, read:

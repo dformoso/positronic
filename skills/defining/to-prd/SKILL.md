@@ -8,6 +8,10 @@ Turn the current conversation, codebase understanding, and (if they exist) the m
 
 The PRD answers *what and why* — including the product surface behaviour under Functional Requirements (data shapes the user sees, external channels, autonomy rules, queues, integrations). UX shape and visual identity (nav, onboarding, settings, account lifecycle, error states; feel, accent, type) live in `pick-ui-surfaces`. Implementation decisions (modules, code-level schema, API contracts, test plans, rollout, observability) live in `/to-spec`, not here.
 
+## Amend mode
+
+If a prior `prds/[0-9]*.md` exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest PRD as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then name which downstream artifacts the touched sections implicate (Agent autonomy → `harness/`; Solution Overview surfaces / form factor → `surfaces/`; new channels or tools → `mcp-servers/`) and prompt only those, then `/to-spec`.
+
 ## Inputs
 
 - Current conversation

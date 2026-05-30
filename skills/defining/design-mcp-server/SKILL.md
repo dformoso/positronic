@@ -9,6 +9,10 @@ Reference: `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/06_mcp_design_bri
 
 Ask one question at a time. Surface your recommended answer with each.
 
+## Amend mode
+
+If a prior `mcp-servers/*.md` artifact for this server exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest design as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-spec` to pick up the change.
+
 ## 0. Read the PRD (and harness, if invoked from pick-harness-shape)
 
 Before any picks, read:

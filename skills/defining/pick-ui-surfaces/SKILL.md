@@ -13,6 +13,10 @@ If the product is a CLI, API, library, or otherwise headless (no persistent UI),
 
 Run pick-ui-surfaces only when the user lives inside a persistent UI: web app, mobile app, dashboard, browser extension, or similar.
 
+## Amend mode
+
+If a prior `surfaces/[0-9]*.md` exists and this run is a scoped UI change (not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest surfaces artifact as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-spec` to pick up the change.
+
 ## 1. Read the PRD
 
 Before any picks, read the most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's target user, form factor, external channels, integrations, and any compliance constraints are the inputs that drive sections 2–10 — picking without them is picking blind.

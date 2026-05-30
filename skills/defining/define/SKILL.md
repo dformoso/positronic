@@ -1,11 +1,16 @@
 ---
 name: define
-description: Defining-phase orchestrator. Surfaces assumptions, frames a falsifiable hypothesis, then routes to the right next step (research-market / ideate / judge-idea / to-prd / pick-ui-surfaces / pick-harness-shape). Use when the user has a fuzzy product or feature idea with no PRD or SPEC yet.
+description: Defining-phase orchestrator. Surfaces assumptions, frames a falsifiable hypothesis, then routes to the right next step (research-market / ideate / judge-idea / to-prd / pick-ui-surfaces / pick-harness-shape). Use when the user has a fuzzy product or feature idea — whether greenfield (no PRD/SPEC yet) or a scoped change (increment) to an existing product.
 ---
 
-Entry point for the Defining phase: when a goal is fuzzy and no spec exists, surface the assumptions the idea depends on, frame a falsifiable hypothesis, and route to the right pre-PRD path. Work through the steps in order, one question at a time. For each question, recommend an answer.
+Entry point for the Defining phase — for both a greenfield idea and a scoped change to an existing product. Surface the assumptions the idea depends on, frame a falsifiable hypothesis, and route to the right path. Work through the steps in order, one question at a time. For each question, recommend an answer.
 
 If a question can be answered by exploring the codebase or existing docs, explore instead of asking.
+
+**Step 0 — Greenfield or increment?** `ls prds/[0-9]*.md specs/[0-9]*.md 2>/dev/null`.
+
+- **None →** greenfield. Proceed with Steps 1–8.
+- **A PRD/SPEC already exists →** this is an **increment**, not a new product. Don't re-run the whole-product assumption map. Frame just the *change*: what's new, why now, which existing CUJs / surfaces / harness / modules it touches, and its kill criterion. Then route the authoring skills in **amend mode** (`${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`), cascading only along the edges the change implicates. Run the full Step 1–5 walk only for a genuine pivot — a change that rewrites the Target User or Problem Statement.
 
 **Step 1 — Classify.** What kind of project is this? (Consumer app, B2B SaaS, internal tool, API/platform, product strategy question, data product, hardware/software.) One question, one answer. The type determines which dimensions below to prioritise.
 

@@ -8,6 +8,10 @@ Synthesize the most recent PRD and (if present) the most recent `harness/` and `
 
 The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observability, security. The PRD owns *what and why* — don't duplicate it here.
 
+## Amend mode
+
+If a prior `specs/[0-9]*.md` exists and an upstream artifact was amended (or this run is otherwise a scoped change, not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest SPEC as baseline, carry forward every untouched section *verbatim* (reconcile any the upstream change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-issues` for the new or changed slices only.
+
 ## Process
 
 1. Read the most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. If none exists, prompt the user to run `/to-prd` first and stop.
