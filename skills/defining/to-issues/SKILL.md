@@ -22,7 +22,7 @@ If you haven't explored the codebase, do so.
 
 Break the plan into **tracer bullet** issues. Each issue is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer.
 
-Slices may be 'HITL' or 'AFK'. HITL slices need human input (architectural decisions, design review). AFK slices can be merged without it. Prefer AFK over HITL where possible.
+Slices may be 'HITL' or 'AFK'. HITL slices need human input (architectural decisions, design review). AFK slices can be merged without it. Prefer AFK over HITL where possible. A slice that needs a secret or interactive setup to verify (API key, OAuth consent) is HITL until that's provided — step 5 front-loads those credentials so most such slices can run AFK instead.
 
 <vertical-slice-rules>
 - Each slice delivers a narrow but COMPLETE path through every layer (schema, API, UI, tests)
@@ -51,7 +51,41 @@ Ask the user:
 
 Iterate on user feedback.
 
-### 5. Create the GitHub issues
+### 5. Provision credentials for AFK
+
+AFK agents run non-interactively in isolated worktrees (via `/run-afk-in-loop`) — they can't open a dashboard, clear an OAuth consent screen, or ask you for a key. Any AFK slice whose tests or end-to-end check need a real secret will emit `blocked` unless that secret is already on disk. Front-load them here so the backlog runs unattended.
+
+From the SPEC's **External dependencies** and **Security / authn / authz** sections (plus any integration the slices touch), list every credential the AFK slices need. For each, work out:
+
+- **Env var** — the name the code reads (`STRIPE_SECRET_KEY`), matching the SPEC or existing code.
+- **Used by** — the slice(s) that need it.
+- **How to obtain** — a few steps plus the provider's credentials URL. Use the canonical console URL when you know it (Stripe → `https://dashboard.stripe.com/apikeys`, Anthropic → `https://console.anthropic.com/settings/keys`, OpenAI → `https://platform.openai.com/api-keys`); when you don't, link the provider's docs or credentials page rather than guessing a deep link. Flag any that need a paid plan, org-admin rights, or a consent flow — those often have to stay HITL.
+
+Then:
+
+1. Make sure the env file is gitignored, and commit the ignore rule so it reaches the worktree checkouts — without this, `/run-afk-in-loop` sees the copied `.env` as an untracked file, flags the worktree dirty, and downgrades every slice to blocked (never commit secrets — AGENTS.md §8):
+
+   ```bash
+   if ! grep -qxF '.env' .gitignore 2>/dev/null; then
+     echo '.env' >> .gitignore
+     git add .gitignore && git commit -m "Ignore .env for AFK credentials"
+   fi
+   ```
+
+2. Write a gitignored `.env` at the repo root (or extend the project's existing one) with one commented block per credential: the purpose and the how-to-obtain steps + link as comments, and an empty assignment for the user to fill. Append only missing keys — never overwrite a value already present, and never write or print a real secret value yourself.
+
+   <credentials-guide>
+   # STRIPE_SECRET_KEY — charges + webhooks for the checkout slice (#12)
+   # Get it: Stripe Dashboard → Developers → API keys → reveal "Secret key"
+   #   https://dashboard.stripe.com/apikeys   (a test-mode key is fine for CI)
+   STRIPE_SECRET_KEY=
+   </credentials-guide>
+
+3. Show the user the same how-to-obtain list and ask them to fill in the file, then tell you which they could and couldn't get. You write the template and the guide; the user supplies the values — so no secret lands in git or the transcript.
+
+4. Re-classify: a slice stays `afk` only once every credential it needs is filled in and nothing about its setup is interactive (no consent screen, no dashboard toggle the agent can't reach). Otherwise mark it `hitl`. Tell the user which slices moved and why.
+
+### 6. Create the GitHub issues
 
 First, ensure the labels exist (idempotent — safe to run even if they already exist):
 
@@ -91,6 +125,12 @@ Path of a file whose shape this issue should follow (e.g., `backend/app/extracto
 - Cross-issue invariants this issue must respect (naming, shape, error handling).
 - Omit this section if no shared conventions apply.
 
+## Credentials / setup
+
+- Env vars this slice needs, already provisioned in the repo's gitignored env file (e.g. `.env`): `STRIPE_SECRET_KEY`, `…`. Names and purpose only — never the values.
+- Read them from the environment as the existing code does; do not hardcode.
+- Omit this section if the slice needs no credentials.
+
 ## Acceptance criteria
 
 - [ ] Criterion 1
@@ -107,6 +147,6 @@ Or "None - can start immediately" if no blockers.
 
 Do NOT close or modify any parent issue.
 
-### 6. Hand off
+### 7. Hand off
 
 Prompt the user to run `/run-afk-in-loop` to work the unblocked `afk` backlog in parallel waves. `hitl` issues (and any `afk` issue still blocked by one) are picked up by hand — name them so the user knows what's waiting.

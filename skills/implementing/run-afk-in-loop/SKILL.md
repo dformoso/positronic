@@ -12,7 +12,7 @@ The inner agent runs under `claude --print`, which is non-interactive — see `A
 
 ## Context the agent sees
 
-Each AFK agent runs `claude --print` inside its worktree. It auto-loads `CLAUDE.md` and `AGENTS.md` from the branch checkout, plus the skills registered in `.claude-plugin/plugin.json`. It does NOT see the orchestrator's conversation or cross-session auto-memory — the worktree at `../wt-issue-N` maps to a different `~/.claude/projects/...` slot, which is empty. Encode anything the agent must follow in AGENTS.md or the issue body.
+Each AFK agent runs `claude --print` inside its worktree. It auto-loads `CLAUDE.md` and `AGENTS.md` from the branch checkout, plus the skills registered in `.claude-plugin/plugin.json`. It does NOT see the orchestrator's conversation or cross-session auto-memory — the worktree at `../wt-issue-N` maps to a different `~/.claude/projects/...` slot, which is empty. Encode anything the agent must follow in AGENTS.md or the issue body. One exception to the empty slot: a gitignored `.env` at the repo root is copied into each worktree (step 3) so credentials provisioned by `/to-issues` are readable.
 
 ## Workflow
 
@@ -104,6 +104,10 @@ for num in "${wave[@]}"; do
   [ -d "$worktree" ] && git worktree remove "$worktree" --force 2>/dev/null || true
   git branch -D "$branch" 2>/dev/null || true
   git worktree add -b "$branch" "$worktree"
+
+  # Local secrets are gitignored, so git won't carry them into the fresh worktree.
+  # Copy them in so the non-interactive agent can read them (provisioned by /to-issues).
+  [ -f .env ] && cp .env "$worktree/.env"
 
   prompt="/test-driven-dev Implement GitHub issue #${num}: ${title}
 

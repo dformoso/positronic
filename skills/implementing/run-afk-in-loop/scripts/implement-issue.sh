@@ -86,6 +86,9 @@ if [ "$AFK_WORKTREE" = "1" ]; then
   fi
   "$GIT_CMD" branch -D "$branch" >/dev/null 2>&1 || true
   "$GIT_CMD" worktree add -b "$branch" "$worktree" >/dev/null
+  # Local secrets are gitignored, so git won't carry them into the fresh worktree.
+  # Copy them in so the non-interactive agent can read them (provisioned by /to-issues).
+  [ -f "$repo_root/.env" ] && cp "$repo_root/.env" "$worktree/.env"
   run_dir="$worktree"
 fi
 

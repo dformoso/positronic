@@ -346,6 +346,58 @@ grep -q "uncommitted changes" "$log12" \
   && ok "log explains the downgrade reason" \
   || fail "log explains the downgrade reason"
 
+# ── test 13: gitignored .env is copied into the worktree without tripping the ──
+# dirty-worktree downgrade. /to-issues provisions a gitignored .env at the repo
+# root; the agent (running in a fresh worktree) must be able to read it, and the
+# copied file must NOT count as uncommitted work.
+
+repo13="$tmp/repo13"
+git init -q "$repo13"
+(
+  cd "$repo13"
+  git config user.email "test@test"; git config user.name "Test"
+  echo "initial" > README.md
+  printf '.env\n' > .gitignore          # as /to-issues commits it
+  git add README.md .gitignore
+  git commit -q -m "initial"
+  printf 'STRIPE_SECRET_KEY=sk_test_123\n' > .env   # provisioned locally, gitignored
+)
+
+# Agent stub: confirm .env rode along into the worktree, then commit + succeed.
+cat > "$tmp/claude_reads_env" <<EOF
+#!/usr/bin/env bash
+echo "doing work"
+grep -q 'sk_test_123' .env || { echo "MISSING .env in worktree"; exit 1; }
+echo "feature" > feature.txt
+git add feature.txt
+git commit -q -m "add feature"
+echo "=== AFK-RESULT: success ==="
+echo "Files: feature.txt"; echo "Tests: pass"; echo "Commit: \$(git rev-parse HEAD)"
+exit 0
+EOF
+chmod +x "$tmp/claude_reads_env"
+
+gh13=$(make_gh "$BODY_JSON" "$tmp/close13.log")
+log13="$tmp/log13.txt"
+
+set +e
+(
+  cd "$repo13"
+  AFK_WORKTREE=1 CLAUDE_CMD="$tmp/claude_reads_env" GH_CMD="$gh13" \
+    MAX_ATTEMPTS=1 RETRY_WAIT_SECONDS=0 \
+    bash "$IMPL_SCRIPT" 101 "feature" >"$log13" 2>&1
+)
+env_exit=$?
+set -e
+
+[ "$env_exit" -eq 0 ] \
+  && ok "worktree mode: gitignored .env copied in, success not downgraded (got $env_exit)" \
+  || fail "worktree mode: gitignored .env copied in, success not downgraded (got $env_exit)"
+
+[ -f "$tmp/wt-issue-101/.env" ] \
+  && ok "worktree mode: .env present in the worktree" \
+  || fail "worktree mode: .env present in the worktree"
+
 # ── summary ───────────────────────────────────────────────────────────────────
 
 echo ""
