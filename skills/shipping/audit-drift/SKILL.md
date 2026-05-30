@@ -1,12 +1,12 @@
 ---
 name: audit-drift
-description: Audit the project's doc graph (prds/, harness/, surfaces/, mcp-servers/, specs/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase.
+description: Audit the project's doc graph (prds/, harness/, surfaces/, mcp-servers/, specs/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, SPEC contracts the code has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase.
 disable-model-invocation: true
 ---
 
 # Audit Drift
 
-Static sweep across the project's doc graph. Detects drift. Reports only — never auto-fixes. Mirrors `/review-pr`'s posture.
+Static sweep across the project's doc graph (and the code it describes). Detects drift. Reports only — never auto-fixes. Mirrors `/review-pr`'s posture.
 
 Positions within the shipping phase:
 
@@ -76,7 +76,26 @@ For each ADR in `docs/adr/[0-9]*.md`:
 
 This is the LLM-judgment check, not a grep. Be conservative — only flag when the contradiction is clear, not when the ADR and SPEC discuss different layers.
 
-#### 2.4. Orphan ADRs — *worth-noting*
+#### 2.4. The latest SPEC overtaken by the code — *must-fix* (forward) / *worth-noting* (reverse)
+
+Skip if there's no `latest_spec` or no source code. The semantic mirror of 2.3, one layer down: 2.3 asks whether the SPEC still honours each ADR; this asks whether the **code** still honours each SPEC contract. Like 2.3, this is LLM-judgment, not a grep — be conservative, flag only a clear contradiction. It is the heaviest check here: it reads source, not just docs.
+
+From the latest SPEC, take the named, checkable contracts:
+
+- `## Modules & interfaces` — module / directory names
+- `## Data model / schema` — entities, tables, key fields
+- `## API contracts` — endpoints, method signatures
+- `## Tool layer / ACI` — tool names
+- `## Verification gates` — named gates
+
+For each, grep the codebase and judge:
+
+- **Forward — *must-fix*.** The SPEC names a contract the code clearly no longer honours: module deleted, endpoint gone, field renamed, gate removed. The doc graph now lies. (This is also where a `diagnose` fix that changed behaviour without updating the SPEC surfaces.)
+- **Reverse — *worth-noting*.** A *major* surface present in code — a whole module directory, route group, or public tool — that the latest SPEC never mentions. The signature of accumulated drift across many small PRs. Flag surfaces, never individual functions, or this floods.
+
+Also read the latest `harness/` artifact where it names topology, gates, or tools the code should implement, and apply the same conservative compare. Keep every finding to a divergence you can point at — when in doubt, don't flag.
+
+#### 2.5. Orphan ADRs — *worth-noting*
 
 For each ADR file `docs/adr/NNNN-slug.md`:
 
@@ -112,7 +131,8 @@ Default no. Create `docs/audits/` lazily on first save.
 
 Named so they aren't re-litigated:
 
-- **PRD-SPEC scope coverage.** Hard, judgment-heavy, and `/judge-idea` covers neighbouring ground.
+- **PRD-SPEC scope coverage.** Whether the SPEC covers everything the PRD *promised* (forward completeness) — distinct from 2.4, which checks whether the code still *honours* the SPEC (backward conformance). Hard, judgment-heavy, and `/judge-idea` covers neighbouring ground.
+- **Deployed-vs-artifact harness drift.** Prod model swaps, added gates, or topology changes not visible in the repo. Brief-07 production-monitoring territory, not a static sweep.
 - **ADR completeness.** ADR format is intentionally minimal — there's no required-section list to enforce.
 - **Issue traceability.** Couples to GitHub and only useful immediately after `/to-issues`.
 - **Auto-fix.** Mirrors `/review-pr` — detection, not repair.
