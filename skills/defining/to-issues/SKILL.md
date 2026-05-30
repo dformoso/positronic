@@ -14,6 +14,8 @@ Break a plan into independently-grabbable GitHub issues using vertical slices (t
 
 Work from what's already in the conversation. If a `specs/` directory exists with files, read the most recent SPEC (`ls specs/[0-9]*.md | sort | tail -1`) as the primary source — the SPEC carries the implementation contract and is what issues should decompose. Otherwise, if `prds/` exists, read the most recent PRD (`ls prds/[0-9]*.md | sort | tail -1`) as the source. If the user passes a GitHub issue number or URL as an argument, fetch it with `gh issue view <number>` (with comments).
 
+Read the SPEC's **Verification fidelity** section — its per-axis rung (data, external access, eval signal, CUJ verification, deploy) and crossover list drive which slices verify against mocks vs. real deps, which credentials step 5 provisions, and which crossovers become their own slices. If the SPEC predates this section (or there's no SPEC), ask the user the per-axis fidelity and crossover question now, before drafting — default to building against faithful stand-ins (fixtures plus mock/sandbox adapters) with an explicit crossover before the release gate.
+
 ### 2. Explore the codebase (optional)
 
 If you haven't explored the codebase, do so.
@@ -29,6 +31,8 @@ Slices may be 'HITL' or 'AFK'. HITL slices need human input (architectural decis
 - A completed slice is demoable or verifiable on its own
 - Prefer many thin slices over few thick ones
 </vertical-slice-rules>
+
+**Fidelity and crossover slices.** Each slice's verification fidelity comes from the SPEC's Verification fidelity section, and that rung resolves the tracer-bullet tension: a slice still cuts every layer end-to-end, but whether its outer edge lands on a mock adapter or a real dependency is the rung's call — and that sets the slice's acceptance criteria (*verified against fake adapter* vs. *verified against sandbox key, CUJ driven*). Turn each crossover the section lists into its own slice — build the eval set, swap `<dep>` mock→live, deploy to staging, drive `<CUJ>` end-to-end — often HITL and good shape-establishing anchors others are `Blocked by`. Don't downgrade a UI slice to a mocked check when AGENTS.md already requires its CUJ driven in a real browser before done.
 
 **Template-first pattern.** If multiple slices share the same shape (e.g., one standardizer per entity type, one extractor per data source), identify which slice *establishes* the shape and mark the others as `Blocked by` it. This serializes the mirror slices behind a working in-repo example and prevents parallel AFK agents from drifting into divergent shapes. The shape-establishing slice is often a good candidate for HITL (do it inline) so subsequent AFK agents can reference a finished file.
 
@@ -55,7 +59,7 @@ Iterate on user feedback.
 
 AFK agents run non-interactively in isolated worktrees (via `/run-afk-in-loop`) — they can't open a dashboard, clear an OAuth consent screen, or ask you for a key. Any AFK slice whose tests or end-to-end check need a real secret will emit `blocked` unless that secret is already on disk. Front-load them here so the backlog runs unattended.
 
-From the SPEC's **External dependencies** and **Security / authn / authz** sections (plus any integration the slices touch), list every credential the AFK slices need. For each, work out:
+From the SPEC's **External dependencies** and **Security / authn / authz** sections (plus any integration the slices touch), list every credential the AFK slices need — but only for dependencies the **Verification fidelity** section marks **sandbox** or **live**. A dependency kept at the **mock** rung needs no credential and no `.env` entry; skip it here (its swap-to-live crossover, if any, carries its own credential when that slice runs). For each credential, work out:
 
 - **Env var** — the name the code reads (`STRIPE_SECRET_KEY`), matching the SPEC or existing code.
 - **Used by** — the slice(s) that need it.

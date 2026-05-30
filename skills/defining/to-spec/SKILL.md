@@ -26,11 +26,13 @@ If a prior `specs/[0-9]*.md` exists and an upstream artifact was amended (or thi
 
 6. Confirm with the user which modules need tests; capture them in the Test plan section.
 
-7. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `specs/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `specs/` if missing). Commit it.
+7. Pick the **verification fidelity** — how real development and verification are along five axes: data, external access, eval signal, CUJ verification, deploy. Show the rungs as a table, recommend one per axis, and let the user override per dependency. Default: build and unit/integration-test against the lowest *faithful* stand-in (fixtures plus mock or sandbox adapters at the external seams) so AFK slices run unattended, then schedule an explicit crossover before the release gate — a slice may not claim done on a mock when its PRD CUJ needs the real thing. Settle the crossover shape too: per-slice (true tracer bullet, real deps from the start, credentials needed early), phased (mock through MVP, dedicated crossover slices before launch), or hybrid per-axis (recommended). Capture the picks in the Verification fidelity section and the per-dependency rung in the External dependencies column.
 
-8. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information.
+8. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `specs/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `specs/` if missing). Commit it.
 
-9. Present the saved SPEC and wait for the user's approval before they run `/to-issues`. (If the SPEC adds load-bearing decisions worth stress-testing, mention `/judge-idea` can run adversarially on it first — optional.)
+9. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information.
+
+10. Present the saved SPEC and wait for the user's approval before they run `/to-issues`. (If the SPEC adds load-bearing decisions worth stress-testing, mention `/judge-idea` can run adversarially on it first — optional.)
 
 ## Section applicability
 
@@ -48,6 +50,7 @@ If a prior `specs/[0-9]*.md` exists and an upstream artifact was amended (or thi
 | Coordination protocol | | | | ✓ | |
 | Verification gates | | ✓ | ✓ | ✓ | ✓ |
 | Failure taxonomy | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Verification fidelity | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Test plan | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Eval / test signal | ✓ | ✓ | ✓ | ✓ | ✓ |
 | External dependencies | ✓ | ✓ | ✓ | ✓ | ✓ |
@@ -128,6 +131,20 @@ For each gate: format, schema, test, verifier-LM or rule-based, hard or soft. St
 | Error mode | Detection | Recovery action | Retry budget |
 |---|---|---|---|
 
+## Verification fidelity
+
+How real development and verification are, per axis — the rung each is built and checked against, and where it crosses dummy → real. Test plan, Eval / test signal, External dependencies, and Rollout below implement these picks; `/to-issues` reads this section to set per-slice acceptance criteria and decide which crossovers become their own slices.
+
+| Axis | Rung (dummy → real) | Crossover trigger |
+|---|---|---|
+| Data | fixtures / anonymized sample / prod data | |
+| External access | mock adapter / sandbox key / live creds | |
+| Eval signal | smoke asserts / held-out synthetic set / curated dataset + graded metric | |
+| CUJ verification | unit-integration / scripted e2e on mocks / driven on real deps | |
+| Deploy | local / staging / prod (flagged) | |
+
+A slice may not claim done on a mock when its PRD CUJ needs the real thing. List crossovers that are their own unit of work — build eval set, swap `<dep>` mock→live, deploy to staging, drive `<CUJ>` end-to-end — so `/to-issues` makes each a slice (often HITL, often the shape-establishing anchor others mirror).
+
 ## Test plan
 
 Which modules are tested and at what seam (unit / integration / e2e). Prior art — similar tests already in the codebase. Test types per module. Tests verify external behavior, not implementation details.
@@ -141,10 +158,10 @@ How correctness is verified at the system level. Per-task pass/fail. Trajectory 
 
 ## External dependencies
 
-| Dependency | Purpose | Failure mode if down | Mitigation |
-|---|---|---|---|
+| Dependency | Purpose | Dev/test fidelity | Failure mode if down | Mitigation |
+|---|---|---|---|---|
 
-Includes third-party APIs, hosted models, MCP servers, payment processors. Anything outside our control.
+Includes third-party APIs, hosted models, MCP servers, payment processors. Anything outside our control. The Dev/test fidelity column records how each is stood up while building — mock adapter, sandbox / test-mode key, or live creds (see Verification fidelity).
 
 ## Rollout / migration
 
