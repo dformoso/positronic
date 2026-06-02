@@ -35,7 +35,7 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 | 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `harness/`, `mcp-servers/` |
 | 6 | Lock *how* | `/to-spec` | `specs/` |
 | 7 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` |
-| 8 | Build | `/run-afk-in-loop` → `test-driven-dev` (+ `ui-taste`, `diagnose`) | merged code |
+| 8 | Build | `/run-afk-in-loop` → `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code |
 | 9 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
 
 When both apply, stage 4 runs before stage 5 — harness picks then slot into known surfaces. Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`.
@@ -58,6 +58,7 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | `to-issues` | slash | defining | `specs/` | GitHub issues | Break the SPEC into `afk` / `hitl` issues |
 | `test-driven-dev` | model | implementing | `specs/` | code + tests | Red-green-refactor on one issue |
 | `ui-taste` | model | implementing | `surfaces/` | styled UI | Apply the locked visual identity + taste rules |
+| `generate-test-assets` | model | implementing | `specs/`, test plan | `test-assets/` | Generate multimodal test fixtures with Gemini; route load-bearing checks to the human |
 | `run-afk-in-loop` | slash | implementing | issues, `specs/` | merged code | Work the AFK backlog in parallel waves |
 | `diagnose` | model | diagnosing | — | fix + regression test | Reproduce → minimise → fix hard bugs |
 | `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |

@@ -137,13 +137,13 @@ How real development and verification are, per axis — the rung each is built a
 
 | Axis | Rung (dummy → real) | Crossover trigger |
 |---|---|---|
-| Data | fixtures / anonymized sample / prod data | |
+| Data | fixtures (hand- or Gemini-generated) / anonymized sample / prod data | |
 | External access | mock adapter / sandbox key / live creds | |
 | Eval signal | smoke asserts / held-out synthetic set / curated dataset + graded metric | |
 | CUJ verification | unit-integration / scripted e2e on mocks / driven on real deps | |
 | Deploy | local / staging / prod (flagged) | |
 
-A slice may not claim done on a mock when its PRD CUJ needs the real thing. List crossovers that are their own unit of work — build eval set, swap `<dep>` mock→live, deploy to staging, drive `<CUJ>` end-to-end — so `/to-issues` makes each a slice (often HITL, often the shape-establishing anchor others mirror).
+A slice may not claim done on a mock when its PRD CUJ needs the real thing. Generated fixtures (`generate-test-assets`) raise the Data axis only — never the CUJ axis; a user-dependent journey stays human-verified. List crossovers that are their own unit of work — build eval set, swap `<dep>` mock→live, deploy to staging, drive `<CUJ>` end-to-end — so `/to-issues` makes each a slice (often HITL, often the shape-establishing anchor others mirror).
 
 ## Test plan
 

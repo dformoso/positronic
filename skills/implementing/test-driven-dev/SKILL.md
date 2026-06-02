@@ -52,6 +52,7 @@ Before writing any code:
 - [ ] Design interfaces for [testability](interface-testability.md)
 - [ ] If the slice touches web UI, the tracer-bullet test is a Playwright CUJ (real browser, real flow) — not a component unit test
 - [ ] If the slice touches user-facing UI, invoke `ui-taste` before styling — it applies the visual rules and reads the locked style from the SPEC's Product surfaces section (the `pick-ui-surfaces` picks `/to-spec` restated)
+- [ ] If a test needs a multimodal fixture (image, audio, video, rich text), invoke `generate-test-assets` — it generates the stand-in into `test-assets/` and routes load-bearing / user-dependent checks to the human
 
 State the plan inline (interface, top behaviors, what's out of scope) and proceed. Ask only if a scope question would change the slice — the upstream issue is the contract; don't relitigate it.
 
