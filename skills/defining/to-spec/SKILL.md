@@ -70,7 +70,7 @@ Restate the picks from the most recent `harness/<file>.md` — substrate, topolo
 
 Restate the picks from the most recent `surfaces/<file>.md` — nav, account lifecycle, onboarding, settings, integration placement, error/system states, compliance touchpoints. One paragraph plus a pointer (`See surfaces/<file>.md`) so the full rationale and rejected alternatives stay one click away. The Modules section below should reflect these surfaces (e.g., `onboarding/`, `settings/`) rather than scattering the logic.
 
-Restate the **visual identity** inline as a table (who, feel, signature, accent + ramp, neutrals, spacing base, fonts, depth/motion) — not just a pointer. The implementing agent reads this SPEC, not the surfaces artifact, so the locked values must live here for every UI issue to inherit one identity; `ui-taste` reads them at build time and applies them.
+Restate the **visual identity** inline as a table (register, who, feel, signature, accent + ramp, neutrals, spacing base, fonts, depth/motion) — not just a pointer. The implementing agent reads this SPEC, not the surfaces artifact, so the locked values must live here for every UI issue to inherit one identity; `ui-taste` reads them at build time and applies them.
 
 ## Modules & interfaces
 
