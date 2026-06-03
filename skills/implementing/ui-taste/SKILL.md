@@ -11,7 +11,14 @@ These rules are safe defaults, not laws. Break them when you have a reason; surf
 
 ## Work from the locked style
 
-The visual identity — who, feel, signature, accent, neutrals, spacing base, fonts, depth/motion — is decided once, up front, by `pick-ui-surfaces` and restated in the SPEC's "Product surfaces" section. **Read it and apply it. Do not re-pick it per surface** — that is what makes parallel-built screens diverge.
+The visual identity — register, who, feel, signature, accent, neutrals, spacing base, fonts, depth/motion — is decided once, up front, by `pick-ui-surfaces` and restated in the SPEC's "Product surfaces" section. **Read it and apply it. Do not re-pick it per surface** — that is what makes parallel-built screens diverge.
+
+**State the design read first.** Before building a surface, say in one line what you're building and how it should feel — "Reading this as: a settings page for a B2B admin (product register), restrained, state-rich, familiar patterns." It catches a wrong direction before any code.
+
+**Register sets the defaults.** The locked identity names a register:
+
+- **Product** (app, dashboard, tool — design *serves* the task): restrained colour, state-rich (hover / focus / active / disabled / loading / error), familiar patterns are a feature, motion only to communicate. The rules below are tuned for this.
+- **Brand** (marketing, landing, portfolio — design *is* the product): can afford ambitious first-load motion, a committed or drenched palette, per-section art direction, asymmetric layout. The rules still hold, but rule 2 (greyscale-first) and rule 11 (motion budget) loosen deliberately — say so when you lean on that.
 
 If no identity is recorded (the SPEC has none and there's no `surfaces/` artifact), you're working pre-identity: name the who, feel, and signature yourself — feel in specific words ("warm like a notebook," never "clean and modern"), signature being one element only this product would have — record them so the next surface inherits them, then proceed.
 
@@ -78,11 +85,11 @@ Apple, Google, and WCAG 2.5.5 all agree. Includes invisible padding around small
 Animate to communicate state change, not to decorate.
 
 - Entry: 200–300ms, ease-out.
-- Exit: 150–200ms, ease-in.
+- Exit: 150–200ms, ease-out — faster than entry.
 - Big distance = longer duration. Linear easing feels robotic — use a curve.
 - Respect `prefers-reduced-motion`.
 
-If you can't name what the animation tells the user, delete it.
+If you can't name what the animation tells the user, delete it. For real motion work — drawers, gestures, transitions, springs — see [motion-craft.md](motion-craft.md).
 
 ## 12. Borders, shadows, and depth
 
@@ -111,20 +118,31 @@ Type-checks and tests don't catch ugly. Before declaring UI work done:
 
 ## Quick smell test
 
-Skim the screen and look for these tells. Each one is a deduction:
+Skim the screen. Each tell is a deduction; three or more and it reads as generic — fix the worst first.
 
-- Everything centred, lots of equal-weight cards in a grid.
-- Multiple equally prominent buttons.
+**Structure & hierarchy**
+
+- Everything centred; equal-weight cards in a grid; four identical cards in a row (same icon position, number style, trend).
+- Multiple equally prominent buttons — nothing is primary.
 - Uniform spacing — everything 16px from everything.
-- Pure black text on pure white background.
-- Default sans-serif at default size, no scale.
-- Five+ shades of grey with no system.
-- Gradients on buttons "to make them pop".
-- No empty state, no error state, no loading state.
-- Decorative emoji or icons that don't carry meaning.
-- Tooltips containing essential information.
-- Swap test fails — replace the typeface or colour for the obvious alternative; if no one would notice, you defaulted.
 - Squint and the hierarchy collapses, or borders and colours jump out harshly.
-- Four cards in a row, all identical — same icon position, number style, trend treatment.
 
-Three or more = generic. Fix the worst before anything else.
+**Current-era AI tells** *(time-bound — these are the 2026 defaults; refresh as they shift)*
+
+- **Colour:** AI-purple/violet glow; neon gradients; pure black on pure white; five+ greys with no system; the warm cream/beige body background (`#f5f1ea`, `#faf7f1`, "paper/sand/bone") reached for by default.
+- **Type:** default Inter at default size with no scale; a display serif (`Fraunces`, `Instrument Serif`, `Playfair`) reached for because the brief "feels editorial."
+- **Scaffolding:** a tiny uppercase tracked **eyebrow above every section**; numbered section markers (`01 / 02 / 03`); gradient text (`background-clip: text`); a coloured side-stripe border on cards or alerts; the big-number hero-metric template.
+- **Copy:** em-dashes as a flourish; marketing buzzwords (streamline / empower / supercharge / seamless); the aphoristic "Not a X. A Y." cadence repeated across sections.
+- **Decoration:** gradients on buttons "to make them pop"; emoji or icons that carry no meaning; infinite micro-animations on every card.
+
+**Missing the unhappy paths**
+
+- No empty state, no error state, no loading state.
+- Tooltips holding essential information.
+
+**Two swap tests**
+
+- *Element swap:* replace the typeface or accent with the obvious alternative. If no one would notice, you defaulted.
+- *Category-reflex (run twice):* could someone guess the palette and type from the **category alone** ("cookware → warm beige + brass", "AI tool → purple + Inter")? That's the first reflex — rework it. Then: could they guess it from **category-plus-the-obvious-anti-reference** ("AI tool that's *not* purple → editorial serif")? That's the trap one tier deeper. Rework until neither is obvious.
+
+Three or more tells = generic. Fix the worst before anything else.

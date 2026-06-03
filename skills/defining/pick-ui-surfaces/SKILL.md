@@ -31,6 +31,7 @@ The look every surface inherits — decided once here so parallel implementers d
 
 | Field | Pick | Note |
 |---|---|---|
+| Register | brand or product | brand = design *is* the product (marketing, landing, portfolio); product = design *serves* the task (app, dashboard, tool). Gates motion budget, colour boldness, and how much familiar-pattern reuse is a feature. `ui-taste` branches on it. |
 | Who | the actual user, one line | not "users" — a teacher at 7am ≠ a dev at midnight |
 | Feel | specific words ("warm like a notebook") | never "clean and modern" — every AI says that |
 | Signature | one element only this product would have | visual, structural, or interactive; can't name one? keep digging |
@@ -194,6 +195,7 @@ One paragraph naming the feel + signature, nav shape, signup mechanism, settings
 
 | Field | Picked |
 |---|---|
+| Register | |
 | Who | |
 | Feel | |
 | Signature | |
