@@ -1,26 +1,26 @@
 ---
 name: to-spec
-description: Turn the most recent PRD and (if present) the most recent harness/ and surfaces/ artifacts into an implementation SPEC. Save it as a versioned local file in specs/. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics, product surfaces).
+description: Turn the most recent PRD and (if present) the most recent definitions/harness/ and definitions/surfaces/ artifacts into an implementation SPEC. Save it as a versioned local file in definitions/specs/. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics, product surfaces).
 disable-model-invocation: true
 ---
 
-Synthesize the most recent PRD and (if present) the most recent `harness/` and `surfaces/` artifacts into a SPEC. Do NOT re-interview — work from prior decisions.
+Synthesize the most recent PRD and (if present) the most recent `definitions/harness/` and `definitions/surfaces/` artifacts into a SPEC. Do NOT re-interview — work from prior decisions.
 
 The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observability, security. The PRD owns *what and why* — don't duplicate it here.
 
 ## Amend mode
 
-If a prior `specs/[0-9]*.md` exists and an upstream artifact was amended (or this run is otherwise a scoped change, not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest SPEC as baseline, carry forward every untouched section *verbatim* (reconcile any the upstream change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-issues` for the new or changed slices only.
+If a prior `definitions/specs/[0-9]*.md` exists and an upstream artifact was amended (or this run is otherwise a scoped change, not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest SPEC as baseline, carry forward every untouched section *verbatim* (reconcile any the upstream change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-issues` for the new or changed slices only.
 
 ## Process
 
-1. Read the most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. If none exists, prompt the user to run `/to-prd` first and stop.
+1. Read the most recent PRD: `ls definitions/prds/[0-9]*.md | sort | tail -1`. If none exists, prompt the user to run `/to-prd` first and stop.
 
-2. Read the most recent harness artifact: `ls harness/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Harness shape" section restates its picks (substrate, topology, memory, tool layer, gates, per-stage sampling) — do not re-derive them, and do not contradict them silently. If the SPEC needs to deviate, surface the conflict to the user before writing. If no harness artifact exists and the section matrix below indicates one is needed (custom agent / multi-agent / computer use), stop and prompt the user to run `pick-harness-shape` first.
+2. Read the most recent harness artifact: `ls definitions/harness/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Harness shape" section restates its picks (substrate, topology, memory, tool layer, gates, per-stage sampling) — do not re-derive them, and do not contradict them silently. If the SPEC needs to deviate, surface the conflict to the user before writing. If no harness artifact exists and the section matrix below indicates one is needed (custom agent / multi-agent / computer use), stop and prompt the user to run `pick-harness-shape` first.
 
-3. Read the most recent surfaces artifact: `ls surfaces/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Product surfaces" section restates its picks (visual identity, nav, account, onboarding, settings, integration placement, error states, compliance) and the SPEC's Modules section should reflect them — do not re-derive, and do not contradict silently. If the SPEC needs to deviate, surface the conflict before writing. If the product has persistent UI surfaces and no surfaces artifact exists, stop and prompt the user to run `pick-ui-surfaces` first.
+3. Read the most recent surfaces artifact: `ls definitions/surfaces/[0-9]*.md | sort | tail -1`. If one exists, the SPEC's "Product surfaces" section restates its picks (visual identity, nav, account, onboarding, settings, integration placement, error states, compliance) and the SPEC's Modules section should reflect them — do not re-derive, and do not contradict silently. If the SPEC needs to deviate, surface the conflict before writing. If the product has persistent UI surfaces and no surfaces artifact exists, stop and prompt the user to run `pick-ui-surfaces` first.
 
-4. Read all MCP-server designs (if any): `ls mcp-servers/*.md 2>/dev/null`. Multi-server projects keep one artifact per server (filename `<server-slug>-<ts>.md`); read every file. For each, the SPEC's "Tool layer / ACI" section adds a paragraph restating its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) plus a pointer to the file — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
+4. Read all MCP-server designs (if any): `ls definitions/mcp-servers/*.md 2>/dev/null`. Multi-server projects keep one artifact per server (filename `<server-slug>-<ts>.md`); read every file. For each, the SPEC's "Tool layer / ACI" section adds a paragraph restating its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) plus a pointer to the file — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
 
 5. Sketch modules and integration points. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation.
 
@@ -28,7 +28,7 @@ If a prior `specs/[0-9]*.md` exists and an upstream artifact was amended (or thi
 
 7. Pick the **verification fidelity** — how real development and verification are along five axes: data, external access, eval signal, CUJ verification, deploy. Show the rungs as a table, recommend one per axis, and let the user override per dependency. Default: build and unit/integration-test against the lowest *faithful* stand-in (fixtures plus mock or sandbox adapters at the external seams) so AFK slices run unattended, then schedule an explicit crossover before the release gate — a slice may not claim done on a mock when its PRD CUJ needs the real thing. Settle the crossover shape too: per-slice (true tracer bullet, real deps from the start, credentials needed early), phased (mock through MVP, dedicated crossover slices before launch), or hybrid per-axis (recommended). Capture the picks in the Verification fidelity section and the per-dependency rung in the External dependencies column.
 
-8. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `specs/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `specs/` if missing). Commit it.
+8. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `definitions/specs/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `definitions/specs/` if missing). Commit it.
 
 9. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information.
 
@@ -64,11 +64,11 @@ If a prior `specs/[0-9]*.md` exists and an upstream artifact was amended (or thi
 
 ## Harness shape
 
-Restate the picks from the most recent `harness/<file>.md` — substrate, topology, memory, tool layer, gate strategy, per-stage sampling. One paragraph max plus a pointer (`See harness/<file>.md`) so the full rationale and rejected alternatives are one click away. Cite which named patterns from `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` were chosen.
+Restate the picks from the most recent `definitions/harness/<file>.md` — substrate, topology, memory, tool layer, gate strategy, per-stage sampling. One paragraph max plus a pointer (`See definitions/harness/<file>.md`) so the full rationale and rejected alternatives are one click away. Cite which named patterns from `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/` were chosen.
 
 ## Product surfaces
 
-Restate the picks from the most recent `surfaces/<file>.md` — nav, account lifecycle, onboarding, settings, integration placement, error/system states, compliance touchpoints. One paragraph plus a pointer (`See surfaces/<file>.md`) so the full rationale and rejected alternatives stay one click away. The Modules section below should reflect these surfaces (e.g., `onboarding/`, `settings/`) rather than scattering the logic.
+Restate the picks from the most recent `definitions/surfaces/<file>.md` — nav, account lifecycle, onboarding, settings, integration placement, error/system states, compliance touchpoints. One paragraph plus a pointer (`See definitions/surfaces/<file>.md`) so the full rationale and rejected alternatives stay one click away. The Modules section below should reflect these surfaces (e.g., `onboarding/`, `settings/`) rather than scattering the logic.
 
 Restate the **visual identity** inline as a table (register, who, feel, signature, accent + ramp, neutrals, spacing base, fonts, depth/motion) — not just a pointer. The implementing agent reads this SPEC, not the surfaces artifact, so the locked values must live here for every UI issue to inherit one identity; `ui-taste` reads them at build time and applies them.
 
@@ -94,7 +94,7 @@ Nodes + edges. For each node: input, output, LLM-or-not, retry policy, idempoten
 
 For each tool: name, MCP / custom, the shape the *agent* sees (not the human), idempotency, permission scope. Five well-designed tools beat fifty.
 
-If `mcp-servers/<file>.md` artifacts exist, add one paragraph per server restating its picks plus a pointer (`See mcp-servers/<file>.md`) so the full rationale and rejected alternatives stay one click away. Multi-server projects produce multiple files (one per server) — restate each.
+If `definitions/mcp-servers/<file>.md` artifacts exist, add one paragraph per server restating its picks plus a pointer (`See definitions/mcp-servers/<file>.md`) so the full rationale and rejected alternatives stay one click away. Multi-server projects produce multiple files (one per server) — restate each.
 
 If the SPEC is for an MCP **server** (you're producing tools other agents consume), the entry also locks down the public-API contract:
 

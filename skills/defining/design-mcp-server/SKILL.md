@@ -1,6 +1,6 @@
 ---
 name: design-mcp-server
-description: Walk the design decisions for a new MCP (Model Context Protocol) server and write a versioned `mcp-servers/` artifact that `/to-spec` reads. Covers transport, auth, tool-surface shape, schema discipline, state model, capability declaration, error model, annotations, and testing. Use when the user is designing an MCP server — not consuming one.
+description: Walk the design decisions for a new MCP (Model Context Protocol) server and write a versioned `definitions/mcp-servers/` artifact that `/to-spec` reads. Covers transport, auth, tool-surface shape, schema discipline, state model, capability declaration, error model, annotations, and testing. Use when the user is designing an MCP server — not consuming one.
 ---
 
 You are picking the design for a new MCP server. The schema is the contract — no client will validate args for you. Pick deliberately.
@@ -11,14 +11,14 @@ Ask one question at a time. Surface your recommended answer with each.
 
 ## Amend mode
 
-If a prior `mcp-servers/*.md` artifact for this server exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest design as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-spec` to pick up the change.
+If a prior `definitions/mcp-servers/*.md` artifact for this server exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest design as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-spec` to pick up the change.
 
 ## 0. Read the PRD (and harness, if invoked from pick-harness-shape)
 
 Before any picks, read:
 
-- The most recent PRD, if any: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and integration constraints anchor the design — picking blind invites rework.
-- The most recent harness artifact, if any: `ls harness/[0-9]*.md | sort | tail -1`. When invoked from `pick-harness-shape`'s hand-off, this names the tool count, naming convention, and permission scope the harness expects — the MCP design slots into that contract.
+- The most recent PRD, if any: `ls definitions/prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and integration constraints anchor the design — picking blind invites rework.
+- The most recent harness artifact, if any: `ls definitions/harness/[0-9]*.md | sort | tail -1`. When invoked from `pick-harness-shape`'s hand-off, this names the tool count, naming convention, and permission scope the harness expects — the MCP design slots into that contract.
 
 If no PRD exists, surface that to the user — `design-mcp-server` can run standalone but the resulting picks are weaker. If the user confirms standalone use, proceed and note "standalone — no PRD" in the artifact's Sources field.
 
@@ -138,7 +138,7 @@ See [mcp-testing.md](../../implementing/test-driven-dev/mcp-testing.md) for code
 
 ## 10. Save the artifact
 
-Once the sections above have been answered, write the picks to `mcp-servers/<server-slug>-YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `mcp-servers/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+Once the sections above have been answered, write the picks to `definitions/mcp-servers/<server-slug>-YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `definitions/mcp-servers/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
 Use the template below. Every section must carry information: cite the named pattern that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
 
@@ -146,8 +146,8 @@ Use the template below. Every section must carry information: cite the named pat
 
 ## Sources
 
-- `prds/<file>.md` — the PRD whose constraints drove these picks. (Or "standalone — no PRD" with a one-sentence reason if invoked without a PRD.)
-- `harness/<file>.md` — if invoked from `pick-harness-shape`, the harness whose §5 tool-layer pick led to this design.
+- `definitions/prds/<file>.md` — the PRD whose constraints drove these picks. (Or "standalone — no PRD" with a one-sentence reason if invoked without a PRD.)
+- `definitions/harness/<file>.md` — if invoked from `pick-harness-shape`, the harness whose §5 tool-layer pick led to this design.
 
 ## TL;DR
 
@@ -227,4 +227,4 @@ Decisions deferred to `/to-spec` or things that surfaced but couldn't be settled
 
 ## 11. Hand-off
 
-Present the saved `mcp-servers/<file>.md` and ask the user to review. Once approved, prompt them to run `/to-prd` (if not yet done) and `/to-spec` — `/to-spec`'s `Tool layer / ACI` section reads this file automatically.
+Present the saved `definitions/mcp-servers/<file>.md` and ask the user to review. Once approved, prompt them to run `/to-prd` (if not yet done) and `/to-spec` — `/to-spec`'s `Tool layer / ACI` section reads this file automatically.

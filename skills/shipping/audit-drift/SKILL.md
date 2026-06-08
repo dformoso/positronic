@@ -1,6 +1,6 @@
 ---
 name: audit-drift
-description: Audit the project's doc graph (prds/, harness/, surfaces/, mcp-servers/, specs/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, SPEC contracts the code has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase.
+description: Audit the project's doc graph (definitions/prds/, definitions/harness/, definitions/surfaces/, definitions/mcp-servers/, definitions/specs/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, SPEC contracts the code has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase.
 disable-model-invocation: true
 ---
 
@@ -23,11 +23,11 @@ Complementary, not redundant, with `judge-idea` from the defining phase — that
 ### 1. Resolve inputs
 
 ```bash
-latest_prd=$(ls prds/[0-9]*.md 2>/dev/null | sort | tail -1)
-latest_harness=$(ls harness/[0-9]*.md 2>/dev/null | sort | tail -1)
-latest_surfaces=$(ls surfaces/[0-9]*.md 2>/dev/null | sort | tail -1)
-latest_spec=$(ls specs/[0-9]*.md 2>/dev/null | sort | tail -1)
-mcp_files=$(ls mcp-servers/*.md 2>/dev/null)   # multiple files possible — one per server
+latest_prd=$(ls definitions/prds/[0-9]*.md 2>/dev/null | sort | tail -1)
+latest_harness=$(ls definitions/harness/[0-9]*.md 2>/dev/null | sort | tail -1)
+latest_surfaces=$(ls definitions/surfaces/[0-9]*.md 2>/dev/null | sort | tail -1)
+latest_spec=$(ls definitions/specs/[0-9]*.md 2>/dev/null | sort | tail -1)
+mcp_files=$(ls definitions/mcp-servers/*.md 2>/dev/null)   # multiple files possible — one per server
 ```
 
 Glossary sources:
@@ -40,7 +40,7 @@ ADR sources:
 - Root: `docs/adr/[0-9]*.md`
 - Per-context: `*/docs/adr/[0-9]*.md` (when `CONTEXT-MAP.md` exists)
 
-If both `latest_prd` and `latest_spec` are empty, stop and say so — there's nothing to audit yet. (Empty `prds/` or `specs/` directories slip past a directory-existence check.)
+If both `latest_prd` and `latest_spec` are empty, stop and say so — there's nothing to audit yet. (Empty `definitions/prds/` or `definitions/specs/` directories slip past a directory-existence check.)
 
 ### 2. Run checks
 
@@ -57,7 +57,7 @@ Report each hit with the canonical term to use instead. Skip hits inside fenced 
 
 #### 2.2. Dead cross-references — *must-fix*
 
-Walk every markdown file in `prds/`, `harness/`, `surfaces/`, `mcp-servers/`, `specs/`, `docs/`, plus root `CONTEXT.md` and `CONTEXT-MAP.md`. For each `[text](path)`:
+Walk every markdown file in `definitions/prds/`, `definitions/harness/`, `definitions/surfaces/`, `definitions/mcp-servers/`, `definitions/specs/`, `docs/`, plus root `CONTEXT.md` and `CONTEXT-MAP.md`. For each `[text](path)`:
 
 - Skip if `path` starts with `http`.
 - If `path` contains `#`, split into file + anchor. Verify the file exists and the anchor matches a heading (slugified: lowercase, spaces → hyphens, punctuation stripped).
@@ -93,7 +93,7 @@ For each, grep the codebase and judge:
 - **Forward — *must-fix*.** The SPEC names a contract the code clearly no longer honours: module deleted, endpoint gone, field renamed, gate removed. The doc graph now lies. (This is also where a `diagnose` fix that changed behaviour without updating the SPEC surfaces.)
 - **Reverse — *worth-noting*.** A *major* surface present in code — a whole module directory, route group, or public tool — that the latest SPEC never mentions. The signature of accumulated drift across many small PRs. Flag surfaces, never individual functions, or this floods.
 
-Also read the latest `harness/` artifact where it names topology, gates, or tools the code should implement, and apply the same conservative compare. Keep every finding to a divergence you can point at — when in doubt, don't flag.
+Also read the latest `definitions/harness/` artifact where it names topology, gates, or tools the code should implement, and apply the same conservative compare. Keep every finding to a divergence you can point at — when in doubt, don't flag.
 
 #### 2.5. Orphan ADRs — *worth-noting*
 

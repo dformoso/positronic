@@ -46,8 +46,8 @@ body=$(${GH_CMD} issue view "${NUM}" --json body | jq -r '.body')
 
 spec_path=""
 prd_path=""
-[ -d specs ] && spec_path=$(ls specs/[0-9]*.md 2>/dev/null | sort -V | tail -1 || true)
-[ -d prds ]  && prd_path=$(ls prds/[0-9]*.md  2>/dev/null | sort -V | tail -1 || true)
+[ -d definitions/specs ] && spec_path=$(ls definitions/specs/[0-9]*.md 2>/dev/null | sort -V | tail -1 || true)
+[ -d definitions/prds ]  && prd_path=$(ls definitions/prds/[0-9]*.md  2>/dev/null | sort -V | tail -1 || true)
 
 preamble=""
 [ -f "$PREAMBLE_FILE" ] && preamble=$(cat "$PREAMBLE_FILE")

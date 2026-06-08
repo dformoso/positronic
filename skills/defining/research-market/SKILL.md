@@ -1,6 +1,6 @@
 ---
 name: research-market
-description: Run secondary research on customer pain and competitive landscape. Mines forums, articles, and reviews to produce a versioned research artifact in research/. Use when the user wants market evidence before ideating.
+description: Run secondary research on customer pain and competitive landscape. Mines forums, articles, and reviews to produce a versioned research artifact in definitions/research/. Use when the user wants market evidence before ideating.
 disable-model-invocation: true
 ---
 
@@ -23,19 +23,19 @@ The problem space, segments, and pain hypotheses defined in `define` (in-context
    - **Saturation.** Last 10 sources added no new themes.
    - **Diversity.** ≥3 distinct platforms or persona segments sampled — depth in one dominant forum satisfies this when it spans ≥3 persona segments (see step 2).
 
-   For non-deterministic content (forums), prefer recent + high-engagement threads. Save raw fetched content under `research/<run-id>/raw/<source>-<n>.txt` for reproducibility. For the structured tier, fetch with a small saved script (committed under `scripts/`) rather than one-off calls — that's what makes a large corpus reproducible — and save the resolved source/thread list alongside it.
+   For non-deterministic content (forums), prefer recent + high-engagement threads. Save raw fetched content under `definitions/research/<run-id>/raw/<source>-<n>.txt` for reproducibility. For the structured tier, fetch with a small saved script (committed under `scripts/`) rather than one-off calls — that's what makes a large corpus reproducible — and save the resolved source/thread list alongside it.
 
    **Optional URL cleanup.** Before saving article-shaped pages, check `which defuddle 2>/dev/null`. If installed, run `defuddle <url>` and save that output instead of the raw `WebFetch` markdown — strips ads, nav, and footers; typically saves 40–60% tokens. Fall back silently to `WebFetch` if missing. Install: `npm install -g defuddle` (the old `defuddle-cli` package was merged into `defuddle`). Skip defuddle for non-article sources (forum threads, app-store reviews) — it can over-trim.
 
-   **On first run, append `research/*/raw/` and `research/*/corpus.jsonl` to `.gitignore`** — both hold verbatim third-party content (ToS/copyright risk) and both regenerate from `scripts/`.
+   **On first run, append `definitions/research/*/raw/` and `definitions/research/*/corpus.jsonl` to `.gitignore`** — both hold verbatim third-party content (ToS/copyright risk) and both regenerate from `scripts/`.
 
-4. **Extract and tag — structured tier only.** Between fetch and synthesis, turn raw content into one atomic record per observation (a single complaint, request, or comparison). Write them to `research/<run-id>/corpus.jsonl`, one JSON object per line:
+4. **Extract and tag — structured tier only.** Between fetch and synthesis, turn raw content into one atomic record per observation (a single complaint, request, or comparison). Write them to `definitions/research/<run-id>/corpus.jsonl`, one JSON object per line:
 
    ```json
    {"id": "wp_1237067_p033", "url": "https://...", "voice": "tradie", "segment": "electrician", "pain_category": "billing_invoicing", "quote": "..."}
    ```
 
-   Then project the metadata (every field *except* `quote`) to `research/<run-id>/index.csv`. The corpus carries the verbatim text and stays local; the index is facts (URLs + tags) and is safe to commit — it's what lets volume be counted and any claim be audited by following its URL. Capture `voice` only for multi-sided markets, and capture enough author/thread identity that you can later check a theme isn't one loud poster repeated.
+   Then project the metadata (every field *except* `quote`) to `definitions/research/<run-id>/index.csv`. The corpus carries the verbatim text and stays local; the index is facts (URLs + tags) and is safe to commit — it's what lets volume be counted and any claim be audited by following its URL. Capture `voice` only for multi-sided markets, and capture enough author/thread identity that you can later check a theme isn't one loud poster repeated.
 
    Skip this step on the quick path — go straight to synthesis off what you read.
 
@@ -52,7 +52,7 @@ The problem space, segments, and pain hypotheses defined in `define` (in-context
    - Holes — what's complained about across competitors
    - Historical failures — what killed similar companies, if visible
 
-6. **Write the artifact.** Save as `research/YYYY-MM-DD-HH-mm-SS/summary.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create the directory). Two top-level sections: **Customer pain** and **Competitive landscape**. Tables wherever possible. For multi-sided markets, include a **tension matrix** (below). When two dimensions are both strong (e.g., pain × segment), an optional cross-tab heat-map — counts in a grid — beats flat tables. ≤ 8 pages.
+6. **Write the artifact.** Save as `definitions/research/YYYY-MM-DD-HH-mm-SS/summary.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create the directory). Two top-level sections: **Customer pain** and **Competitive landscape**. Tables wherever possible. For multi-sided markets, include a **tension matrix** (below). When two dimensions are both strong (e.g., pain × segment), an optional cross-tab heat-map — counts in a grid — beats flat tables. ≤ 8 pages.
 
 7. **Commit the method, not just the summary.** `git add` the `summary.md`, and — if the structured tier ran — the `index.csv`, the `scripts/`, and the resolved source/thread list, then commit. These make the run re-runnable and auditable. Do **not** commit `raw/` or `corpus.jsonl` — both carry verbatim third-party content and both regenerate from `scripts/`. The committed index (URLs + tags) plus the quotes cited in the summary are enough to audit any claim.
 

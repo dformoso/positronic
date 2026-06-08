@@ -67,7 +67,7 @@ Output a review with two sections:
 
 Do not summarise what the code does. Do not praise things that are fine. The author can read the diff.
 
-**Doc-graph nudge** — if `prds/`, `specs/`, or `docs/adr/` exist in the repo, append: "Consider `/audit-drift` next for whole-graph doc drift (glossary inconsistencies, dead refs, ADRs overtaken by SPEC, orphan ADRs). If you're approaching a release cut, also consider `/audit-failure-modes` to enumerate latent failure modes by surface."
+**Doc-graph nudge** — if `definitions/prds/`, `definitions/specs/`, or `docs/adr/` exist in the repo, append: "Consider `/audit-drift` next for whole-graph doc drift (glossary inconsistencies, dead refs, ADRs overtaken by SPEC, orphan ADRs). If you're approaching a release cut, also consider `/audit-failure-modes` to enumerate latent failure modes by surface."
 
 ### 4. Resolve
 

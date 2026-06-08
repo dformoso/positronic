@@ -29,11 +29,11 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 | # | Stage | Run | Writes |
 | --- | --- | --- | --- |
 | 1 | Frame the problem | `define` (auto-fires) | a falsifiable hypothesis + a route |
-| 2 | Research *(zero-to-one only)* | `/research-market` → `/ideate` → `/judge-idea` | `research/`, a chosen idea |
-| 3 | Lock *what & why* | `/to-prd` | `prds/` |
-| 4 | Lock the UI *(if it has one)* | `pick-ui-surfaces` | `surfaces/` |
-| 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `harness/`, `mcp-servers/` |
-| 6 | Lock *how* | `/to-spec` | `specs/` |
+| 2 | Research *(zero-to-one only)* | `/research-market` → `/ideate` → `/judge-idea` | `definitions/research/`, a chosen idea |
+| 3 | Lock *what & why* | `/to-prd` | `definitions/prds/` |
+| 4 | Lock the UI *(if it has one)* | `pick-ui-surfaces` | `definitions/surfaces/` |
+| 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness/`, `definitions/mcp-servers/` |
+| 6 | Lock *how* | `/to-spec` | `definitions/specs/` |
 | 7 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` |
 | 8 | Build | `/run-afk-in-loop` → `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code |
 | 9 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
@@ -47,19 +47,19 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | Skill | Invocation | Phase | Reads | Writes | What it does |
 | --- | --- | --- | --- | --- | --- |
 | `define` | model | defining | — | — | Surface assumptions, frame a hypothesis, route to the right path |
-| `research-market` | slash | defining | — | `research/` | Mine forums + competitive landscape |
-| `ideate` | slash | defining | `research/` | — | Ten ranked one-pagers; you pick the winner |
+| `research-market` | slash | defining | — | `definitions/research/` | Mine forums + competitive landscape |
+| `ideate` | slash | defining | `definitions/research/` | — | Ten ranked one-pagers; you pick the winner |
 | `judge-idea` | slash | defining | winner / PRD / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
-| `to-prd` | slash | defining | conversation | `prds/` | Synthesize the *what & why* |
-| `pick-ui-surfaces` | model | defining | `prds/` | `surfaces/` | Lock the UI's structure + visual identity |
-| `pick-harness-shape` | model | defining | `prds/`, `surfaces/` | `harness/` | Decide + shape a custom LLM harness |
-| `design-mcp-server` | model | defining | `prds/`, `harness/` | `mcp-servers/` | Design an MCP server you'll build |
-| `to-spec` | slash | defining | `prds/`, `harness/`, `surfaces/`, `mcp-servers/` | `specs/` | Lock the implementation contract |
-| `to-issues` | slash | defining | `specs/` | GitHub issues | Break the SPEC into `afk` / `hitl` issues |
-| `test-driven-dev` | model | implementing | `specs/` | code + tests | Red-green-refactor on one issue |
-| `ui-taste` | model | implementing | `surfaces/` | styled UI | Apply the locked visual identity + taste rules |
-| `generate-test-assets` | model | implementing | `specs/`, test plan | `test-assets/` | Generate multimodal test fixtures with Gemini; route load-bearing checks to the human |
-| `run-afk-in-loop` | slash | implementing | issues, `specs/` | merged code | Work the AFK backlog in parallel waves |
+| `to-prd` | slash | defining | conversation | `definitions/prds/` | Synthesize the *what & why* |
+| `pick-ui-surfaces` | model | defining | `definitions/prds/` | `definitions/surfaces/` | Lock the UI's structure + visual identity |
+| `pick-harness-shape` | model | defining | `definitions/prds/`, `definitions/surfaces/` | `definitions/harness/` | Decide + shape a custom LLM harness |
+| `design-mcp-server` | model | defining | `definitions/prds/`, `definitions/harness/` | `definitions/mcp-servers/` | Design an MCP server you'll build |
+| `to-spec` | slash | defining | `definitions/prds/`, `definitions/harness/`, `definitions/surfaces/`, `definitions/mcp-servers/` | `definitions/specs/` | Lock the implementation contract |
+| `to-issues` | slash | defining | `definitions/specs/` | GitHub issues | Break the SPEC into `afk` / `hitl` issues |
+| `test-driven-dev` | model | implementing | `definitions/specs/` | code + tests | Red-green-refactor on one issue |
+| `ui-taste` | model | implementing | `definitions/surfaces/` | styled UI | Apply the locked visual identity + taste rules |
+| `generate-test-assets` | model | implementing | `definitions/specs/`, test plan | `test-assets/` | Generate multimodal test fixtures with Gemini; route load-bearing checks to the human |
+| `run-afk-in-loop` | slash | implementing | issues, `definitions/specs/` | merged code | Work the AFK backlog in parallel waves |
 | `diagnose` | model | diagnosing | — | fix + regression test | Reproduce → minimise → fix hard bugs |
 | `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |
 | `audit-drift` | slash | shipping | doc graph | drift report | Sweep PRDs/SPECs/ADRs for drift |

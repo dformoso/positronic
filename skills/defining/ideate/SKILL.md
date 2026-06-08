@@ -8,8 +8,8 @@ Generate ten product concepts grounded in the most recent research artifact. Pro
 
 ## Inputs
 
-- Most recent research artifact: `ls research/[0-9]*/summary.md | sort | tail -1`. If none exists, prompt the user to run `/research-market` first and stop.
-- Existing rubric (carried forward across runs): `ideas/rubric.md`. If none exists, propose a fresh one.
+- Most recent research artifact: `ls definitions/research/[0-9]*/summary.md | sort | tail -1`. If none exists, prompt the user to run `/research-market` first and stop.
+- Existing rubric (carried forward across runs): `definitions/ideas/rubric.md`. If none exists, propose a fresh one.
 
 ## Process
 
@@ -27,7 +27,7 @@ Generate ten product concepts grounded in the most recent research artifact. Pro
    | Founder fit | 10% | Caps what we can execute well |
    | Distribution channel | 10% | How users will find the product |
 
-   If `ideas/rubric.md` exists from a prior run, use it as the starting point and propose deltas based on new research.
+   If `definitions/ideas/rubric.md` exists from a prior run, use it as the starting point and propose deltas based on new research.
 
    **Show the rubric to the user. Get approval or edits before ranking anything.** The rubric is the strategy — it must be user-owned.
 
@@ -40,9 +40,9 @@ Generate ten product concepts grounded in the most recent research artifact. Pro
 5. **Present the top 3 with tradeoffs.** Winner + 2 runners-up. For each: the idea in one sentence, why it ranked where it did, what the tradeoff is vs the others.
 
 6. **User picks.** The user names the winner (may not be #1 — they may weigh tradeoffs differently). Save (stamp the directory once with `date +"%Y-%m-%d-%H-%M-%S"`, don't hand-write it):
-   - `ideas/YYYY-MM-DD-HH-mm-SS/rubric.md` (the approved rubric — also overwrite `ideas/rubric.md` for carry-forward)
-   - `ideas/YYYY-MM-DD-HH-mm-SS/1.md` … `10.md` (one-pagers, in ranked order)
-   - `ideas/YYYY-MM-DD-HH-mm-SS/winner.md` (the chosen idea, marked WINNER, with the user's reasoning if they overrode the ranking)
+   - `definitions/ideas/YYYY-MM-DD-HH-mm-SS/rubric.md` (the approved rubric — also overwrite `definitions/ideas/rubric.md` for carry-forward)
+   - `definitions/ideas/YYYY-MM-DD-HH-mm-SS/1.md` … `10.md` (one-pagers, in ranked order)
+   - `definitions/ideas/YYYY-MM-DD-HH-mm-SS/winner.md` (the chosen idea, marked WINNER, with the user's reasoning if they overrode the ranking)
 
    Commit all of the above.
 

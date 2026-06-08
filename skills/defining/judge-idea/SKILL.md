@@ -8,9 +8,9 @@ Try to invalidate the chosen direction. Enumerate everything that could be wrong
 
 ## Inputs
 
-By default, the most recent ideation winner: `ls ideas/[0-9]*/winner.md | sort | tail -1`. Plus the most recent research artifact for cross-reference.
+By default, the most recent ideation winner: `ls definitions/ideas/[0-9]*/winner.md | sort | tail -1`. Plus the most recent research artifact for cross-reference.
 
-Can also be run on a PRD or SPEC after the fact. If invoked after `/to-prd` target `ls prds/[0-9]*.md | sort | tail -1`; if after `/to-spec` target `ls specs/[0-9]*.md | sort | tail -1`.
+Can also be run on a PRD or SPEC after the fact. If invoked after `/to-prd` target `ls definitions/prds/[0-9]*.md | sort | tail -1`; if after `/to-spec` target `ls definitions/specs/[0-9]*.md | sort | tail -1`.
 
 If no target artifact exists, prompt the user for which artifact to judge and stop.
 
@@ -52,7 +52,7 @@ If no target artifact exists, prompt the user for which artifact to judge and st
 
 # Judgment: {{target artifact path}}
 
-**Target.** {{ideas/.../winner.md, prds/..., specs/..., etc.}}
+**Target.** {{definitions/ideas/.../winner.md, definitions/prds/..., definitions/specs/..., etc.}}
 
 **Verdict.** {{proceed | loop-back-to-research | loop-back-to-ideate | pivot}}
 

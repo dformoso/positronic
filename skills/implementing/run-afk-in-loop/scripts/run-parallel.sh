@@ -155,8 +155,8 @@ while true; do
   done_afk=$(echo "$issues_json" | jq '[.[] | select(.labels[].name == "afk" and .state == "CLOSED")] | length')
 
   spec_path=""; prd_path=""
-  [ -d specs ] && spec_path=$(ls specs/[0-9]*.md 2>/dev/null | sort -V | tail -1 || true)
-  [ -d prds ]  && prd_path=$(ls prds/[0-9]*.md  2>/dev/null | sort -V | tail -1 || true)
+  [ -d definitions/specs ] && spec_path=$(ls definitions/specs/[0-9]*.md 2>/dev/null | sort -V | tail -1 || true)
+  [ -d definitions/prds ]  && prd_path=$(ls definitions/prds/[0-9]*.md  2>/dev/null | sort -V | tail -1 || true)
 
   n=${#wave[@]}
   log "Wave $((done_afk + 1))..$((done_afk + n))/$total_afk — $n issues:"

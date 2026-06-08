@@ -12,7 +12,7 @@ Break a plan into independently-grabbable GitHub issues using vertical slices (t
 
 ### 1. Gather context
 
-Work from what's already in the conversation. If a `specs/` directory exists with files, read the most recent SPEC (`ls specs/[0-9]*.md | sort | tail -1`) as the primary source — the SPEC carries the implementation contract and is what issues should decompose. Otherwise, if `prds/` exists, read the most recent PRD (`ls prds/[0-9]*.md | sort | tail -1`) as the source. If the user passes a GitHub issue number or URL as an argument, fetch it with `gh issue view <number>` (with comments).
+Work from what's already in the conversation. If a `definitions/specs/` directory exists with files, read the most recent SPEC (`ls definitions/specs/[0-9]*.md | sort | tail -1`) as the primary source — the SPEC carries the implementation contract and is what issues should decompose. Otherwise, if `definitions/prds/` exists, read the most recent PRD (`ls definitions/prds/[0-9]*.md | sort | tail -1`) as the source. If the user passes a GitHub issue number or URL as an argument, fetch it with `gh issue view <number>` (with comments).
 
 Read the SPEC's **Verification fidelity** section — its per-axis rung (data, external access, eval signal, CUJ verification, deploy) and crossover list drive which slices verify against mocks vs. real deps, which credentials step 5 provisions, and which crossovers become their own slices. If the SPEC predates this section (or there's no SPEC), ask the user the per-axis fidelity and crossover question now, before drafting — default to building against faithful stand-ins (fixtures plus mock/sandbox adapters) with an explicit crossover before the release gate.
 
@@ -113,7 +113,7 @@ A concise description of this vertical slice. Describe the end-to-end behavior, 
 
 ## Source spec
 
-Pointer into the SPEC this issue implements: section name or anchor in `specs/<latest>.md`. Omit this section if no SPEC exists.
+Pointer into the SPEC this issue implements: section name or anchor in `definitions/specs/<latest>.md`. Omit this section if no SPEC exists.
 
 ## Exemplar to mirror
 

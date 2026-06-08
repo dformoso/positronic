@@ -1,6 +1,6 @@
 ---
 name: pick-ui-surfaces
-description: Pick the user-facing shape for a product with persistent UI — both its visual identity and its structure. Invoked by define after /to-prd when the product has a UI. Walks visual identity (feel, signature, accent, type, spacing), nav, account, onboarding, settings, integration placement, error states, and compliance — writes a versioned surfaces/ artifact that /to-spec reads. Use when the product has persistent UI surfaces (web app, mobile, dashboard, extension). Skip for CLI, API, library, or headless.
+description: Pick the user-facing shape for a product with persistent UI — both its visual identity and its structure. Invoked by define after /to-prd when the product has a UI. Walks visual identity (feel, signature, accent, type, spacing), nav, account, onboarding, settings, integration placement, error states, and compliance — writes a versioned definitions/surfaces/ artifact that /to-spec reads. Use when the product has persistent UI surfaces (web app, mobile, dashboard, extension). Skip for CLI, API, library, or headless.
 ---
 
 You are picking the user-facing shape for a product with persistent UI surfaces — both its **visual identity** (the look every surface inherits) and its **structure** (nav, account flow, onboarding, settings, error states). These decisions get skipped at the PRD level because they're not vision-shaping, and at the SPEC level because they're not implementation. They land here.
@@ -15,11 +15,11 @@ Run pick-ui-surfaces only when the user lives inside a persistent UI: web app, m
 
 ## Amend mode
 
-If a prior `surfaces/[0-9]*.md` exists and this run is a scoped UI change (not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest surfaces artifact as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-spec` to pick up the change.
+If a prior `definitions/surfaces/[0-9]*.md` exists and this run is a scoped UI change (not a from-scratch rebuild), run in amend mode per `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md`: read the latest surfaces artifact as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-spec` to pick up the change.
 
 ## 1. Read the PRD
 
-Before any picks, read the most recent PRD: `ls prds/[0-9]*.md | sort | tail -1`. The PRD's target user, form factor, external channels, integrations, and any compliance constraints are the inputs that drive sections 2–10 — picking without them is picking blind.
+Before any picks, read the most recent PRD: `ls definitions/prds/[0-9]*.md | sort | tail -1`. The PRD's target user, form factor, external channels, integrations, and any compliance constraints are the inputs that drive sections 2–10 — picking without them is picking blind.
 
 If no PRD exists, stop and prompt the user to run `/to-prd` first.
 
@@ -177,7 +177,7 @@ If the PRD names a regulated industry (financial, healthcare, government) or EU/
 
 ## 11. Save the artifact
 
-Once the sections above have been answered, write the picks to `surfaces/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `surfaces/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+Once the sections above have been answered, write the picks to `definitions/surfaces/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `definitions/surfaces/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
 Length and density: as long as you need — preferably tight. Tables only, no prose, drop sections that don't apply. Every section must carry information: cite the PRD constraint that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
 
@@ -185,7 +185,7 @@ Length and density: as long as you need — preferably tight. Tables only, no pr
 
 ## Source PRD
 
-`prds/<file>.md` — the PRD whose constraints drove these picks.
+`definitions/prds/<file>.md` — the PRD whose constraints drove these picks.
 
 ## TL;DR
 
@@ -263,7 +263,7 @@ Decisions deferred to `/to-spec` (e.g., exact module boundaries, schema for sett
 
 ## Hand-off
 
-Present the saved `surfaces/<file>.md` and ask the user to review. Once approved:
+Present the saved `definitions/surfaces/<file>.md` and ask the user to review. Once approved:
 
 - If a custom LLM/agent harness is also on the table, prompt them to run `pick-harness-shape` next — it benefits from knowing the UI surfaces it slots into.
 - Otherwise, prompt them to run `/to-spec` — it will read this file alongside the PRD automatically.
