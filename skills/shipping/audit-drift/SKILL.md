@@ -18,6 +18,8 @@ Positions within the shipping phase:
 
 Complementary, not redundant, with `judge-idea` from the defining phase — that adversarially stress-tests an artifact, while audit-drift detects mechanical drift across the full doc graph.
 
+Also runs inside `/clean-house` at each round boundary: after a round's cuts and reshapes, this sweep reconciles the doc graph, and findings the round's edits don't explain feed the next round's questioning.
+
 ## Process
 
 ### 1. Resolve inputs

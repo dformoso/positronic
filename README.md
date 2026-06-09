@@ -16,7 +16,7 @@ A personal AI-coding framework — opinionated, solo.
 3. **Minimum Diff** — every changed line traces to the request; minimum code for new work, surgical edits for changes.
 4. **Plain Naming** — functions, modules, variables read like plain English; names describe intent.
 5. **Goal-Driven Execution** — define verifiable success; loop until verified, or stop and surface what's blocking.
-6. **Phase Awareness** — name the phase (defining / implementing / diagnosing / shipping) before acting.
+6. **Phase Awareness** — name the phase (defining / implementing / diagnosing / shipping / maintaining) before acting.
 7. **User-Facing Reliability** — show progress on operations >2s; map external failures to one-sentence actionable messages, not raw exceptions.
 8. **Secret & Data Hygiene** — never commit secrets; never log credentials, PII, or auth headers.
 
@@ -37,8 +37,9 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 | 7 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` |
 | 8 | Build | `/run-afk-in-loop` → `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code |
 | 9 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
+| 10 | Clean the house *(between versions)* | `/clean-house` | cuts + deepenings, `docs/audits/` report |
 
-When both apply, stage 4 runs before stage 5 — harness picks then slot into known surfaces. Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`.
+When both apply, stage 4 runs before stage 5 — harness picks then slot into known surfaces. Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`; an accreted system between versions goes to `/clean-house`.
 
 ## Skills
 
@@ -65,7 +66,7 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | `audit-drift` | slash | shipping | doc graph | drift report | Sweep PRDs/SPECs/ADRs for drift |
 | `audit-failure-modes` | slash | shipping | the system | P0/P1/P2 list | Pre-mortem of latent failure modes |
 | `github-triage` | slash | meta | GitHub issues | labels | Label-based triage state machine |
-| `deepen-modules` | slash | meta | code | proposals | Find shallow modules and deepen them |
+| `clean-house` | slash | meta | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
 
 The system prompt sees `AGENTS.md` plus the descriptions of `model` skills only; `slash` skills load on invoke.
 

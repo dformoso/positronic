@@ -87,11 +87,11 @@ Numbered CUJs. Each named, **two sentences max**, naming actor + trigger + flow 
 
 ## Out of Scope
 
-**Top 5 only.** Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep.
+**Top 5 only.** Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep. Entries cut by `/clean-house` carry *cut because* and *re-add trigger* — the observable signal that would justify building it after all — and don't count against the five.
 
 ## Functional Requirements
 
-The product surface defined component-by-component, in tables. Cover every relevant component so `/to-spec` has unambiguous "what" to turn into "how". Use the table set below as a checklist — include the ones that apply, drop the rest, add domain-specific ones if needed. Prose only when a table can't carry the meaning.
+The product surface defined component-by-component, in tables. Cover every relevant component so `/to-spec` has unambiguous "what" to turn into "how". Use the table set below as a checklist — include the ones that apply, drop the rest, add domain-specific ones if needed. Prose only when a table can't carry the meaning. Every row needs an owner you could trace it to — a person, a research finding, a judgment — and a failure you can name if it's dropped; "best practice" and "the model suggested it" are departments, not owners. Rows without an answer go to Out of Scope. (`/clean-house` re-asks both questions of every surviving row between versions.)
 
 **Data model.** The entities the user touches and what they hold. Implementation-level schema (indexes, constraints, migrations) goes to `/to-spec`.
 

@@ -114,4 +114,4 @@ Required before declaring done:
 
 **Audit the existing tests.** A green suite that shipped this bug is itself a bug. Open the closest existing test, find why it missed (wrong call shape / fixture / assertion — see [`tests.md`](../../implementing/test-driven-dev/tests.md)), and patch it. A new regression test alone isn't enough.
 
-**Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) hand off to the `/deepen-modules` skill with the specifics. Make the recommendation **after** the fix is in, not before — you have more information now than when you started.
+**Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) hand off to the `/clean-house` skill with the specifics — its targeted mode runs the module-deepening step on named candidates without the full loop. Make the recommendation **after** the fix is in, not before — you have more information now than when you started.
