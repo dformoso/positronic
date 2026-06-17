@@ -1,12 +1,12 @@
 ---
 name: clean-house
-description: Between-versions subtraction loop over a built system — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions; repeated in supervised rounds until a round comes up dry. Use between versions when the system has accreted, when the user wants to find what to delete or simplify, asks to improve architecture, consolidate tightly-coupled modules, or make a codebase more testable, or says "clean the house".
+description: Between-versions subtraction loop over a built system — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions; run as a single supervised pass, re-fired until a pass comes up dry. Use between versions when the system has accreted, when the user wants to find what to delete or simplify, asks to improve architecture, consolidate tightly-coupled modules, or make a codebase more testable, or says "clean the house".
 disable-model-invocation: true
 ---
 
 # Clean the House
 
-A five-step algorithm — question, delete, simplify, accelerate, automate — run as a review loop over a built system. v1 exists; before defining v2, walk the steps over what is actually there. That is why this lives at the version hinge and not in the defining phase: pre-build, deletion runs on speculation; post-build, it runs on evidence — usage, drift, git history.
+A five-step algorithm — question, delete, simplify, accelerate, automate — run as a single review pass over a built system. v1 exists; before defining v2, walk the steps over what is actually there. That is why this lives at the version hinge and not in the defining phase: pre-build, deletion runs on speculation; post-build, it runs on evidence — usage, drift, git history.
 
 **The order is the content.** Each step is only safe applied to the survivors of the step before it. Never spend a later step on something that hasn't survived the earlier ones.
 
@@ -18,14 +18,14 @@ A five-step algorithm — question, delete, simplify, accelerate, automate — r
 | 4 | Accelerate cycle time | Speeding up work the earlier steps should have removed. If you're digging your grave, don't dig faster |
 | 5 | Automate last — and de-automate | Freezing a process that hasn't stabilized; keeping machinery whose process died |
 
-Software sharpens the economics this loop was tuned for in hardware. A deletion is a revertible experiment — git holds the undo — while undeleted complexity is a recurring tax on every future context window: dead weight actively misleads the next agent that reads it. So cut past where it feels safe. **Calibration:** if no later round or version ever re-adds a cut, you're cutting too shallow. (Rule of thumb: re-add at least 10% of what you cut, or you didn't cut enough.)
+Software sharpens the economics this loop was tuned for in hardware. A deletion is a revertible experiment — git holds the undo — while undeleted complexity is a recurring tax on every future context window: dead weight actively misleads the next agent that reads it. So cut past where it feels safe. **Calibration:** if no later pass or version ever re-adds a cut, you're cutting too shallow. (Rule of thumb: re-add at least 10% of what you cut, or you didn't cut enough.)
 
 Neighbours — keep the questions distinct:
 
 | Skill | Its question |
 |---|---|
 | `/clean-house` (this) | What shouldn't exist? Subtraction |
-| `/audit-drift` | Do the documents still agree with each other and the code? Consistency — standalone at shipping, and run here at each round boundary |
+| `/audit-drift` | Do the documents still agree with each other and the code? Consistency — standalone at shipping, and run here at the end of each pass |
 | `/audit-failure-modes` | What will break? Risk — the additive move; untouched by this skill |
 | `/judge-idea` | Is the bet sound? Pre-build adversarial gate; runs on speculation, this runs on evidence |
 
@@ -60,13 +60,13 @@ If any of these don't exist, proceed silently — don't flag their absence. With
 
 ## Targeted mode
 
-When another skill hands over specific candidates — `diagnose` after a fix (no good test seam, tangled callers), `/review-pr` on a private-API reach — skip the loop. Apply the kill question to each candidate first (is the right move deleting the surrounding feature rather than deepening it?), then run step 3's grilling on what survives. No report.
+When another skill hands over specific candidates — `diagnose` after a fix (no good test seam, tangled callers), `/review-pr` on a private-API reach — skip the pass. Apply the kill question to each candidate first (is the right move deleting the surrounding feature rather than deepening it?), then run step 3's grilling on what survives. No report.
 
-## The loop
+## The pass
 
-Run rounds, max 4. Stop at the first **dry round** — no new approved cut, no new deepening candidate, no unexplained drift. Each round changes the system, which exposes what the previous round couldn't see: cutting a feature turns a module into a pass-through; deepening a module reveals config nothing reads.
+Run the five steps once, in order. A pass already takes a while and the report carries state forward, so **re-running is the loop** — one pass per invocation. Each pass changes the system, exposing what the last couldn't see: cutting a feature turns a module into a pass-through; deepening one reveals config nothing reads. Re-fire `/clean-house` to chase what a pass exposed; stop when a pass comes up dry.
 
-Hunting is read-only — fan out subagents and parallelize freely. Execution is gated — cuts and reshapes happen only after the user approves, never silently. Don't batch the whole round into one approval; gate at the step boundaries below. Automating the approval gate away would be this skill committing its own step-5 mistake.
+Hunting is read-only — fan out subagents and parallelize freely. Execution is gated — cuts and reshapes happen only after the user approves, never silently. Don't batch the whole pass into one approval; gate at the step boundaries below. Automating the approval gate away would be this skill committing its own step-5 mistake.
 
 ### 1. Question requirements against reality
 
@@ -96,7 +96,7 @@ Hunt cut candidates at every layer:
 Present cuts ranked by blast radius, each with **what / evidence / re-add trigger** — the observable signal that would justify bringing it back. Then the gate:
 
 - **Approved** → execute now: the thing, its tests, its docs, its orphans, in one stroke. Requirement-level cuts also land in step 6's amendments.
-- **Rejected with a load-bearing reason** → offer an ADR so later rounds and future reviews don't re-suggest it (see [ADR-FORMAT.md](ADR-FORMAT.md)). Skip ephemeral reasons ("not right now") and self-evident ones.
+- **Rejected with a load-bearing reason** → offer an ADR so later passes and future reviews don't re-suggest it (see [ADR-FORMAT.md](ADR-FORMAT.md)). Skip ephemeral reasons ("not right now") and self-evident ones.
 
 ### 3. Deepen what survived
 
@@ -122,7 +122,7 @@ Do NOT propose interfaces yet. Ask the user: "Which of these would you like to e
 
 - **Naming a deepened module after a concept not in `CONTEXT.md`?** Add the term to `CONTEXT.md` (see [CONTEXT-FORMAT.md](CONTEXT-FORMAT.md)). Create the file lazily if it doesn't exist.
 - **Sharpening a fuzzy term during the conversation?** Update `CONTEXT.md` right there.
-- **User rejects the candidate with a load-bearing reason?** Offer an ADR so future rounds don't re-suggest it. Skip ephemeral and self-evident reasons.
+- **User rejects the candidate with a load-bearing reason?** Offer an ADR so future passes don't re-suggest it. Skip ephemeral and self-evident reasons.
 - **Want to explore alternative interfaces for the deepened module?** See [INTERFACE-DESIGN.md](INTERFACE-DESIGN.md).
 
 ### 4. Accelerate — sweep, not redesign
@@ -136,22 +136,22 @@ Measure the feedback loop on surviving paths only: test-suite wall clock, CI dur
 
 ### 6. Reconcile
 
-The round's cuts and reshapes made the doc graph stale; leave each round consistent.
+The pass's cuts and reshapes made the doc graph stale; leave each pass consistent.
 
 - **Amendments.** Approved requirement-level cuts are dropped capabilities — prompt the user to run `/to-prd` (amend mode picks up automatically), with the cuts as the change intent. Each cut lands in the PRD's Out of Scope with *cut because* + *re-add trigger*. The cascade rule in `${CLAUDE_SKILL_DIR}/../../../docs/amend-mode.md` carries it downstream only along touched edges.
-- **Drift sweep.** Execute the checks in `${CLAUDE_SKILL_DIR}/../../shipping/audit-drift/SKILL.md` — the `/clean-house` invocation covers this; don't re-prompt. Fix the must-fix drift this round's edits caused. Any drift the round's edits *don't* explain is evidence for the next round's step 1.
+- **Drift sweep.** Execute the checks in `${CLAUDE_SKILL_DIR}/../../shipping/audit-drift/SKILL.md` — the `/clean-house` invocation covers this; don't re-prompt. Fix the must-fix drift this pass's edits caused. Any drift the pass's edits *don't* explain is evidence for the next pass's step 1.
 
-### Dry check
+### Dry or wet?
 
-No new approved cut + no new deepening candidate + no unexplained drift → the house is clean: write the report and stop. Otherwise, next round. If round 4 ends wet, write the report with a **Left dirty** section and stop — don't keep looping silently.
+No new approved cut + no new deepening candidate + no unexplained drift → the pass is **dry**: the house is clean, write the report, stop. Otherwise it's **wet**: write the report, list what's still open under **Left for the next pass**, and tell the user to re-run `/clean-house` when ready. One pass per invocation — never loop silently.
 
 ## Report
 
 Always write `docs/audits/YYYY-MM-DD-clean-house.md` (create `docs/audits/` lazily) — the next run reads it for calibration. Print the same to chat.
 
 ```text
-## Rounds
-{N run; dry on round K, or "round 4 still wet"}
+## Result
+{dry — house clean, or wet — re-run recommended, with why}
 
 ## Cuts executed
 - {what} — {evidence} — re-add trigger: {signal}
@@ -169,8 +169,8 @@ Always write `docs/audits/YYYY-MM-DD-clean-house.md` (create `docs/audits/` lazi
 ## Accelerations & automation changes
 - {what changed, including de-automations}
 
-## Left dirty
-{round-4 wet items, or omit}
+## Left for the next pass
+{open items, or "none — dry pass"}
 ```
 
 Do not summarize what was checked. The user can read the skill.

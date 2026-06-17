@@ -32,6 +32,7 @@ Before implementing:
 
 For new code:
 
+- Before writing, stop at the first rung that holds: (1) does this need to exist? — if speculative, skip it and say so; (2) does the standard library do it? (3) a native platform feature? (4) an already-installed dependency? — never add a new one for what a few lines cover; (5) can it be one line? (6) only then, the minimum that works.
 - No speculative features, abstractions, configurability, or error handling for scenarios that can't happen.
 - If you wrote 200 lines and could write 50, rewrite.
 
@@ -98,7 +99,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **Implementing** — spec is decided → run `test-driven-dev` for a single issue. For the full backlog, prompt the user to run `/run-afk-in-loop`, which works through unblocked AFK issues in parallel waves. When a slice touches UI, `test-driven-dev` invokes `ui-taste`, which applies the visual identity locked by `pick-ui-surfaces`. When a test needs a multimodal fixture, it invokes `generate-test-assets`, which generates the stand-in (audio, image, video, text) with Gemini and routes load-bearing / user-dependent checks to the human.
 - **Diagnosing** — something is broken or regressed → run `diagnose`.
 - **Shipping** — PR prep, review, cleanup → prompt the user to run `/review-pr` (which also audits prompt files in the diff). For projects with PRDs/SPECs/ADRs, also prompt `/audit-drift` to sweep the doc graph. Before a release cut on a maturing system, prompt `/audit-failure-modes` to enumerate latent failure modes by surface.
-- **Maintaining** — a version has shipped and the system has accreted → prompt the user to run `/clean-house`, which walks the built system in supervised rounds — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions — until a round comes up dry, reconciling the doc graph (`/audit-drift`) each round. Runs at the version hinge, before defining the next increment.
+- **Maintaining** — a version has shipped and the system has accreted → prompt the user to run `/clean-house`, which walks the built system in a supervised pass — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions — reconciling the doc graph (`/audit-drift`) before the pass ends. One pass per run; re-fire until a pass comes up dry. Runs at the version hinge, before defining the next increment.
 
 Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
 
