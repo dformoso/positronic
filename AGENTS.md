@@ -125,7 +125,7 @@ Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt th
 When a task splits into independent pieces, run them at once instead of one at a time.
 
 - **Decompose.** Break the work into independent workstreams — pieces that don't touch the same files or depend on each other's output. Name them before you start.
-- **Fan out.** Launch one agent per workstream, as many as the work needs — scale the count to the work, don't serialize what can run at once. Run every agent — in a wave or solo — on the best available model with the maximum thinking it supports, never a cheaper or lighter-reasoning tier to save tokens. The only cap is real: agents that would collide on the same files, or a tool's concurrency limit.
+- **Fan out.** Launch one agent per workstream, as many as the work needs — scale the count to the work, don't serialize what can run at once. Run every agent — in a wave or solo — on nothing below the latest Claude Opus or Gemini Pro, at the maximum available thinking tier — never a cheaper tier to save tokens. The only cap is real: agents that would collide on the same files, or a tool's concurrency limit.
 - **Coalesce.** When the wave returns, merge its findings, edits, and checks into one result — reconcile overlaps, resolve conflicts, dedupe. A wave isn't done until its outputs are integrated, not just collected.
 - **Re-wave.** Spawn the next wave for whatever the first surfaced — follow-ups, newly-unblocked work, the remaining split — and loop until the goal is verified done (§5).
 
