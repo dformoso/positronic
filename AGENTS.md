@@ -118,6 +118,19 @@ Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt th
 - Never log, print, or echo credentials, PII, or auth headers — including in error messages and stack traces.
 - If you find a secret already committed in code, stop and surface it. Don't paste it back in your output.
 
+## 9. Parallel by Default
+
+**Split the work, fan out parallel agents to do it, coalesce the results, repeat until done.**
+
+When a task splits into independent pieces, run them at once instead of one at a time.
+
+- **Decompose.** Break the work into independent workstreams — pieces that don't touch the same files or depend on each other's output. Name them before you start.
+- **Fan out.** Launch one agent per workstream, as many as the work needs — scale the count to the work, don't serialize what can run at once. The only cap is real: agents that would collide on the same files, or a tool's concurrency limit.
+- **Coalesce.** When the wave returns, merge its findings, edits, and checks into one result — reconcile overlaps, resolve conflicts, dedupe. A wave isn't done until its outputs are integrated, not just collected.
+- **Re-wave.** Spawn the next wave for whatever the first surfaced — follow-ups, newly-unblocked work, the remaining split — and loop until the goal is verified done (§5).
+
+Skip it when the work is trivial or inherently sequential — when each step depends on the last, one agent in order is correct. Don't fan out agents that will collide on the same files.
+
 ---
 
 ## Stack-specific rules
