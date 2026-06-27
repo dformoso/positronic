@@ -15,7 +15,6 @@
     "./skills/implementing/test-driven-dev",
     "./skills/implementing/ui-taste",
     "./skills/implementing/generate-test-assets",
-    "./skills/implementing/run-afk-in-loop",
     "./skills/diagnosing/diagnose",
     "./skills/shipping/review-pr",
     "./skills/shipping/audit-drift",

@@ -35,7 +35,7 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 | 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness/`, `definitions/mcp-servers/` |
 | 6 | Lock *how* | `/to-spec` | `definitions/specs/` |
 | 7 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` |
-| 8 | Build | `/run-afk-in-loop` → `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code |
+| 8 | Build | `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code |
 | 9 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
 | 10 | Clean the house *(between versions)* | `/clean-house` | cuts + deepenings, `docs/audits/` report |
 
@@ -60,7 +60,6 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | `test-driven-dev` | model | implementing | `definitions/specs/` | code + tests | Red-green-refactor on one issue |
 | `ui-taste` | model | implementing | `definitions/surfaces/` | styled UI | Apply the locked visual identity + taste rules |
 | `generate-test-assets` | model | implementing | `definitions/specs/`, test plan | `test-assets/` | Generate multimodal test fixtures with Gemini; route load-bearing checks to the human |
-| `run-afk-in-loop` | slash | implementing | issues, `definitions/specs/` | merged code | Work the AFK backlog in parallel waves |
 | `diagnose` | model | diagnosing | — | fix + regression test | Reproduce → minimise → fix hard bugs |
 | `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |
 | `audit-drift` | slash | shipping | doc graph | drift report | Sweep PRDs/SPECs/ADRs for drift |
@@ -69,18 +68,6 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | `clean-house` | slash | meta | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
 
 The system prompt sees `AGENTS.md` plus the descriptions of `model` skills only; `slash` skills load on invoke.
-
-## AFK loop
-
-`/to-issues` tags each issue `afk` or `hitl`. `/run-afk-in-loop` then works through all unblocked AFK issues in order — picking the next one, implementing it with `/test-driven-dev`, closing it, and looping until done.
-
-**Unattended runs with credit-exhaustion retry** — run from your positronic checkout (or by absolute path), with your target project as the current directory:
-
-```bash
-bash skills/implementing/run-afk-in-loop/scripts/run-afk-loop.sh
-```
-
-Env vars: `RETRY_WAIT_SECONDS` (default 1800), `MAX_ATTEMPTS` (default 20).
 
 ## MCP servers
 

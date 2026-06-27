@@ -57,7 +57,7 @@ Iterate on user feedback.
 
 ### 5. Provision credentials for AFK
 
-AFK agents run non-interactively in isolated worktrees (via `/run-afk-in-loop`) — they can't open a dashboard, clear an OAuth consent screen, or ask you for a key. Any AFK slice whose tests or end-to-end check need a real secret will emit `blocked` unless that secret is already on disk. Front-load them here so the backlog runs unattended.
+AFK agents run non-interactively in isolated worktrees — they can't open a dashboard, clear an OAuth consent screen, or ask you for a key. Any AFK slice whose tests or end-to-end check need a real secret will emit `blocked` unless that secret is already on disk. Front-load them here so the backlog runs unattended.
 
 From the SPEC's **External dependencies** and **Security / authn / authz** sections (plus any integration the slices touch), list every credential the AFK slices need — but only for dependencies the **Verification fidelity** section marks **sandbox** or **live**. A dependency kept at the **mock** rung needs no credential and no `.env` entry; skip it here (its swap-to-live crossover, if any, carries its own credential when that slice runs). For each credential, work out:
 
@@ -67,7 +67,7 @@ From the SPEC's **External dependencies** and **Security / authn / authz** secti
 
 Then:
 
-1. Make sure the env file is gitignored, and commit the ignore rule so it reaches the worktree checkouts — without this, `/run-afk-in-loop` sees the copied `.env` as an untracked file, flags the worktree dirty, and downgrades every slice to blocked (never commit secrets — AGENTS.md §8):
+1. Make sure the env file is gitignored, and commit the ignore rule so it reaches the worktree checkouts — without this, an unattended run sees the `.env` as an untracked file, flags the worktree dirty, and downgrades every slice to blocked (never commit secrets — AGENTS.md §8):
 
    ```bash
    if ! grep -qxF '.env' .gitignore 2>/dev/null; then
@@ -153,4 +153,4 @@ Do NOT close or modify any parent issue.
 
 ### 7. Hand off
 
-Prompt the user to run `/run-afk-in-loop` to work the unblocked `afk` backlog in parallel waves. `hitl` issues (and any `afk` issue still blocked by one) are picked up by hand — name them so the user knows what's waiting.
+Hand the backlog off to implementation: the unblocked `afk` issues can be worked unattended, each with `/test-driven-dev`. `hitl` issues (and any `afk` issue still blocked by one) need you in the loop — name them so the user knows what's waiting.

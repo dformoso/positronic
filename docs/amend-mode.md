@@ -59,4 +59,4 @@ This is also the path a production-learning loop takes: brief 07's optimizer ame
 
 ## What does not change
 
-Every execution and read-only skill already reads `tail -1` and keeps working untouched: `/to-issues`, `/to-spec` (reading upstream), `/run-afk-in-loop`, `/review-pr`, `/audit-drift`, `test-driven-dev`, `judge-idea`. Amend mode is purely an *authoring* convention — it changes how snapshots are written, never how they are read. That is why it is low-risk.
+Every execution and read-only skill already reads `tail -1` and keeps working untouched: `/to-issues`, `/to-spec` (reading upstream), `/review-pr`, `/audit-drift`, `test-driven-dev`, `judge-idea`. Amend mode is purely an *authoring* convention — it changes how snapshots are written, never how they are read. That is why it is low-risk.
