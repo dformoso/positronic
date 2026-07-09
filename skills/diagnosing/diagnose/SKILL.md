@@ -7,6 +7,24 @@ description: Disciplined diagnosis loop for hard bugs and performance regression
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
 
+## Phase 0 — Production triage (live failures only)
+
+Enter this phase only when the failure is in a live environment affecting real users. A
+local or CI repro skips straight to Phase 1 — pausing crons over a failing unit test is how
+dev bugs become outages.
+
+Reproduce-first is the wrong first move live: evidence heals itself while you debug, and
+users keep hurting. In order:
+
+1. **Mitigate first.** Restore service with the smallest reversible lever: re-point traffic
+   to the previous revision, disable the feature flag, pause the offending cron, cap the
+   spend. Don't debug a live system.
+2. **Preserve evidence before it heals.** Capture logs, run/trace ids, provider dashboards,
+   and a data snapshot now — the next deploy or sweep overwrites them.
+3. **Communicate once** if customer-visible: one plain-language note through the support
+   channel — what's affected, that you're on it. No cause claims yet.
+4. Then enter Phase 1 **against the preserved evidence**, not the live system.
+
 ## Phase 1 — Build a feedback loop
 
 **This is the skill.** Everything else is mechanical. If you have a fast, deterministic, agent-runnable pass/fail signal for the bug, you will find the cause — bisection, hypothesis-testing, and instrumentation all just consume that signal. If you don't have one, no amount of staring at code will save you.
@@ -111,6 +129,7 @@ Required before declaring done:
 - [ ] All `[DEBUG-...]` instrumentation removed (`grep` the prefix)
 - [ ] Throwaway prototypes deleted (or moved to a clearly-marked debug location)
 - [ ] The hypothesis that turned out correct is stated in the commit / PR message — so the next debugger learns
+- [ ] If Phase 0 ran (customer-impacting): a ten-line incident note at `docs/audits/YYYY-MM-DD-incident-<slug>.md` — what broke, the mitigation, the root cause, the prevention change
 
 **Audit the existing tests.** A green suite that shipped this bug is itself a bug. Open the closest existing test, find why it missed (wrong call shape / fixture / assertion — see [`tests.md`](../../implementing/test-driven-dev/tests.md)), and patch it. A new regression test alone isn't enough.
 

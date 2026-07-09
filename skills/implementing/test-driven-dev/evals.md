@@ -54,7 +54,8 @@ check could catch is paying variance for nothing.
 
 Judge discipline, when you do climb: anchored rubric (each score has a written description,
 or binary per dimension), judge model pinned at temperature 0, judge cheaper than the agent
-it grades, and hand-check its verdicts on the first run. A judge you disagree with on more
+it grades, judge from a **different model family** than the one it grades (a judge grading
+its own family marks its own homework), and hand-check its verdicts on the first run. A judge you disagree with on more
 than ~1 in 10 verdicts is itself RED — fix the rubric before trusting the scores.
 
 ## 4. Grade the trajectory when the path is the behavior
@@ -80,11 +81,20 @@ A single passing run proves nothing about non-deterministic behavior. GREEN is a
 over the set — and the model under eval is pinned, or the suite measures provider drift
 instead of your change:
 
+Two kinds of cases, and the distinction is load-bearing: **hard gates** (safety and money —
+a `must_not_call` violation, an unauthorized action) fail the suite outright no matter how
+many other cases pass; **threshold cases** score against the bar. A corpus sum alone lets
+one unauthorized-refund failure ship green behind eight cosmetic passes — improvements must
+never average away a hard failure, and a case that reliably passed becoming reliably failing
+is a regression even when the total score rises.
+
 ```python
-MODEL = "model-id@2026-05-01"  # pinned; bumping it is its own diff with its own eval run
+MODEL = "model-id@YYYY-MM-DD"  # pinned; bumping it is its own diff with its own eval run
 
 def test_refund_agent_evalset():
     results = [grade(run_agent(c.input, model=MODEL), c) for c in CASES]
+    hard = [r.case_id for r in results if r.hard_gate and not r.ok]
+    assert not hard, f"hard-gate failures (safety/money): {hard}"  # no threshold can excuse these
     passed = sum(r.ok for r in results)
     assert passed >= 8, f"{passed}/{len(CASES)}; failed: {[r.case_id for r in results if not r.ok]}"
 ```
@@ -101,10 +111,31 @@ is data about the behavior, not noise to rerun away.
   expensive per-merge.
 
 Evals hit a paid API, so the environmental-skip rule from [tests.md](tests.md) applies
-verbatim: skip on credit/rate-limit/auth failures, fail only on behavior regression.
+verbatim: skip on credit/rate-limit/auth failures, fail only on behavior regression. Record
+those skips as **VOID, not PASS**, and report the VOID rate per run — a rising VOID rate is
+an availability finding in its own right, and an arm with more VOIDs is paying an
+availability cost the accuracy number hides.
 
 Stack note: on Google ADK, the `google-agents-cli-eval` skill covers evalset schema and
 runner mechanics. The rules here don't change — only the file format does.
+
+## 7. Swapping the model: the comparison protocol
+
+"Should we switch models?" is an eval question, not a vibes question. When a model change
+is on the table:
+
+- **Paired arms on identical cases.** Every arm runs the same evalset; only the component
+  under test swaps (the main model, the judge, one prompt) — never two changes in one
+  comparison.
+- **Pin every arm to a dated snapshot id.** An alias that silently re-points mid-run
+  measures provider drift, not the candidate.
+- **Report cost beside accuracy.** Measured tokens priced per arm, projected to monthly
+  spend at current volume — the verdict is a price/quality pair, never a score alone.
+- **"As accurate or better" only if all three hold:** (1) no case that reliably passed
+  becomes reliably failing — regressions are judged per case, never netted against
+  improvements elsewhere; (2) zero new hard-gate (safety/money) failures; (3) VOID/retry
+  rates no worse — availability is part of the result.
+- The switch itself stays a human call, made on this report.
 
 ## What not to eval
 

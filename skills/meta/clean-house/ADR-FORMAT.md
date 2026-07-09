@@ -21,6 +21,9 @@ Only include these when they add genuine value. Most ADRs won't need them.
 - **Status** frontmatter (`proposed | accepted | deprecated | superseded by ADR-NNNN`) — useful when decisions are revisited
 - **Considered Options** — only when the rejected alternatives are worth remembering
 - **Consequences** — only when non-obvious downstream effects need to be called out
+- **Re-visit trigger** — a grep-able line (`NEXT REVIEW: YYYY-MM-DD`, or `TRIGGER: <observable condition> → <action>`) when the decision should be re-examined on a signal rather than by memory; `/clean-house` sweeps these each pass
+
+Service-pick records written by `pick-cloud-services` live in the same `docs/adr/` directory but use date naming (`YYYY-MM-DD-<category>-<choice>.md`) and carry mandatory fields (requirements, scorecard, cost at 1× and 10×, exit plan, dated research provenance, revisit triggers) — same spirit, richer body, defined in that skill.
 
 ## Numbering
 

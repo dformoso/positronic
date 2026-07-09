@@ -22,6 +22,8 @@ If a prior `definitions/specs/[0-9]*.md` exists and an upstream artifact was ame
 
 4. Read all MCP-server designs (if any): `ls definitions/mcp-servers/*.md 2>/dev/null`. Multi-server projects keep one artifact per server (filename `<server-slug>-<ts>.md`); read every file. For each, the SPEC's "Tool layer / ACI" section adds a paragraph restating its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) plus a pointer to the file — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
 
+4b. Read the most recent placement profile if one exists: `ls definitions/runtime/[0-9]*.md 2>/dev/null | sort | tail -1`. Its constraints fold into existing sections — residency exceptions into Security, telemetry backend placement into Observability, cost envelope + kill switch into Rollout — restated, never re-derived. Service-level vendor picks live as `docs/adr/` records (written by `pick-cloud-services`); the SPEC names the capability and points at the record rather than restating the vendor rationale.
+
 5. Sketch modules and integration points. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation.
 
 6. Confirm with the user which modules need tests; capture them in the Test plan section.
@@ -156,6 +158,8 @@ Which modules are tested and at what seam (unit / integration / e2e). Prior art 
 
 How correctness is verified at the system level. Per-task pass/fail. Trajectory metrics where applicable: length, cost, gate-hit rate. Where the signal runs (CI / nightly / in-loop). See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/07_eval_observability_brief.md` for eval dimensions (tool-path, groundedness, hallucination) and the offline → online progression.
 
+Close the section with a **residual blind spots** list: the ways this verification can still show a wrong green (detection limits on rare failures, curated-corpus bias, mock-vs-reality gaps), each priced-in rather than forgotten — a gate that can't name how it lies gets trusted past its warranty.
+
 ## External dependencies
 
 | Dependency | Purpose | Dev/test fidelity | Failure mode if down | Mitigation |
@@ -163,13 +167,21 @@ How correctness is verified at the system level. Per-task pass/fail. Trajectory 
 
 Includes third-party APIs, hosted models, MCP servers, payment processors. Anything outside our control. The Dev/test fidelity column records how each is stood up while building — mock adapter, sandbox / test-mode key, or live creds (see Verification fidelity).
 
+For any dependency whose setup involves an external clock — quota approvals, identity/carrier verification, certificate provisioning, review queues — note the **earliest-confirmable date**: these uncompressible waits dominate real cutover calendars, and naming them keeps the schedule honest.
+
 ## Rollout / migration
 
-How the change reaches production safely. For schema changes: forward/backward compatibility, backfill plan, locking behavior, staged rollout. For new features: feature flag, canary cohort, kill switch.
+How the change reaches production safely. For reversible changes a paragraph suffices: feature flag, canary cohort, kill switch. Anything **one-way** — a provider re-point, a datastore migration, first production traffic — needs a stepped cutover runbook written per [rollout.md](rollout.md): per-step Verify + Rollback, one-way doors marked and placed late, a risk register whose every risk names the phase that closes it, thin-slice-first phasing, and a scripted exit gate per step (the evidence `/go-live` later verifies).
+
+For schema changes, state the expand/contract contract — destructive changes (drops, renames) land only once no shipped release reads the old shape — and name its enforcement gate (boot the previous release against the migrated store) in the Test plan. Every environment is a config profile over one SHA-tagged artifact — a demo is a profile, never a fork; production declares itself and refuses dev/test affordances by construction.
+
+If the project recorded a development-to-production path (`docs/adr/`, via `pick-cloud-services`), add one row: the path, a pointer to the record, and its armed `TRIGGER:` lines.
 
 ## Observability
 
 Logs (what gets logged, at what level), metrics (counters, latencies), traces (spans) — prefer OpenTelemetry GenAI semantic conventions for agent traces (model call, tool call, agent step as spans). Dashboards or alerts that need to exist before launch. Never log credentials, PII, or auth headers. See `${CLAUDE_SKILL_DIR}/../../../docs/agentic-patterns/07_eval_observability_brief.md`.
+
+This section is the **plan-of-record for what telemetry exists**. `pick-harness-shape` §9 owns only the posture, `design-mcp-server` §9 only server-internal logs, and any placement profile (`definitions/runtime/`) only where the telemetry backend lives — none of them redefines the telemetry set; they point here.
 
 ## Security / authn / authz
 

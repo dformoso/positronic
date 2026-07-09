@@ -78,6 +78,8 @@ For every requirement row in the latest PRD and SPEC (and each locked decision i
 
 Drift is evidence here: a doc section that diverged long ago with nobody noticing is a strong signal nobody needed what it described.
 
+**Fired triggers are evidence too.** Sweep the dated decision machinery: `grep -rn 'NEXT REVIEW\|^TRIGGER' docs/adr definitions/runtime 2>/dev/null`. A past-due `NEXT REVIEW:` date or a fired `TRIGGER:` condition (on a service pick or the development-to-production path record) is a decision whose ground truth moved — flag it, and the fix is the trigger's own named action (re-run `pick-cloud-services` on that record, start the migration step, formalize custody). A trigger nothing sweeps is decorative; this step is the sweep.
+
 Output: flagged requirements, each with its evidence. These feed step 2.
 
 ### 2. Delete
@@ -92,6 +94,7 @@ Hunt cut candidates at every layer:
 | Config surface | Options with one observed value; flags nobody flips |
 | Abstractions | Pass-throughs (deletion test); one-adapter seams nothing else will use; layers with one caller |
 | Process | CI stages, hooks, scripts, doc artifacts, skills nobody runs |
+| Method docs / skills / prompts | Embedded perishable facts in files meant to be durable method — vendor names, prices, model versions, "as of" status lines (`grep -rnE '\$[0-9]|20[0-9]{2}|as of' <skill/prompt dirs>`). Each is rot: replace with the category plus a verify-live instruction; dated facts belong only in provenance-stamped records |
 
 Present cuts ranked by blast radius, each with **what / evidence / re-add trigger** — the observable signal that would justify bringing it back. Then the gate:
 

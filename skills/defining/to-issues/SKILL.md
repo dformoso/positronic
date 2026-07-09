@@ -16,6 +16,8 @@ Work from what's already in the conversation. If a `definitions/specs/` director
 
 Read the SPEC's **Verification fidelity** section — its per-axis rung (data, external access, eval signal, CUJ verification, deploy) and crossover list drive which slices verify against mocks vs. real deps, which credentials step 5 provisions, and which crossovers become their own slices. If the SPEC predates this section (or there's no SPEC), ask the user the per-axis fidelity and crossover question now, before drafting — default to building against faithful stand-ins (fixtures plus mock/sandbox adapters) with an explicit crossover before the release gate.
 
+**Increment reconciliation.** If the latest SPEC carries an `## Amendment` header, the open backlog predates it — reconcile before creating anything. List open issues (`gh issue list --state open`) and map each to the amended SPEC. An issue whose capability the amendment dropped or reshaped is closed with a one-line comment naming the superseding snapshot ("Obsoleted by `definitions/specs/<new>.md` — <reason>"); an issue whose contract changed gets its body updated. Only then draft new slices, scoped to the Amendment header's "Sections touched" list. Never leave an open issue implementing a capability the SPEC no longer contains — the cascade ends here, so this is the last place stale work can be caught.
+
 ### 2. Explore the codebase (optional)
 
 If you haven't explored the codebase, do so.

@@ -37,9 +37,10 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 | 7 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` |
 | 8 | Build | `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code |
 | 9 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
-| 10 | Clean the house *(between versions)* | `/clean-house` | cuts + deepenings, `docs/audits/` report |
+| 10 | Go live *(first real traffic / one-way cutovers)* | `/go-live` | GO / NO-GO + ranked blockers |
+| 11 | Clean the house *(between versions)* | `/clean-house` | cuts + deepenings, `docs/audits/` report |
 
-When both apply, stage 4 runs before stage 5 — harness picks then slot into known surfaces. Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`; an accreted system between versions goes to `/clean-house`.
+When both apply, stage 4 runs before stage 5 — harness picks then slot into known surfaces. Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`; a service pick ("which email provider?") goes to `/pick-cloud-services`; a first deployment or provider cutover goes to `/go-live`; an accreted system between versions goes to `/clean-house`.
 
 ## Skills
 
@@ -55,6 +56,7 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | `pick-ui-surfaces` | model | defining | `definitions/prds/` | `definitions/surfaces/` | Lock the UI's structure + visual identity |
 | `pick-harness-shape` | model | defining | `definitions/prds/`, `definitions/surfaces/` | `definitions/harness/` | Decide + shape a custom LLM harness |
 | `design-mcp-server` | model | defining | `definitions/prds/`, `definitions/harness/` | `definitions/mcp-servers/` | Design an MCP server you'll build |
+| `pick-cloud-services` | slash | defining / anytime | PRD (greenfield), `docs/selection-method.md`, live vendor pages | `docs/adr/` decision records | Pick any external/cloud service via live research; on greenfield, decide the dev-to-prod path first |
 | `to-spec` | slash | defining | `definitions/prds/`, `definitions/harness/`, `definitions/surfaces/`, `definitions/mcp-servers/` | `definitions/specs/` | Lock the implementation contract |
 | `to-issues` | slash | defining | `definitions/specs/` | GitHub issues | Break the SPEC into `afk` / `hitl` issues |
 | `test-driven-dev` | model | implementing | `definitions/specs/` | code + tests | Red-green-refactor on one issue |
@@ -64,6 +66,7 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |
 | `audit-drift` | slash | shipping | doc graph | drift report | Sweep PRDs/SPECs/ADRs for drift |
 | `audit-failure-modes` | slash | shipping | the system | P0/P1/P2 list | Pre-mortem of latent failure modes |
+| `go-live` | slash | operating | runbooks, gate scripts, the deployed environment | GO/NO-GO report | Evidence gate before first real traffic or a one-way cutover |
 | `github-triage` | slash | meta | GitHub issues | labels | Label-based triage state machine |
 | `clean-house` | slash | meta | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
 

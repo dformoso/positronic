@@ -80,6 +80,8 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **No shortcuts.** Within scope, pick the best approach — not the easiest to implement. Don't suppress errors, mock around real problems, pick an inferior API because the better one is harder, leave TODOs, or bypass type/lint/test gates to "get green." If the best approach is genuinely too expensive, stop and surface the tradeoff — don't silently downgrade.
 
+**Gates are scripts.** Deterministic gates live in versioned, reviewed, tested scripts a human can run by hand; CI calls the identical scripts. Skills are reserved for judgment work. A skill wrapping what a script should do is a smell.
+
 **Stopping.** If the path isn't working:
 
 - If the same approach fails twice, stop. Surface the obstacle. Don't keep trying variations.
@@ -97,8 +99,9 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
   - **Custom LLM harness on the table.** When the system needs to run reliably without a human in the verification loop — programmatic gates, contracts, audit, autonomous execution beyond conversational — off-the-shelf coding agents stop being enough. After `/to-prd`, `define` hands off to `pick-harness-shape`, which first decides whether a custom harness is needed and then walks substrate, topology and role decomposition, memory, tools, and gates, writing a versioned `definitions/harness/` artifact that `/to-spec` reads. When the tool layer chooses MCP, `design-mcp-server` runs after `pick-harness-shape` and writes its own versioned `definitions/mcp-servers/` artifact, also read by `/to-spec`. **Exception:** when the harness IS the product or differentiator, invoke `pick-harness-shape` *before* `/to-prd` so its picks can shape the PRD.
   - **UI product on the table.** When the product has persistent user-facing surfaces (web app, mobile, dashboard, browser extension), the shape of those surfaces — visual identity (feel, signature, accent, type) plus structure (nav, onboarding, settings, account lifecycle, error states) — needs locking down before SPEC. After `/to-prd`, `define` hands off to `pick-ui-surfaces`, which walks the load-bearing decisions and writes a versioned `definitions/surfaces/` artifact that `/to-spec` reads. If both this and `pick-harness-shape` apply, run `pick-ui-surfaces` first so harness picks can slot into known surfaces.
 - **Implementing** — spec is decided → run `test-driven-dev` for a single issue. When a slice touches UI, `test-driven-dev` invokes `ui-taste`, which applies the visual identity locked by `pick-ui-surfaces`. When a test needs a multimodal fixture, it invokes `generate-test-assets`, which generates the stand-in (audio, image, video, text) with Gemini and routes load-bearing / user-dependent checks to the human.
-- **Diagnosing** — something is broken or regressed → run `diagnose`.
+- **Diagnosing** — something is broken or regressed → run `diagnose` (live and affecting real users → its Phase 0 triage first: mitigate, preserve evidence, then reproduce).
 - **Shipping** — PR prep, review, cleanup → prompt the user to run `/review-pr` (which also audits prompt files in the diff). For projects with PRDs/SPECs/ADRs, also prompt `/audit-drift` to sweep the doc graph. Before a release cut on a maturing system, prompt `/audit-failure-modes` to enumerate latent failure modes by surface.
+- **Operating** — real users are (about to be) live. Before first production traffic or any one-way cutover — a domain/DNS move, a datastore migration, re-pointing a provider that holds data or serves inference — prompt the user to run `/go-live`: an evidence gate that verifies runtime facts (secrets actually set, backups actually retaining, alerts actually firing) by consuming the project's own runbooks and gate scripts, never re-deriving them. Choosing any external/cloud service — and, on greenfield, the development-to-production path (local-first vs cloud-first vs hybrid) — goes through `/pick-cloud-services` (method: `docs/selection-method.md`), which writes dated decision records to `docs/adr/` whose `NEXT REVIEW`/`TRIGGER` lines `/clean-house` sweeps each pass.
 - **Maintaining** — a version has shipped and the system has accreted → prompt the user to run `/clean-house`, which walks the built system in a supervised pass — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions — reconciling the doc graph (`/audit-drift`) before the pass ends. One pass per run; re-fire until a pass comes up dry. Runs at the version hinge, before defining the next increment.
 
 Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
@@ -117,6 +120,7 @@ Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt th
 - Never commit `.env`, API keys, tokens, or credential files.
 - Never log, print, or echo credentials, PII, or auth headers — including in error messages and stack traces.
 - If you find a secret already committed in code, stop and surface it. Don't paste it back in your output.
+- Prodness is declared, never inferred — and a production boot refuses dev/test affordances by construction: starting with a dev-only flag set fails loudly instead of running with the flag live. Every environment is a config profile over the same SHA-tagged artifact; a demo is a profile, never a forked build.
 
 ## 9. Parallel by Default
 

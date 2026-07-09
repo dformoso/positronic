@@ -1,6 +1,6 @@
 # Amend mode — evolving an artifact after the first cut
 
-positronic's artifacts (`definitions/prds/`, `definitions/surfaces/`, `definitions/harness/`, `definitions/mcp-servers/`, `definitions/specs/`) are immutable, timestamped, **whole-product** snapshots; every consumer reads the latest via `ls <dir>/[0-9]*.md | sort | tail -1`. Right for the first build, wrong for the trilemma it forces after:
+positronic's artifacts (`definitions/prds/`, `definitions/surfaces/`, `definitions/harness/`, `definitions/mcp-servers/`, `definitions/runtime/`, `definitions/specs/`) are immutable, timestamped, **whole-product** snapshots; every consumer reads the latest via `ls <dir>/[0-9]*.md | sort | tail -1`. Right for the first build, wrong for the trilemma it forces after:
 
 - rewrite the whole product per feature → huge diffs, drift, near-duplicate snapshots;
 - write a feature-scoped snapshot → `tail -1` truncates the product to its newest slice;
@@ -53,7 +53,9 @@ What stops "rewrite five artifacts per feature." An amended artifact forces a do
 | Solution Overview surfaces / form factor | `definitions/surfaces/` (`pick-ui-surfaces`) |
 | External channels & touchpoints / new agent tools | `definitions/mcp-servers/` (`design-mcp-server`, if the tool layer is MCP) |
 
-**Termination:** any amended upstream artifact (`definitions/prds/`, `definitions/surfaces/`, `definitions/harness/`, `definitions/mcp-servers/`) implies a `/to-spec` amend; a `/to-spec` amend implies `/to-issues`. The cascade ends at `/to-issues` — the executable unit. A change confined to one section travels one edge, not the whole graph.
+**Termination:** any amended upstream artifact (`definitions/prds/`, `definitions/surfaces/`, `definitions/harness/`, `definitions/mcp-servers/`, `definitions/runtime/`) implies a `/to-spec` amend; a `/to-spec` amend implies `/to-issues`. The cascade ends at `/to-issues` — the executable unit. A change confined to one section travels one edge, not the whole graph.
+
+**Mid-graph edge:** an amended `definitions/harness/` whose Topology (trigger classes), Gates (waits), Security (residency, sandbox posture), or Substrate sections changed implicates `definitions/runtime/` — the placement profile, when one exists (written at `pick-harness-shape`'s placement gate). Service-level vendor picks are ADRs (`docs/adr/`, via `pick-cloud-services`) and sit outside this cascade; their revisit triggers are swept by `/clean-house` instead.
 
 This is also the path a production-learning loop takes: brief 07's optimizer amends `definitions/harness/` directly → cascades to `/to-spec` → `/to-issues`. Same machinery, different trigger.
 

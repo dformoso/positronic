@@ -1,6 +1,6 @@
 ---
 name: audit-failure-modes
-description: Pre-mortem of the system. Spawns parallel agents per failure surface (external deps, concurrency, persistence, resource, config, security, frontend), buckets findings MECE, and ranks P0/P1/P2 with explicit framing. Reports only — never auto-fixes. Use before a release cut or when hardening a maturing system.
+description: Pre-mortem of the system. Spawns parallel agents per failure surface (external deps, concurrency, persistence, resource, config, security, frontend, LLM/agent surface), buckets findings MECE, and ranks P0/P1/P2 with explicit framing. Reports only — never auto-fixes. Use before a release cut or when hardening a maturing system.
 disable-model-invocation: true
 ---
 
@@ -13,6 +13,7 @@ Prospective diagnosis. Walk the system and list how it could break — before it
 | `/review-pr` | Current diff | Before a branch ships | Catches what's wrong or risky in the change |
 | `/audit-drift` | Doc graph | Shipping, on demand | Detects drift across PRDs/SPECs/ADRs |
 | `/audit-failure-modes` (this) | Whole system | Before a release cut | Lists latent failure modes; ranks by correctness/reliability/polish |
+| `/go-live` | Deployed environment | Before first real traffic or a one-way cutover | Verifies runtime evidence this skill can't see (secrets actually set, backups actually retaining, alerts actually firing) |
 
 ## Process
 
@@ -27,6 +28,7 @@ Read the entry point and top-level layout. Identify the surfaces in play:
 - **Config & startup** — env vars, secrets, health/readiness, container topology
 - **Security surfaces** — file permissions, secret storage, user-facing error paths
 - **Frontend** — only if there's a UI
+- **LLM / agent surface** — only if model calls or an agent loop exist: prompt inputs, tool dispatch, spend paths
 
 Skip categories with no surface.
 
@@ -81,6 +83,7 @@ For every external call (HTTP, RPC, LLM, subprocess):
 - API keys validated at startup, or only on first user request (raw SDK trace)?
 - `/health` vs `/ready` — does `/ready` actually probe the things the container needs?
 - Default values that bypass security (e.g. `DISABLE_AUTH=1` in the Dockerfile)?
+- Prodness declared, not inferred — and does a production boot **refuse** dev/test affordances by construction (a prod start with a dev-only flag set must fail loudly, not run with the flag live)?
 - Proxy timeout vs backend timeout — proxy ≥ backend, or does it abandon live requests?
 - Structured (JSON) logs, or unparseable line-based?
 
@@ -90,6 +93,8 @@ For every external call (HTTP, RPC, LLM, subprocess):
 - Secrets at rest — encrypted, or plaintext on disk?
 - Stack traces from external SDKs reaching the UI before sanitization?
 - Credentials / PII / auth headers ever logged?
+- Regulated data has a retention/deletion path — every PII store reachable from the account-deletion flow, export before erase?
+- Recordings / transcripts / message bodies purged on their stated schedule, or accreting forever?
 
 #### G. Frontend resilience (UI only)
 
@@ -99,6 +104,14 @@ For every external call (HTTP, RPC, LLM, subprocess):
 - Page-level backend check: fires only at mount, or re-checks on focus?
 - Global `ErrorBoundary` / `error.tsx`?
 - Polling that depends on a monotonic ID — handled if backend logs roll over?
+
+#### H. LLM & agent surface (only when model calls or an agent loop exist)
+
+- **Prompt injection:** every channel where customer-controlled text reaches a prompt (messages, email bodies, voicemail transcripts, uploaded documents) — are tool calls acting on that text gated, or can injected instructions trigger actions?
+- **Data-to-model flows:** what PII reaches a third-party model provider, under what retention terms, and where is the redaction point? Is the data-processor identity known per flow?
+- **Spend:** per-account and global runaway caps present and enforced across events, not just per call? Any unmetered model call sites (paths that bypass the meter)?
+- **Autonomy boundaries:** anything the agent can send or commit outward without human approval? A model-triggered action with irreversible or money side effects behind a single gate?
+- **Kill switch:** one reversible lever that stops the agent surface without stopping the product?
 
 ### 4. Bucket and prioritize
 

@@ -59,7 +59,7 @@ Report each hit with the canonical term to use instead. Skip hits inside fenced 
 
 #### 2.2. Dead cross-references — *must-fix*
 
-Walk every markdown file in `definitions/prds/`, `definitions/harness/`, `definitions/surfaces/`, `definitions/mcp-servers/`, `definitions/specs/`, `docs/`, plus root `CONTEXT.md` and `CONTEXT-MAP.md`. For each `[text](path)`:
+Walk every markdown file in `definitions/prds/`, `definitions/harness/`, `definitions/surfaces/`, `definitions/mcp-servers/`, `definitions/runtime/`, `definitions/specs/`, `docs/`, plus `plans/` when it exists (living plan documents drift too), plus root `CONTEXT.md` and `CONTEXT-MAP.md`. For each `[text](path)`:
 
 - Skip if `path` starts with `http`.
 - If `path` contains `#`, split into file + anchor. Verify the file exists and the anchor matches a heading (slugified: lowercase, spaces → hyphens, punctuation stripped).
@@ -76,7 +76,7 @@ For each ADR in `docs/adr/[0-9]*.md`:
 - Read the latest SPEC's `## Modules & interfaces` and `## Data model / schema` sections.
 - If the ADR's decision is no longer reflected in the current SPEC, flag it.
 
-This is the LLM-judgment check, not a grep. Be conservative — only flag when the contradiction is clear, not when the ADR and SPEC discuss different layers.
+This is the LLM-judgment check, not a grep. Be conservative — only flag when the contradiction is clear, not when the ADR and SPEC discuss different layers. Date-named service-pick records (from `pick-cloud-services`) are covered too, but their *freshness* is governed by their own `NEXT REVIEW:`/`TRIGGER:` lines — `/clean-house` sweeps those; here flag only a SPEC that contradicts the recorded decision.
 
 #### 2.4. The latest SPEC overtaken by the code — *must-fix* (forward) / *worth-noting* (reverse)
 

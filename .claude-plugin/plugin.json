@@ -6,6 +6,7 @@
     "./skills/defining/pick-harness-shape",
     "./skills/defining/pick-ui-surfaces",
     "./skills/defining/design-mcp-server",
+    "./skills/defining/pick-cloud-services",
     "./skills/defining/research-market",
     "./skills/defining/ideate",
     "./skills/defining/judge-idea",
@@ -19,6 +20,7 @@
     "./skills/shipping/review-pr",
     "./skills/shipping/audit-drift",
     "./skills/shipping/audit-failure-modes",
+    "./skills/shipping/go-live",
     "./skills/meta/github-triage",
     "./skills/meta/clean-house"
   ]
