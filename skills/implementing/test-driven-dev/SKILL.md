@@ -50,6 +50,9 @@ Before writing any code:
 - [ ] List the behaviors to test, prioritized (not implementation steps)
 - [ ] Identify opportunities for [deep modules](deep-modules.md) (small interface, deep implementation)
 - [ ] Design interfaces for [testability](interface-testability.md)
+- [ ] For each new public interface: design it twice — sketch one genuinely different shape (a few lines, no implementation) and say why the winner wins; first ideas are rarely best and the comparison costs one message
+- [ ] Draft the interface comment before the implementation — the contract a caller must know (inputs, invariants, units, error modes); if it comes out long or hedged, fix the interface, not the wording
+- [ ] Where the contract allows, define errors out of existence — pick semantics that make the special case a non-event (delete-absent is a no-op, out-of-range clamps) instead of adding an error path every caller must know
 - [ ] If the slice touches web UI, the tracer-bullet test is a Playwright CUJ (real browser, real flow) — not a component unit test
 - [ ] If the slice touches user-facing UI, invoke `ui-taste` before styling — it applies the visual rules and reads the locked style from the SPEC's Product surfaces section (the `pick-ui-surfaces` picks `/to-spec` restated)
 - [ ] If a test needs a multimodal fixture (image, audio, video, rich text), invoke `generate-test-assets` — it generates the stand-in into `test-assets/` and routes load-bearing / user-dependent checks to the human
@@ -94,6 +97,8 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 - [ ] Deepen modules (move complexity behind simple interfaces)
 - [ ] Apply SOLID principles where natural
 - [ ] Consider what new code reveals about existing code
+- [ ] Two hats: refactor steps land as refactor-only commits — no behavior change mixed in
+- [ ] Comment pass: new public surface carries its interface comment; delete any comment that restates the code
 - [ ] Run tests after each refactor step
 
 **Never refactor while RED.** Get to GREEN first.
@@ -112,6 +117,9 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 [ ] For UI behavior: the test drives the rendered page in Playwright, not a mocked component tree
 [ ] Code is minimal for this test
 [ ] No speculative features added
+[ ] New public interface has an interface comment (contract, invariants, error modes — no internals)
+[ ] Names reuse CONTEXT.md vocabulary and existing molds; no name promises what the code doesn't do
+[ ] Refactor steps landed in refactor-only commits
 ```
 
 See [tests.md](tests.md) for production-path coverage, stash-and-fail, external-dependency failure modes, and environmental skip rules.

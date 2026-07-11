@@ -69,6 +69,7 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | `go-live` | slash | operating | runbooks, gate scripts, the deployed environment | GO/NO-GO report | Evidence gate before first real traffic or a one-way cutover |
 | `github-triage` | slash | meta | GitHub issues | labels | Label-based triage state machine |
 | `clean-house` | slash | meta | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
+| `improve-readability` | slash | meta | code, `CONTEXT.md`, git churn | refactor slices, `docs/audits/` report | Fresh-eyes confusion log → checklist sweep → behavior-preserving slices, until dry |
 
 The system prompt sees `AGENTS.md` plus the descriptions of `model` skills only; `slash` skills load on invoke.
 

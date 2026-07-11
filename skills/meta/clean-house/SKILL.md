@@ -28,6 +28,7 @@ Neighbours — keep the questions distinct:
 | `/audit-drift` | Do the documents still agree with each other and the code? Consistency — standalone at shipping, and run here at the end of each pass |
 | `/audit-failure-modes` | What will break? Risk — the additive move; untouched by this skill |
 | `/judge-idea` | Is the bet sound? Pre-build adversarial gate; runs on speculation, this runs on evidence |
+| `/improve-readability` | Can the next person understand it? Comprehension — code altitude, behavior-preserving; hands module reshaping here |
 
 ## Glossary
 
@@ -60,7 +61,7 @@ If any of these don't exist, proceed silently — don't flag their absence. With
 
 ## Targeted mode
 
-When another skill hands over specific candidates — `diagnose` after a fix (no good test seam, tangled callers), `/review-pr` on a private-API reach — skip the pass. Apply the kill question to each candidate first (is the right move deleting the surrounding feature rather than deepening it?), then run step 3's grilling on what survives. No report.
+When another skill hands over specific candidates — `diagnose` after a fix (no good test seam, tangled callers), `/review-pr` on a private-API reach, `/improve-readability` on a module-level candidate (shallow cluster, leaked decision needing one owner) — skip the pass. Apply the kill question to each candidate first (is the right move deleting the surrounding feature rather than deepening it?), then run step 3's grilling on what survives. No report.
 
 ## The pass
 

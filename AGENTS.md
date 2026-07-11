@@ -46,6 +46,7 @@ For both:
 
 - Remove orphans your changes created (unused imports, dead variables, dead functions).
 - If you notice pre-existing dead code, mention it — don't delete it.
+- Minimum diff bounds scope, not quality: within the lines you do write, take the option that needs the least explaining — precise name, guard clause, error defined away rather than handled twice. Small messes compound; don't leave one because the diff was small.
 
 ## 4. Plain Naming
 
@@ -55,6 +56,8 @@ For both:
 - No abbreviations, acronyms, or clever wordplay. `userCount` not `usrCnt`. `parsePayment` not `procPmt`.
 - Module names describe the domain, not abstract patterns. `billing/` not `helpers/` or `utils/`.
 - A reader who hasn't seen the code should understand intent from the name alone.
+- One concept, one word — repo-wide. Reuse the CONTEXT.md term where one exists; never mint a synonym for a concept that already has a name.
+- Names must not lie or wobble: booleans read as predicates (`is`/`has`/`can`, never negated); `get` is cheap — costly work is `compute`/`fetch`; ranges say `first/last` (inclusive) or `begin/end` (half-open). A name promising more, less, or the opposite of what the code does is a bug, not a style issue.
 
 If you can't write a clear name, you don't yet understand the thing you're naming. Stop and clarify.
 
@@ -102,7 +105,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **Diagnosing** — something is broken or regressed → run `diagnose` (live and affecting real users → its Phase 0 triage first: mitigate, preserve evidence, then reproduce).
 - **Shipping** — PR prep, review, cleanup → prompt the user to run `/review-pr` (which also audits prompt files in the diff). For projects with PRDs/SPECs/ADRs, also prompt `/audit-drift` to sweep the doc graph. Before a release cut on a maturing system, prompt `/audit-failure-modes` to enumerate latent failure modes by surface.
 - **Operating** — real users are (about to be) live. Before first production traffic or any one-way cutover — a domain/DNS move, a datastore migration, re-pointing a provider that holds data or serves inference — prompt the user to run `/go-live`: an evidence gate that verifies runtime facts (secrets actually set, backups actually retaining, alerts actually firing) by consuming the project's own runbooks and gate scripts, never re-deriving them. Choosing any external/cloud service — and, on greenfield, the development-to-production path (local-first vs cloud-first vs hybrid) — goes through `/pick-cloud-services` (method: `docs/selection-method.md`), which writes dated decision records to `docs/adr/` whose `NEXT REVIEW`/`TRIGGER` lines `/clean-house` sweeps each pass.
-- **Maintaining** — a version has shipped and the system has accreted → prompt the user to run `/clean-house`, which walks the built system in a supervised pass — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions — reconciling the doc graph (`/audit-drift`) before the pass ends. One pass per run; re-fire until a pass comes up dry. Runs at the version hinge, before defining the next increment.
+- **Maintaining** — a version has shipped and the system has accreted → prompt the user to run `/clean-house`, which walks the built system in a supervised pass — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions — reconciling the doc graph (`/audit-drift`) before the pass ends. One pass per run; re-fire until a pass comes up dry. Runs at the version hinge, before defining the next increment. When the complaint is comprehension rather than accretion — code hard to read, onboarding slow, every change starts with archaeology — prompt the user to run `/improve-readability`: a behavior-preserving comprehension pass, runnable any time (not just the version hinge), which hands module reshaping to `/clean-house` targeted mode.
 
 Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
 
