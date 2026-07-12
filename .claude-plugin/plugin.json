@@ -22,6 +22,7 @@
     "./skills/shipping/audit-failure-modes",
     "./skills/shipping/go-live",
     "./skills/meta/github-triage",
+    "./skills/meta/improve-readability",
     "./skills/meta/clean-house"
   ]
 }
