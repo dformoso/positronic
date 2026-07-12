@@ -9,16 +9,17 @@ A personal AI-coding framework — opinionated, solo.
 - **Agent-harness engineering** — decide whether a custom LLM/agent harness is warranted (the cut-line is reliability beyond conversational use), then lock its load-bearing shape.
 - **Product-surface engineering** — for products with a UI, lock the structure and visual identity once, before any screen is built.
 
-**The behavioral floor** — eight rules Claude follows on every turn:
+**The behavioral floor** — nine rules Claude follows on every turn:
 
 1. **Think Before Coding** — state assumptions, ask when uncertain, push back on overcomplication.
 2. **Read Before You Write** — ground every action in actual code; verify APIs and patterns before using them.
 3. **Minimum Diff** — every changed line traces to the request; minimum code for new work, surgical edits for changes.
 4. **Plain Naming** — functions, modules, variables read like plain English; names describe intent.
 5. **Goal-Driven Execution** — define verifiable success; loop until verified, or stop and surface what's blocking.
-6. **Phase Awareness** — name the phase (defining / implementing / diagnosing / shipping / maintaining) before acting.
+6. **Phase Awareness** — name the phase (defining / implementing / diagnosing / shipping / operating / maintaining) before acting.
 7. **User-Facing Reliability** — show progress on operations >2s; map external failures to one-sentence actionable messages, not raw exceptions.
 8. **Secret & Data Hygiene** — never commit secrets; never log credentials, PII, or auth headers.
+9. **Parallel by Default** — split independent work, fan out agents at once, coalesce the results, re-wave until done.
 
 `AGENTS.md` is read by Claude Code and [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide) (since v1.20.3); other tools (Cursor, Codex) are converging on the same convention. The `skills/` system is Claude Code only.
 
@@ -32,7 +33,7 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 | 2 | Research *(zero-to-one only)* | `/research-market` → `/ideate` → `/judge-idea` | `definitions/research/`, a chosen idea |
 | 3 | Lock *what & why* | `/to-prd` | `definitions/prds/` |
 | 4 | Lock the UI *(if it has one)* | `pick-ui-surfaces` | `definitions/surfaces/` |
-| 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness/`, `definitions/mcp-servers/` |
+| 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness/`, `definitions/mcp-servers/`, `definitions/runtime/` *(placement gate)* |
 | 6 | Lock *how* | `/to-spec` | `definitions/specs/` |
 | 7 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` |
 | 8 | Build | `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code |
@@ -50,14 +51,14 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | --- | --- | --- | --- | --- | --- |
 | `define` | model | defining | — | — | Surface assumptions, frame a hypothesis, route to the right path |
 | `research-market` | slash | defining | — | `definitions/research/` | Mine forums + competitive landscape |
-| `ideate` | slash | defining | `definitions/research/` | — | Ten ranked one-pagers; you pick the winner |
-| `judge-idea` | slash | defining | winner / PRD / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
+| `ideate` | slash | defining | `definitions/research/` | `definitions/ideas/` | Ten ranked one-pagers; you pick the winner |
+| `judge-idea` | slash | defining | `definitions/ideas/` winner / PRD / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
 | `to-prd` | slash | defining | conversation | `definitions/prds/` | Synthesize the *what & why* |
 | `pick-ui-surfaces` | model | defining | `definitions/prds/` | `definitions/surfaces/` | Lock the UI's structure + visual identity |
-| `pick-harness-shape` | model | defining | `definitions/prds/`, `definitions/surfaces/` | `definitions/harness/` | Decide + shape a custom LLM harness |
+| `pick-harness-shape` | model | defining | `definitions/prds/`, `definitions/surfaces/` | `definitions/harness/` (+ `definitions/runtime/` at the placement gate) | Decide + shape a custom LLM harness |
 | `design-mcp-server` | model | defining | `definitions/prds/`, `definitions/harness/` | `definitions/mcp-servers/` | Design an MCP server you'll build |
 | `pick-cloud-services` | slash | defining / anytime | PRD (greenfield), `docs/selection-method.md`, live vendor pages | `docs/adr/` decision records | Pick any external/cloud service via live research; on greenfield, decide the dev-to-prod path first |
-| `to-spec` | slash | defining | `definitions/prds/`, `definitions/harness/`, `definitions/surfaces/`, `definitions/mcp-servers/` | `definitions/specs/` | Lock the implementation contract |
+| `to-spec` | slash | defining | `definitions/prds/`, `definitions/harness/`, `definitions/surfaces/`, `definitions/mcp-servers/`, `definitions/runtime/` | `definitions/specs/` | Lock the implementation contract |
 | `to-issues` | slash | defining | `definitions/specs/` | GitHub issues | Break the SPEC into `afk` / `hitl` issues |
 | `test-driven-dev` | model | implementing | `definitions/specs/` | code + tests | Red-green-refactor on one issue |
 | `ui-taste` | model | implementing | `definitions/surfaces/` | styled UI | Apply the locked visual identity + taste rules |
@@ -68,8 +69,8 @@ Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt
 | `audit-failure-modes` | slash | shipping | the system | P0/P1/P2 list | Pre-mortem of latent failure modes |
 | `go-live` | slash | operating | runbooks, gate scripts, the deployed environment | GO/NO-GO report | Evidence gate before first real traffic or a one-way cutover |
 | `github-triage` | slash | meta | GitHub issues | labels | Label-based triage state machine |
-| `clean-house` | slash | meta | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
-| `improve-readability` | slash | meta | code, `CONTEXT.md`, git churn | refactor slices, `docs/audits/` report | Fresh-eyes confusion log → checklist sweep → behavior-preserving slices, until dry |
+| `clean-house` | slash | maintaining | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
+| `improve-readability` | slash | maintaining / anytime | code, `CONTEXT.md`, git churn | refactor slices, `docs/audits/` report | Fresh-eyes confusion log → checklist sweep → behavior-preserving slices, until dry |
 
 The system prompt sees `AGENTS.md` plus the descriptions of `model` skills only; `slash` skills load on invoke.
 
@@ -97,7 +98,7 @@ The two pieces install independently — most users want both.
 /plugin install skills@positronic
 ```
 
-This also ships the `docs/agentic-patterns/` reference corpus — several skills cite it at runtime via `${CLAUDE_SKILL_DIR}`-resolved paths, so no separate copy is needed.
+This also ships the `docs/agentic-patterns/` reference corpus — several skills cite the briefs at runtime via `${CLAUDE_SKILL_DIR}`-resolved paths, and a deeper detailed tier (indexed in [INDEX.md](docs/agentic-patterns/INDEX.md)) serves human deep-dives.
 
 ### 2. Behavioral floor (AGENTS.md)
 

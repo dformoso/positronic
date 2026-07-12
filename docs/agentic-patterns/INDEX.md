@@ -16,7 +16,7 @@ A 2-page **brief** for each topic; older topics (1–5) also have a longer **det
 
 ## Reading order suggestions
 
-**For a quick orientation (~30 min)**: read all five briefs in order.
+**For a quick orientation (~45 min)**: read all seven briefs in order.
 
 **For practitioners building an agent**: detailed #1 (engineering) → detailed #5 (architectures) → detailed #3 (memory) → detailed #4 (prompts) → detailed #2 (roles). The first two cover what to build; the next two cover how to maintain it; the last is the most contested area.
 

@@ -29,23 +29,23 @@ Every comment or issue posted to GitHub during triage **must** include the follo
 | `enhancement`     | Category | New feature or improvement               |
 | `needs-triage`    | State    | Maintainer needs to evaluate this issue  |
 | `needs-info`      | State    | Waiting on reporter for more information |
-| `ready-for-agent` | State    | Fully specified, ready for AFK agent     |
-| `ready-for-human` | State    | Requires human implementation            |
+| `afk` | State    | Fully specified, ready for AFK agent — same label `/to-issues` mints |
+| `hitl` | State    | Requires human implementation — same label `/to-issues` mints |
 | `wontfix`         | State    | Will not be actioned                     |
 
-Every issue should have exactly **one** state label and **one** category label. If an issue has conflicting state labels (e.g. both `needs-triage` and `ready-for-agent`), flag the conflict and ask the maintainer which state is correct before doing anything else. Provide a recommendation.
+Every issue should have exactly **one** state label and **one** category label. If an issue has conflicting state labels (e.g. both `needs-triage` and `afk`), flag the conflict and ask the maintainer which state is correct before doing anything else. Provide a recommendation.
 
 ## State Machine
 
 | Current State  | Can transition to | Who triggers it        | What happens                                                                                                         |
 | -------------- | ----------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `unlabeled`    | `needs-triage`    | Skill (on first look)  | Issue needs maintainer evaluation. Skill applies label after presenting recommendation.                              |
-| `unlabeled`    | `ready-for-agent` | Maintainer (via skill) | Issue is already well-specified and agent-suitable. Skill writes agent brief comment, applies label.                 |
-| `unlabeled`    | `ready-for-human` | Maintainer (via skill) | Issue requires human implementation. Skill writes a brief comment summarizing the task, applies label.               |
+| `unlabeled`    | `afk` | Maintainer (via skill) | Issue is already well-specified and agent-suitable. Skill writes agent brief comment, applies label.                 |
+| `unlabeled`    | `hitl` | Maintainer (via skill) | Issue requires human implementation. Skill writes a brief comment summarizing the task, applies label.               |
 | `unlabeled`    | `wontfix`         | Maintainer (via skill) | Issue is spam, duplicate, or out of scope. Skill closes with comment (and writes `.out-of-scope/` for enhancements). |
 | `needs-triage` | `needs-info`      | Maintainer (via skill) | Issue is underspecified. Skill posts triage notes capturing progress so far + questions for reporter.                |
-| `needs-triage` | `ready-for-agent` | Maintainer (via skill) | Grilling session complete, agent-suitable. Skill writes agent brief comment, applies label.                          |
-| `needs-triage` | `ready-for-human` | Maintainer (via skill) | Grilling session complete, needs human. Skill writes a brief comment summarizing the task, applies label.            |
+| `needs-triage` | `afk` | Maintainer (via skill) | Grilling session complete, agent-suitable. Skill writes agent brief comment, applies label.                          |
+| `needs-triage` | `hitl` | Maintainer (via skill) | Grilling session complete, needs human. Skill writes a brief comment summarizing the task, applies label.            |
 | `needs-triage` | `wontfix`         | Maintainer (via skill) | Maintainer decides not to action. Skill closes with comment (and writes `.out-of-scope/` for enhancements).          |
 | `needs-info`   | `needs-triage`    | Skill (detects reply)  | Reporter has replied. Skill surfaces to maintainer for re-evaluation.                                                |
 
@@ -59,7 +59,7 @@ Example requests:
 
 - "Show me anything that needs my attention"
 - "Let's look at #42"
-- "Move #42 to ready-for-agent"
+- "Move #42 to afk"
 - "What's ready for agents to pick up?"
 - "Are there any unlabeled issues?"
 
@@ -123,8 +123,8 @@ If the issue needs to be fleshed out before it's ready for an agent, interview t
 
 Depending on the outcome:
 
-- **ready-for-agent** — post an agent brief comment (see [AGENT-BRIEF.md](AGENT-BRIEF.md))
-- **ready-for-human** — post a comment summarizing the task, what was established during triage, and why it needs human implementation. Use the same structure as an agent brief but note the reason it can't be delegated to an agent (e.g. requires judgment calls, external system access, design decisions, or manual testing).
+- **afk** — post an agent brief comment (see [AGENT-BRIEF.md](AGENT-BRIEF.md))
+- **hitl** — post a comment summarizing the task, what was established during triage, and why it needs human implementation. Use the same structure as an agent brief but note the reason it can't be delegated to an agent (e.g. requires judgment calls, external system access, design decisions, or manual testing).
 - **needs-info** — post triage notes with progress so far and questions for the reporter (see Needs Info Output below)
 - **wontfix (bug)** — post a polite comment explaining why, then close the issue
 - **wontfix (enhancement)** — write to `.out-of-scope/`, post a comment linking to it, then close the issue (see [OUT-OF-SCOPE.md](OUT-OF-SCOPE.md))
@@ -132,11 +132,11 @@ Depending on the outcome:
 
 ## Workflow: Quick State Override
 
-When the maintainer explicitly tells you to move an issue to a specific state (e.g. "move #42 to ready-for-agent"), trust their judgment and apply the label directly.
+When the maintainer explicitly tells you to move an issue to a specific state (e.g. "move #42 to afk"), trust their judgment and apply the label directly.
 
 Still show a confirmation of what you're about to do: which labels will be added/removed, and whether you'll post a comment or close the issue. But skip the spec interview entirely.
 
-If moving to `ready-for-agent` without a spec interview, ask the maintainer if they want to write a brief agent brief comment or skip it.
+If moving to `afk` without a spec interview, ask the maintainer if they want to write a brief agent brief comment or skip it.
 
 ## Needs Info Output
 

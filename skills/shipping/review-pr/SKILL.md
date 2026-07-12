@@ -37,6 +37,7 @@ Read every changed file in full. For each, check against the AGENTS.md principle
 - **Security** — command injection, XSS, SQL injection, OWASP top 10. Flag anything that takes external input.
 - **Correctness** — logic errors, off-by-ones, edge cases the tests don't cover.
 - **Dead imports/variables** — orphans left by the change that weren't cleaned up.
+- **Tests move with behavior** — a diff that fixes a bug carries the test that reproduces it (it must fail without the fix — stash-and-fail) and patches the existing test that let the bug ship; a diff that removes behavior deletes that behavior's tests and fixtures. An orphaned green test re-pins what was just removed.
 - **Comprehension** — could a reader outside this change follow it? Flag: names that lie (`is*` non-boolean, `get*` that mutates or costs, a name promising more/less/opposite of the behavior); vague names (`data`, `result`, `process`); a new public surface without an interface comment, or one that leaks implementation / restates code; a new wrapper that adds interface without hiding anything (deletion test); the same constant/format/assumption now encoded in two places; nesting a guard clause would flatten. Judgment, not gates — and don't demand fragmentation: a deep function with a paragraph comment passes.
 - **Private-API reach** — flag any access to underscore-prefixed attributes across module boundaries. If a public surface needs the data, the underscore reach is a bug-in-waiting and the deepening opportunity should go to `/clean-house` (targeted mode).
 - **User-facing reliability** — for new >2s operations, confirm a progress signal is shown; for new external calls, confirm failure paths map to actionable messages, not raw exception strings. AGENTS.md §7.
@@ -45,7 +46,7 @@ Read every changed file in full. For each, check against the AGENTS.md principle
 
 ### 2a. Coverage check (for cross-surface or removal diffs)
 
-For diffs touching both halves of the stack or removing a feature, grep the whole repo (not just the changed files) for endpoint names, type names, route IDs, fixtures, demo data, prompt mentions, and doc references. Half-removed concepts won't show up in a file-by-file walk — they survive in the files the diff didn't touch.
+For diffs touching both halves of the stack or removing a feature, grep the whole repo (not just the changed files) for endpoint names, type names, route IDs, fixtures, tests that exercise the removed behavior, demo data, prompt mentions, and doc references. Half-removed concepts won't show up in a file-by-file walk — they survive in the files the diff didn't touch.
 
 ### 2b. Prompt audit (when the diff touches prompt files)
 

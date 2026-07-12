@@ -43,6 +43,7 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 6. Present the saved PRD and ask the user to review. Then prompt for the next step in this order:
    - If the product has persistent UI surfaces, prompt them to run `pick-ui-surfaces`.
    - If the project involves a custom LLM/agent harness, prompt them to run `pick-harness-shape` (after `pick-ui-surfaces`, if both apply).
+   - On greenfield (this is the project's first PRD), also prompt them to run `/pick-cloud-services` in greenfield mode — it locks the dev-to-prod path as the project's first `docs/adr/` record; the SPEC's Rollout section cites it.
    - Otherwise, prompt them to run `/to-spec`.
 
    (`/judge-idea` can also gate the finished PRD before `/to-spec` if a bet feels unverified — optional.)

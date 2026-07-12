@@ -109,4 +109,4 @@ Ask only the 2–3 that gate the pick. **Governing default, every row: take what
 
 ## Freshness & sweep wiring
 
-Every fact in a record is dated at the point it was fetched. `clean-house` sweeps `NEXT REVIEW|^TRIGGER` across `docs/adr/` and flags past-due `NEXT REVIEW` lines and fired `TRIGGER` conditions — and a fired path trigger is the input to the `/go-live` gate. This skill names **no vendor, product, price, or version** on purpose: if one ever appears here, it is a bug in an example, never the method. Fix the example; leave the method alone.
+Every fact in a record is dated at the point it was fetched. `/clean-house` sweeps every record's `NEXT REVIEW:`/`TRIGGER:` lines each pass (its step-1 sweep owns the canonical check, covering `docs/adr/` and `definitions/runtime/`) — and a fired path trigger is the input to the `/go-live` gate. This skill names **no vendor, product, price, or version** on purpose: if one ever appears here, it is a bug in an example, never the method. Fix the example; leave the method alone.

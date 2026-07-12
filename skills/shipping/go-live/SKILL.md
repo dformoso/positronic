@@ -23,7 +23,7 @@ Inventory what the project already wrote: deploy and verify scripts, runbooks, t
 
 ### 1. The gate
 
-Each row: the check · the evidence that settles it · pass/fail. A row with no citable evidence fails — "should be fine" is not evidence. Strike an area only via §3.
+Each row: the check · the evidence that settles it · pass/fail. A row with no citable evidence fails — "should be fine" is not evidence. Evidence must also be *current*: a dated record older than the last change it vouches for (schema change, provider re-point, cert rotation) fails the row the same as no record. Action rows ("attempt one", "flip it", "drive one to the cap") require a reproducible token — the command run and its output, a trace id, or a dated record path; a prose claim that it was done fails. Strike an area only via §3.
 
 **(a) Environments & config**
 
@@ -130,7 +130,7 @@ Print to chat:
 - {area-row} — {why it doesn't apply at this scale}
 ```
 
-NO-GO if any P0 stands. Don't summarize what the deploy does — cite evidence or its absence.
+NO-GO if any P0 stands. A failed — or struck — row that guards a catastrophe class (§3: data loss, bill shock, prolonged downtime, breach, lock-in) is P0 by definition: it may not be filed P1 and may not appear under Struck. Struck is for rows that don't apply at this scale, never for rows that failed. Don't summarize what the deploy does — cite evidence or its absence.
 
 ### 5. Save (optional)
 

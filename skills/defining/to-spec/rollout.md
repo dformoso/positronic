@@ -37,11 +37,27 @@ State it as a rule the SPEC's test plan enforces:
 - Destructive schema changes — drops, renames — land **only once no shipped release reads the old shape**. Add-and-backfill first; drop later, in a separate release.
 - **The previous release must boot against the migrated store.** Name the enforcement gate in the test plan: a boot-the-previous-image proof. That gate is what `/go-live`'s release-mechanics row cites.
 
-## 6. Environments
+## 6. Data safety evidence
+
+The gate's only non-strikable row is produced here, not discovered at the cutover. For any
+store holding data you can't re-derive, the runbook's early (still-reversible) steps must
+produce:
+
+- Backups enabled, plus one verified snapshot — Verify: the restore command's output.
+- The point-in-time-recovery window confirmed — Verify: the retention setting.
+- One restore drill against a scratch environment, recorded dated at
+  `docs/audits/YYYY-MM-DD-restore-drill.md` — an unrehearsed runbook is fiction.
+- The restore fence written down — what re-arms after a restore (cursors, rotated tokens,
+  webhooks).
+
+These Verify clauses are exactly what `/go-live` §1(d) cites. A cutover scheduled before
+the drill record exists is scheduling a NO-GO.
+
+## 7. Environments
 
 Every environment is a **config profile over one SHA-tagged artifact** — a demo is a profile, never a fork. Production **declares itself** (a profile flag, not a hostname guess) and **refuses dev/test affordances by construction**. Write this into the SPEC so the build can't drift into a forked prod.
 
-## 7. External clocks
+## 8. External clocks
 
 Name the uncompressible waits in the SPEC's schedule — they dominate real cutover timelines and no engineering shortens them:
 
@@ -52,6 +68,6 @@ Name the uncompressible waits in the SPEC's schedule — they dominate real cuto
 
 A schedule that omits these is fiction. Put each on the calendar against the actor you're waiting on.
 
-## 8. Dev-to-prod path
+## 9. Dev-to-prod path
 
 One line citing the project's path record — the ADR in `docs/adr/` written by `pick-cloud-services` — and its armed `TRIGGER:` lines. The Verification-fidelity **Deploy** axis defaults to the rung that path implies (local / staging / prod-flagged); inherit it here, don't re-derive it.

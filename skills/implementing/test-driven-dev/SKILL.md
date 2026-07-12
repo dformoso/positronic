@@ -1,6 +1,6 @@
 ---
 name: test-driven-dev
-description: Test-driven development with red-green-refactor loop. Use when user wants to build features or fix bugs using TDD, mentions "red-green-refactor", wants integration tests, or asks for test-first development.
+description: Test-driven development with red-green-refactor loop. Use when implementing an already-scoped issue or SPEC slice, when the user wants to build or fix something with TDD, mentions "red-green-refactor", wants integration tests, or asks for test-first development. A fuzzy feature request with no spec yet routes through define first.
 ---
 
 # Test-Driven Development
