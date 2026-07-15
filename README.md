@@ -9,7 +9,7 @@ A personal AI-coding framework — opinionated, solo.
 - **Agent-harness engineering** — decide whether a custom LLM/agent harness is warranted (the cut-line is reliability beyond conversational use), then lock its load-bearing shape.
 - **Product-surface engineering** — for products with a UI, lock the structure and visual identity once, before any screen is built.
 
-**The behavioral floor** — nine rules Claude follows on every turn:
+**The behavioral floor** — nine rules the coding agent follows on every turn:
 
 1. **Think Before Coding** — state assumptions, ask when uncertain, push back on overcomplication.
 2. **Read Before You Write** — ground every action in actual code; verify APIs and patterns before using them.
@@ -21,7 +21,7 @@ A personal AI-coding framework — opinionated, solo.
 8. **Secret & Data Hygiene** — never commit secrets; never log credentials, PII, or auth headers.
 9. **Parallel by Default** — split independent work, fan out agents at once, coalesce the results, re-wave until done.
 
-`AGENTS.md` is read by Claude Code and [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide) (since v1.20.3); other tools (Cursor, Codex) are converging on the same convention. The `skills/` system is Claude Code only.
+`AGENTS.md` is read natively by Claude Code (via `CLAUDE.md`'s import), Codex, and [Google Antigravity](https://antigravity.codes/blog/antigravity-agents-md-guide); Gemini CLI reads it once `context.fileName` is set (see Install). The `skills/` system follows the open [Agent Skills](https://agentskills.io) standard — flat `skills/<name>/SKILL.md` folders — and works in all four tools; the in-repo `.agents/skills` symlink makes them discoverable zero-config when this repo itself is opened.
 
 ## A typical user journey
 
@@ -45,7 +45,7 @@ When both apply, stage 4 runs before stage 5 — harness picks then slot into kn
 
 ## Skills
 
-Organized by phase. **Invocation:** `model` = Claude auto-fires it when a prompt matches its description; `slash` = you type `/name` (zero per-turn context cost). **Reads / Writes** name the versioned artifacts each consumes and produces.
+Organized by phase. **Invocation:** `model` = the agent auto-fires it when a prompt matches its description; `slash` = user-invoked only (zero per-turn context cost) — `/name` in Claude Code, `$name` in Codex, the `/name` workflow or ask-by-name in Antigravity, ask-by-name in Gemini CLI. Enforced by `disable-model-invocation` (Claude Code) and `agents/openai.yaml` (Codex); Antigravity and Gemini CLI have no invocation-control field, so those skills carry prompt-level guards instead. **Reads / Writes** name the versioned artifacts each consumes and produces.
 
 | Skill | Invocation | Phase | Reads | Writes | What it does |
 | --- | --- | --- | --- | --- | --- |
@@ -76,38 +76,71 @@ The system prompt sees `AGENTS.md` plus the descriptions of `model` skills only;
 
 ## MCP servers
 
-[MCP](https://modelcontextprotocol.io/) servers add Claude Code capabilities. Same lean-context discipline as skills: install only what you use.
+[MCP](https://modelcontextprotocol.io/) servers add capabilities to any of the four tools. Same lean-context discipline as skills: install only what you use.
 
-| Server | Use | Install |
+| Server | Use | Install (Claude Code) |
 | --- | --- | --- |
 | [Playwright](https://github.com/microsoft/playwright-mcp) | Browser automation, UI verification | `claude mcp add playwright npx '@playwright/mcp@latest'` |
 | [GitHub](https://github.com/github/github-mcp-server) | Issues, PRs, repo search | See the official install guide |
 
-Add others (Postgres, SQLite, Context7) per-project. User-level MCPs go in `~/.claude.json`; project-level in `.mcp.json`.
+Add others (Postgres, SQLite, Context7) per-project. Claude Code: user-level MCPs go in `~/.claude.json`, project-level in `.mcp.json`. Codex: `~/.codex/config.toml`. Antigravity: MCP settings UI. Gemini CLI: `gemini mcp add`.
 
 ## Install
 
 Examples use `dformoso/positronic`; substitute your username if forked.
 
-The two pieces install independently — most users want both.
+Two pieces install independently — the skills and the behavioral floor (`AGENTS.md`) — most users want both. Each skill cites the `docs/agentic-patterns/` briefs, shared method docs, and sibling skills via `${SKILL_DIR}`-relative paths (`${SKILL_DIR}` = the skill's own directory); these resolve through symlinks, so prefer symlink installs over copies. A deeper detailed tier (indexed in [INDEX.md](docs/agentic-patterns/INDEX.md)) serves human deep-dives.
 
-### 1. Skills (Claude Code plugin)
+### Claude Code
 
 ```text
 /plugin marketplace add dformoso/positronic
 /plugin install skills@positronic
 ```
 
-This also ships the `docs/agentic-patterns/` reference corpus — several skills cite the briefs at runtime via `${CLAUDE_SKILL_DIR}`-resolved paths, and a deeper detailed tier (indexed in [INDEX.md](docs/agentic-patterns/INDEX.md)) serves human deep-dives.
+On an existing install, run `/plugin marketplace update positronic` before `/plugin update skills@positronic` so the flattened `skills/` layout is picked up.
 
-### 2. Behavioral floor (AGENTS.md)
+Floor: copy `AGENTS.md` + `CLAUDE.md` into `~/.claude/` (global) or the project root.
 
-Ask your coding agent to copy `AGENTS.md` (and `CLAUDE.md` if Claude Code is your primary tool) from this repo into either:
+### Codex
 
-- `~/.claude/` — applies the floor globally to every project
-- a project root — applies it just to that project
+```bash
+codex plugin marketplace add dformoso/positronic
+```
 
-Both files are plain text with no dependencies; `curl` works too.
+Or clone and symlink (also serves Gemini CLI; only if `~/.agents/skills` isn't already in use — otherwise symlink individual skill folders):
+
+```bash
+git clone https://github.com/dformoso/positronic.git
+ln -s "$(pwd)/positronic/skills" ~/.agents/skills
+```
+
+The 14 `slash` skills ship `agents/openai.yaml` (`allow_implicit_invocation: false`) — Codex won't auto-fire them; invoke explicitly with `$name`. Floor: copy `AGENTS.md` to `~/.codex/AGENTS.md` (global) or keep it at the project root — Codex reads it natively (no `@import` support; 32 KiB default cap).
+
+### Antigravity
+
+```bash
+git clone https://github.com/dformoso/positronic.git
+ln -s "$(pwd)/positronic/skills" ~/.gemini/config/skills   # global
+# or per-project: ln -s <repo>/skills <project>/.agents/skills
+```
+
+Workflows: copy the stubs you want from this repo's `.agents/workflows/` into your project's `.agents/workflows/` (or `~/.gemini/antigravity/global_workflows/`) to invoke the `slash` skills as `/name`. Floor: `AGENTS.md` at the project root is read natively. Antigravity has no per-skill invocation control — the `slash` skills carry prompt-level guards instead.
+
+### Gemini CLI
+
+Served by the same `~/.agents/skills` symlink as Codex, or register without moving: `/skills link <repo>/skills`. Floor: add to `~/.gemini/settings.json`:
+
+```json
+{ "context": { "fileName": ["AGENTS.md", "GEMINI.md"] } }
+```
+
+Avoid `gemini skills install` (copy mode): copies lose the shared `docs/agentic-patterns/` corpus and cross-skill references — symlink instead.
+
+### Notes
+
+- The in-repo `.agents/skills` symlink makes the repo itself discoverable when opened in Codex / Antigravity / Gemini CLI. Windows checkouts without `core.symlinks` see a plain text file there — harmless.
+- No `GEMINI.md` ships on purpose: Antigravity gives `GEMINI.md` precedence over `AGENTS.md`, so a stub would shadow the real floor.
 
 ## Acknowledgments
 

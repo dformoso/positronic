@@ -1,0 +1,12 @@
+{
+  "name": "positronic",
+  "plugins": [
+    {
+      "name": "positronic",
+      "source": {
+        "source": "local",
+        "path": "./"
+      }
+    }
+  ]
+}

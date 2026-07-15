@@ -1,0 +1,6 @@
+{
+  "name": "positronic",
+  "version": "0.1.0",
+  "description": "Personal AI-coding framework: skills that carry a project from fuzzy idea to shipped code.",
+  "skills": "./skills/"
+}

@@ -1,6 +1,6 @@
 {
   "name": "positronic",
-  "description": "Personal Claude Code framework",
+  "description": "Personal AI-coding framework",
   "owner": {
     "name": "dformoso"
   },
@@ -11,7 +11,7 @@
         "source": "url",
         "url": "https://github.com/dformoso/positronic.git"
       },
-      "description": "A curated set of skills for Claude Code. See plugin.json for the active set."
+      "description": "A curated set of skills for Claude Code, Codex, Antigravity, and Gemini CLI. See plugin.json for the active set."
     }
   ]
 }

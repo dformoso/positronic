@@ -109,7 +109,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **Maintaining** — a version has shipped and the system has accreted → prompt the user to run `/clean-house`, which walks the built system in a supervised pass — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions — reconciling the doc graph (`/audit-drift`) before the pass ends. One pass per run; re-fire until a pass comes up dry. Runs at the version hinge, before defining the next increment. When the complaint is comprehension rather than accretion — code hard to read, onboarding slow, every change starts with archaeology — prompt the user to run `/improve-readability`: a behavior-preserving comprehension pass, runnable any time (not just the version hinge), which hands module reshaping to `/clean-house` targeted mode.
 - **Cross-cutting (no phase)** — inbound GitHub issues → prompt the user to run `/github-triage`, the label-based triage state machine; it serves every phase and belongs to none.
 
-Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt the user when the phase calls for it.
+Skills prefixed with `/` are user-invoked — Claude Code: `/name`; Codex: `$name`; Antigravity/Gemini: ask for it by name (or its `/name` workflow where provided). Never fire them yourself — name the one the phase calls for and wait for the user.
 
 ## 7. User-Facing Reliability
 
@@ -134,7 +134,7 @@ Skills prefixed with `/` are user-invoked. Don't run them yourself — prompt th
 When a task splits into independent pieces, run them at once instead of one at a time.
 
 - **Decompose.** Break the work into independent workstreams — pieces that don't touch the same files or depend on each other's output. Name them before you start.
-- **Fan out.** Launch one agent per workstream, as many as the work needs — scale the count to the work, don't serialize what can run at once. Run every agent — in a wave or solo — on nothing below the latest Claude Opus or Gemini Pro, at the maximum available thinking tier — never a cheaper tier to save tokens. The only cap is real: agents that would collide on the same files, or a tool's concurrency limit.
+- **Fan out.** Launch one agent per workstream, as many as the work needs — scale the count to the work, don't serialize what can run at once. Run every agent — in a wave or solo — on nothing below your harness's frontier tier (latest Claude Opus, Gemini Pro, or GPT-5-class), at the maximum available thinking tier — never a cheaper tier to save tokens. The only cap is real: agents that would collide on the same files, or a tool's concurrency limit.
 - **Coalesce.** When the wave returns, merge its findings, edits, and checks into one result — reconcile overlaps, resolve conflicts, dedupe. A wave isn't done until its outputs are integrated, not just collected.
 - **Re-wave.** Spawn the next wave for whatever the first surfaced — follow-ups, newly-unblocked work, the remaining split — and loop until the goal is verified done (§5).
 
