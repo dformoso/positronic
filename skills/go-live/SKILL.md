@@ -142,4 +142,4 @@ After printing, ask:
 
 Default no. Create `docs/audits/` lazily on first save.
 
-A fired `TRIGGER:` line in the project's path record (`docs/adr/`, written by `pick-cloud-services`; method in `docs/selection-method.md`) is a standing reason to run this gate before the next cutover.
+A fired `TRIGGER:` line in the project's path record (`docs/adr/`, written by `pick-cloud-services`; method in `${SKILL_DIR}/../../docs/selection-method.md`) is a standing reason to run this gate before the next cutover.

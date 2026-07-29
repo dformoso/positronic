@@ -171,7 +171,7 @@ For each role/stage in §3's role set (planner, executor, verifier, …), decide
 
 - **Model tier** — frontier / mid / cheap
 - **Temperature** (and/or top-p)
-- **Reasoning effort** — if the model exposes it (Claude extended thinking, GPT-5 reasoning levels)
+- **Reasoning effort** — if the model exposes it (Claude extended thinking, GPT reasoning levels)
 - **Max tokens per step** — implicit bound on how much an executor can do per turn
 
 Sensible defaults by stage type:
