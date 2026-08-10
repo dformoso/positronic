@@ -30,7 +30,7 @@ Neighbours — keep the questions distinct:
 | `/audit-drift` | Do the documents still agree with each other and the code? Consistency — standalone at shipping, and run here at the end of each pass |
 | `/audit-failure-modes` | What will break? Risk — the additive move; untouched by this skill |
 | `/judge-idea` | Is the bet sound? Pre-build adversarial gate; runs on speculation, this runs on evidence |
-| `/improve-readability` | Can the next person understand it? Comprehension — code altitude, behavior-preserving; hands module reshaping here |
+| `/improve-readability` | Can the next person understand it, and is any of it needless? Comprehension and reduction *inside* the code that stays — cuts machinery, comments, spent docs and weak tests without changing what a caller sees; hands feature-level cuts and module reshaping here |
 
 ## Glossary
 
@@ -97,7 +97,8 @@ Hunt cut candidates at every layer:
 | Config surface | Options with one observed value; flags nobody flips |
 | Abstractions | Pass-throughs (deletion test); one-adapter seams nothing else will use; layers with one caller |
 | Process | CI stages, hooks, scripts, doc artifacts, skills nobody runs |
-| Tests | Suites green against nothing: tests for features already cut, tests asserting mocks of deleted seams, implementation-detail pins that break on refactor rather than regression (tests.md red flags) |
+| Tests | Suites green against nothing: tests for features already cut, tests asserting mocks of deleted seams, implementation-detail pins that break on refactor rather than regression (tests.md red flags). Cut them here; *strengthening* the survivors is `/improve-readability`'s pass — see [`../improve-readability/TESTS.md`](../improve-readability/TESTS.md) |
+| Spent docs | `.md` files nothing reads anymore: executed plans, finished migration guides, how-tos for cut features, superseded audit reports, READMEs describing a layout that changed. **Never** versioned decision records — `docs/adr/`, `definitions/prds/`, `definitions/specs/` supersede rather than delete, and the trail of why is the asset |
 | Method docs / skills / prompts | Embedded perishable facts in files meant to be durable method — vendor names, prices, model versions, "as of" status lines (`grep -rnE '\$[0-9]|20[0-9]{2}|as of' <skill/prompt dirs>`). Each is rot: replace with the category plus a verify-live instruction; dated facts belong only in provenance-stamped records |
 
 Present cuts ranked by blast radius, each with **what / evidence / re-add trigger** — the observable signal that would justify bringing it back. Then the gate:

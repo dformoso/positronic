@@ -21,7 +21,10 @@ After each cycle, look for:
 | Data clumps | Same field trio recurring | Extract the concept |
 | Repeated switches | Same discriminator switched twice+ | Polymorphism or one dispatch table |
 | Speculative generality | Hooks for futures that never came | Inline / delete |
+| Scattered siblings | Small helpers that only make sense read together | One pile: inline them back, read it whole, then re-split honestly — or leave it whole |
+| Excess machinery | An error path for a state that can't occur; a wrapper that only forwards; a flag arg picking between two behaviors | Delete the path; inline the wrapper; split the flagged function |
 | Comment as deodorant | Comment apologizing for the block below | Fix the block; keep only what code can't say |
+| Comment git already holds | `// was: oldName()`, a date-stamped change note, commented-out code | Delete — history lives in the commit, and the comment goes stale the moment it's wrong |
 | Existing code | The new code reveals a problem in old code | Fix here if small; else flag for `/improve-readability` or `/clean-house` |
 
 Guard-rails — refactoring must not fragment:

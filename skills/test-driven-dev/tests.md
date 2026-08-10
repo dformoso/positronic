@@ -125,3 +125,25 @@ for err in result.errors:
 ```
 
 A test that fails on credit exhaustion teaches the team to ignore failures; the next real regression hides in the noise.
+
+## Judging a Suite That Already Exists
+
+The rules above are for the test you are about to write. Judging a suite you inherited is a
+different job, and it has its own rubric — four things a test buys you:
+
+- **Catches regressions** — if the behavior broke, does this go red?
+- **Survives refactoring** — if only the shape changed, does it stay green?
+- **Fast feedback** — does it answer inside the edit loop?
+- **Cheap to keep** — can a reader tell what it asserts, and does it stay working?
+
+You can max three, and *survives refactoring* is not the one to trade. A test that goes red
+on every internal change teaches people to edit the test instead of reading it, so it stops
+catching regressions in practice no matter what it asserts. That is the reason for the
+public-interface rule at the top of this file, not style.
+
+The measurement is not coverage. **Coverage tells you the line ran; it doesn't tell you the
+test noticed.** Break the code and see whether the suite complains.
+
+Auditing and reworking a whole suite — what to delete, what to raise to the interface, what
+to strengthen — is a pass of its own: see
+[`improve-readability/TESTS.md`](../improve-readability/TESTS.md).

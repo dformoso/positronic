@@ -14,7 +14,7 @@ A personal AI-coding framework — opinionated, solo.
 1. **Think Before Coding** — state assumptions, ask when uncertain, push back on overcomplication.
 2. **Read Before You Write** — ground every action in actual code; verify APIs and patterns before using them.
 3. **Minimum Diff** — every changed line traces to the request; minimum code for new work, surgical edits for changes.
-4. **Plain Naming** — functions, modules, variables read like plain English; names describe intent.
+4. **Plain Naming, Plain Language** — names read like plain English, and so does every sentence a person reads: concrete before abstract, jargon glossed on first use.
 5. **Goal-Driven Execution** — define verifiable success; loop until verified, or stop and surface what's blocking.
 6. **Phase Awareness** — name the phase (defining / implementing / diagnosing / shipping / operating / maintaining) before acting.
 7. **User-Facing Reliability** — show progress on operations >2s; map external failures to one-sentence actionable messages, not raw exceptions.
@@ -70,7 +70,7 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `go-live` | slash | operating | runbooks, gate scripts, the deployed environment | GO/NO-GO report | Evidence gate before first real traffic or a one-way cutover |
 | `github-triage` | slash | meta | GitHub issues | labels | Label-based triage state machine |
 | `clean-house` | slash | maintaining | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
-| `improve-readability` | slash | maintaining / anytime | code, `CONTEXT.md`, git churn | refactor slices, `docs/audits/` report | Fresh-eyes confusion log → checklist sweep → behavior-preserving slices, until dry |
+| `improve-readability` | slash | maintaining / anytime | code, tests, `CONTEXT.md`, git churn | smaller code, stronger tests, `docs/audits/` report | Fresh-eyes confusion log → checklist sweep → cut needless code, comments and docs, rework the tests, until dry |
 
 The system prompt sees `AGENTS.md` plus the descriptions of `model` skills only; `slash` skills load on invoke.
 

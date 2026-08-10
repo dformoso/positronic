@@ -48,9 +48,11 @@ For both:
 - If you notice pre-existing dead code, mention it — don't delete it.
 - Minimum diff bounds scope, not quality: within the lines you do write, take the option that needs the least explaining — precise name, guard clause, error defined away rather than handled twice. Small messes compound; don't leave one because the diff was small.
 
-## 4. Plain Naming
+## 4. Plain Naming, Plain Language
 
-**Functions, modules, and variables read like plain English.**
+**Names read like plain English. So does everything you say.**
+
+### Naming
 
 - Names describe intent — what the code does or holds, not what it's called or what type it is.
 - No abbreviations, acronyms, or clever wordplay. `userCount` not `usrCnt`. `parsePayment` not `procPmt`.
@@ -60,6 +62,18 @@ For both:
 - Names must not lie or wobble: booleans read as predicates (`is`/`has`/`can`, never negated); `get` is cheap — costly work is `compute`/`fetch`; ranges say `first/last` (inclusive) or `begin/end` (half-open). A name promising more, less, or the opposite of what the code does is a bug, not a style issue.
 
 If you can't write a clear name, you don't yet understand the thing you're naming. Stop and clarify.
+
+### Explaining
+
+Fires on every sentence a person reads — chat replies, reports, commit messages, PR bodies, artifacts. Skips code identifiers (above) and terms a project has deliberately defined and already glossed.
+
+- **Concrete before abstract.** Lead with what happened or what to do; name the concept after, and only if the name earns its place. "The tests still pass when the code is broken" beats "the suite lacks mutation resistance."
+- **Gloss every term of art on first use, once per conversation.** Book terms, skill vocabulary, repo jargon — *seam*, *deep module*, *altitude*, *tracer bullet*, *characterization test* — get a plain clause the first time they appear. Using the precise word is right; using it undefined is not.
+- **Spell out acronyms and internal shorthand once**, then abbreviate.
+- **One idea per sentence.** If a sentence needs a second read to parse, split it.
+- **Say what changed and what it means for the reader**, not which category the change belongs to.
+
+The tell that you skipped this: a paragraph that would read the same in any project, or a sentence whose subject is a concept rather than a thing that happened. Rewrite it.
 
 ## 5. Goal-Driven Execution
 
@@ -106,7 +120,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **Diagnosing** — something is broken or regressed → run `diagnose` (live and affecting real users → its Phase 0 triage first: mitigate, preserve evidence, then reproduce).
 - **Shipping** — PR prep, review, cleanup → prompt the user to run `/review-pr` (which also audits prompt files in the diff). For projects with PRDs/SPECs/ADRs, also prompt `/audit-drift` to sweep the doc graph. Before a release cut on a maturing system, prompt `/audit-failure-modes` to enumerate latent failure modes by surface.
 - **Operating** — real users are (about to be) live. Before first production traffic or any one-way cutover — a domain/DNS move, a datastore migration, re-pointing a provider that holds data or serves inference — prompt the user to run `/go-live`: an evidence gate that verifies runtime facts (secrets actually set, backups actually retaining, alerts actually firing) by consuming the project's own runbooks and gate scripts, never re-deriving them. Choosing any external/cloud service goes through `/pick-cloud-services`, which writes dated decision records to `docs/adr/` whose `NEXT REVIEW`/`TRIGGER` lines `/clean-house` sweeps each pass.
-- **Maintaining** — a version has shipped and the system has accreted → prompt the user to run `/clean-house`, which walks the built system in a supervised pass — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions — reconciling the doc graph (`/audit-drift`) before the pass ends. One pass per run; re-fire until a pass comes up dry. Runs at the version hinge, before defining the next increment. When the complaint is comprehension rather than accretion — code hard to read, onboarding slow, every change starts with archaeology — prompt the user to run `/improve-readability`: a behavior-preserving comprehension pass, runnable any time (not just the version hinge), which hands module reshaping to `/clean-house` targeted mode.
+- **Maintaining** — a version has shipped and the system has accreted → prompt the user to run `/clean-house`, which walks the built system in a supervised pass — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions — reconciling the doc graph (`/audit-drift`) before the pass ends. One pass per run; re-fire until a pass comes up dry. Runs at the version hinge, before defining the next increment. When the complaint is the code itself rather than the product — hard to read, more of it than the job needs, comments and docs that mislead, a suite that passes no matter what the code does — prompt the user to run `/improve-readability`: a supervised pass that cuts needless code and error paths, strips comments back to what the code and git can't say, deletes spent docs, and reworks the tests until they would actually catch a break. Runnable any time (not just the version hinge); it never changes what a caller sees, and hands feature-level deletion and module reshaping to `/clean-house` targeted mode.
 - **Cross-cutting (no phase)** — inbound GitHub issues → prompt the user to run `/github-triage`, the label-based triage state machine; it serves every phase and belongs to none.
 
 Skills prefixed with `/` are user-invoked — Claude Code: `/name`; Codex: `$name`; Antigravity/Gemini: ask for it by name (or its `/name` workflow where provided). Never fire them yourself — name the one the phase calls for and wait for the user.

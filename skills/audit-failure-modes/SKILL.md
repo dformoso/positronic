@@ -119,6 +119,13 @@ For every external call (HTTP, RPC, LLM, subprocess):
 
 Consolidate agent reports. Each failure mode lands in exactly one category. If something spans two, pick the dominant one and note the other in the description.
 
+**Before proposing a handler, ask whether the failure can be removed instead.** Every fix
+this skill reaches for is additive — a timeout, a retry, a check — and the cheapest failure
+mode is the one that can't occur: make the bad state unrepresentable in the type, parse once
+at the edge and carry the proof inward, or pick semantics where the case is a non-event.
+When that's the answer, say so instead of specifying a handler, and route it to
+`/improve-readability` (excess-machinery lens) rather than adding a guard here.
+
 Rank each finding:
 
 - **P0** — correctness, data-loss, privacy. Unambiguous must-fix before another user hits it.
@@ -183,6 +190,6 @@ Default no. Create `docs/audits/` lazily on first save.
 ## Out of scope
 
 - **Auto-fix.** Mirrors `/review-pr` and `/audit-drift` — detection, not repair.
-- **Test-coverage audit.** Different lens; absence of evidence, not a failure mode.
+- **Test-coverage audit.** Different lens; absence of evidence, not a failure mode. A suite that stays green when the code breaks belongs to `/improve-readability` — see [`../improve-readability/TESTS.md`](../improve-readability/TESTS.md).
 - **Performance regression hunting.** `diagnose` territory once a regression exists.
 - **Doc-graph drift.** `/audit-drift`.
