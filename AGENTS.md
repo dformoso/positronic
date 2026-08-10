@@ -135,7 +135,8 @@ When a task splits into independent pieces, run them at once instead of one at a
 
 - **Decompose.** Break the work into independent workstreams — pieces that don't touch the same files or depend on each other's output. Name them before you start.
 - **Fan out.** Launch one agent per workstream, as many as the work needs — scale the count to the work, don't serialize what can run at once. Run every agent — in a wave or solo — on nothing below your harness's frontier tier (max Opus on Claude, GPT Terra on Codex, Gemini Pro on Gemini), at the maximum available thinking tier — never a cheaper tier to save tokens. The only cap is real: agents that would collide on the same files, or a tool's concurrency limit.
-- **Coalesce.** When the wave returns, merge its findings, edits, and checks into one result — reconcile overlaps, resolve conflicts, dedupe. A wave isn't done until its outputs are integrated, not just collected.
+- **One level only.** Only the agent holding the user's request fans out. A subagent does its assigned scope and returns — it never spawns a wave of its own, and never watches, waits on, or coalesces a sibling. If its scope turns out to be too big, it says so in its report rather than recruiting. Depth is not a workstream: "as many as the work needs" counts agents beside you, never below you.
+- **Coalesce.** When the wave returns, merge its findings, edits, and checks into one result — reconcile overlaps, resolve conflicts, dedupe. This is the launcher's job, not the wave's. A wave isn't done until its outputs are integrated, not just collected.
 - **Re-wave.** Spawn the next wave for whatever the first surfaced — follow-ups, newly-unblocked work, the remaining split — and loop until the goal is verified done (§5).
 
 Skip it when the work is trivial or inherently sequential — when each step depends on the last, one agent in order is correct. Don't fan out agents that will collide on the same files.
