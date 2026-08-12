@@ -152,9 +152,11 @@ Three sweeps, parallel read-only subagents per lens or per area:
   in their own right, not only a gate on other work.
 - **Spent docs** — every `.md` that is no longer read. Superseded plans, finished migration
   guides, how-tos for cut features, `docs/audits/` reports older than the latest per kind,
-  READMEs describing a layout that changed. **Never touch versioned decision records**:
-  `docs/adr/`, `definitions/prds/`, `definitions/specs/` and their siblings are supersede-
-  never-edit by design — superseded is not spent.
+  READMEs describing a layout that changed. One auditor per candidate carrying
+  [../clean-house/DELETION-AUDIT.md](../clean-house/DELETION-AUDIT.md) — readership is only
+  half of it; a doc still cited but no longer true is the worse find. **Never touch versioned
+  decision records**: `docs/adr/`, `definitions/prds/`, `definitions/specs/` and their siblings
+  are supersede-never-edit by design — superseded is not spent.
 
 Merge into findings: *file:line / check / evidence / responding move / lane*. A
 confusion-log entry corroborated by a check outranks either alone.

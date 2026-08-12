@@ -65,6 +65,8 @@ If any of these don't exist, proceed silently — don't flag their absence. With
 
 When another skill hands over specific candidates — `diagnose` after a fix (no good test seam, tangled callers), `/review-pr` on a private-API reach, `/improve-readability` on a module-level candidate (shallow cluster, leaked decision needing one owner) — skip the pass. Apply the kill question to each candidate first (is the right move deleting the surrounding feature rather than deepening it?), then run step 3's grilling on what survives. No report.
 
+When the *user* names the targets instead — `/clean-house docs/runbooks/`, `/clean-house infra/main.tf#backend` — skip the pass and audit exactly what they named, one file, directory or section per target. Fan out one read-only auditor each carrying [DELETION-AUDIT.md](DELETION-AUDIT.md); coalesce the verdict blocks and run step 2's approval gate over them. No report.
+
 ## The pass
 
 Run the five steps once, in order. A pass already takes a while and the report carries state forward, so **re-running is the loop** — one pass per invocation. Each pass changes the system, exposing what the last couldn't see: cutting a feature turns a module into a pass-through; deepening one reveals config nothing reads. Re-fire `/clean-house` to chase what a pass exposed; stop when a pass comes up dry.
@@ -100,6 +102,8 @@ Hunt cut candidates at every layer:
 | Tests | Suites green against nothing: tests for features already cut, tests asserting mocks of deleted seams, implementation-detail pins that break on refactor rather than regression (tests.md red flags). Cut them here; *strengthening* the survivors is `/improve-readability`'s pass — see [`../improve-readability/TESTS.md`](../improve-readability/TESTS.md) |
 | Spent docs | `.md` files nothing reads anymore: executed plans, finished migration guides, how-tos for cut features, superseded audit reports, READMEs describing a layout that changed. **Never** versioned decision records — `docs/adr/`, `definitions/prds/`, `definitions/specs/` supersede rather than delete, and the trail of why is the asset |
 | Method docs / skills / prompts | Embedded perishable facts in files meant to be durable method — vendor names, prices, model versions, "as of" status lines (`grep -rnE '\$[0-9]|20[0-9]{2}|as of' <skill/prompt dirs>`). Each is rot: replace with the category plus a verify-live instruction; dated facts belong only in provenance-stamped records |
+
+Send each candidate to its own read-only auditor carrying [DELETION-AUDIT.md](DELETION-AUDIT.md) — one target per auditor, verdict block back. Self-description doesn't count as evidence there, and a claim the target makes that turns out false is the strongest signal you'll get.
 
 Present cuts ranked by blast radius, each with **what / evidence / re-add trigger** — the observable signal that would justify bringing it back. Then the gate:
 

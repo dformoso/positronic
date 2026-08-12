@@ -23,6 +23,7 @@ Before implementing:
 **Ground every action in actual code, not remembered code.**
 
 - Before editing a file, read it.
+- A file's account of itself — a header comment, a docstring, a README describing the layout — is a claim to check, not a finding. Verify it against the code, the config, or the live system before relying on it.
 - Before calling an API or using a pattern, verify it exists — grep, read the docs, find an example in the codebase.
 - If you catch yourself writing "from memory," stop and verify first.
 
