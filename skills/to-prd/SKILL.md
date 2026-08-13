@@ -1,6 +1,6 @@
 ---
 name: to-prd
-description: Turn the current conversation context into a PRD and save it as a versioned local file. Use when user wants to create a PRD from the current context. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Turn the current conversation context into a PRD and save it as definitions/prd.md. Use when user wants to create a PRD from the current context. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -12,13 +12,13 @@ The PRD answers *what and why* — including the product surface behaviour under
 
 ## Amend mode
 
-If a prior `definitions/prds/[0-9]*.md` exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read the latest PRD as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then name which downstream artifacts the touched sections implicate (Agent autonomy → `definitions/harness/`; Solution Overview surfaces / form factor → `definitions/surfaces/`; new channels or tools → `definitions/mcp-servers/`) and prompt only those, then `/to-spec`.
+If `definitions/prd.md` already exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read the PRD as baseline, edit only the sections the change touches (reconcile any it contradicts), leave every other section byte-for-byte alone, and update the Amendment header. Then name which downstream artifacts the touched sections implicate (Agent autonomy → `definitions/harness.md`; Solution Overview surfaces / form factor → `definitions/surfaces.md`; new channels or tools → `definitions/mcp-servers.md`) and prompt only those, then `/to-spec`.
 
 ## Inputs
 
 - Current conversation
-- `definitions/ideas/<latest>/winner.md` if it exists (chosen idea, grounded in research)
-- `definitions/research/<latest>/summary.md` if it exists (supporting evidence)
+- `definitions/ideas.md` if it exists — the section marked WINNER (chosen idea, grounded in research)
+- `definitions/research.md` if it exists (supporting evidence)
 - `judgments/<latest>.md` if it exists (verdict on the winner from `/judge-idea`): `ls judgments/[0-9]*.md | sort | tail -1`
 - The codebase, if a project already exists
 
@@ -30,7 +30,7 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 
 2. **Test-surface check.** If the solution implies a high-friction form factor (native mobile, hardware, browser extension, app-store-gated), surface the tradeoff before writing: is there a cheaper surface (web app, CLI, hosted prototype) that validates the same hypothesis first? Get the user's call. Document the decision in the PRD.
 
-3. Write the PRD using the template below. Save as `definitions/prds/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `definitions/prds/` if missing). Commit it. Do not submit it as a GitHub issue.
+3. Write the PRD using the template below. Save as `definitions/prd.md` (create `definitions/` if missing). Commit it. Do not submit it as a GitHub issue.
 
 4. Length and density: ≤ 5 pages — preferably less. Target User + Solution Overview together must fit in ≤ 1 page: tight but comprehensive. These two anchor the contract `/to-spec` and implementation work against; drift from them produces unusable output. Functional Requirements is the section that scales with product surface — drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
 

@@ -1,6 +1,6 @@
 ---
 name: design-mcp-server
-description: Walk the design decisions for a new MCP (Model Context Protocol) server and write a versioned `definitions/mcp-servers/` artifact that `/to-spec` reads. Covers transport, auth, tool-surface shape, schema discipline, state model, capability declaration, error model, annotations, and testing. Use when the user is designing an MCP server — not consuming one.
+description: Walk the design decisions for a new MCP (Model Context Protocol) server and write its section of `definitions/mcp-servers.md`, which `/to-spec` reads. Covers transport, auth, tool-surface shape, schema discipline, state model, capability declaration, error model, annotations, and testing. Use when the user is designing an MCP server — not consuming one.
 ---
 
 You are picking the design for a new MCP server. The schema is the contract — no client will validate args for you. Pick deliberately.
@@ -11,14 +11,14 @@ Ask one question at a time. Surface your recommended answer with each.
 
 ## Amend mode
 
-If a prior `definitions/mcp-servers/*.md` artifact for this server exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md`: read the latest design as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. Then prompt `/to-spec` to pick up the change.
+If `definitions/mcp-servers.md` already carries a section for this server and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md`: read that server's section as baseline, edit only the parts the change touches (reconcile any it contradicts), and leave the rest of the file — including every other server's section — byte-for-byte alone. Update the Amendment header, naming which server changed. Then prompt `/to-spec` to pick up the change.
 
 ## 0. Read the PRD (and harness, if invoked from pick-harness-shape)
 
 Before any picks, read:
 
-- The most recent PRD, if any: `ls definitions/prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and integration constraints anchor the design — picking blind invites rework.
-- The most recent harness artifact, if any: `ls definitions/harness/[0-9]*.md | sort | tail -1`. When invoked from `pick-harness-shape`'s hand-off, this names the tool count, naming convention, and permission scope the harness expects — the MCP design slots into that contract.
+- The PRD, if it exists: `definitions/prd.md`. The PRD's user, regulatory, and integration constraints anchor the design — picking blind invites rework.
+- The harness artifact, if it exists: `definitions/harness.md`. When invoked from `pick-harness-shape`'s hand-off, this names the tool count, naming convention, and permission scope the harness expects — the MCP design slots into that contract.
 
 If no PRD exists, surface that to the user — `design-mcp-server` can run standalone but the resulting picks are weaker. If the user confirms standalone use, proceed and note "standalone — no PRD" in the artifact's Sources field.
 
@@ -138,44 +138,48 @@ See [mcp-testing.md](../test-driven-dev/mcp-testing.md) for code patterns.
 
 ## 10. Save the artifact
 
-Once the sections above have been answered, write the picks to `definitions/mcp-servers/<server-slug>-YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `definitions/mcp-servers/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+Once the sections above have been answered, write the picks to `definitions/mcp-servers.md` (create `definitions/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+
+One file holds every server this project designs, one `##` section each, under a `# MCP servers` title. Append this server's section if the file exists; create it if not. Never touch another server's section.
 
 Use the template below. Every section must carry information: cite the named pattern that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
 
 <mcp-design-template>
 
-## Sources
+## {{server-slug}}
 
-- `definitions/prds/<file>.md` — the PRD whose constraints drove these picks. (Or "standalone — no PRD" with a one-sentence reason if invoked without a PRD.)
-- `definitions/harness/<file>.md` — if invoked from `pick-harness-shape`, the harness whose §5 tool-layer pick led to this design.
+### Sources
 
-## TL;DR
+- `definitions/prd.md` — the PRD whose constraints drove these picks. (Or "standalone — no PRD" with a one-sentence reason if invoked without a PRD.)
+- `definitions/harness.md` — if invoked from `pick-harness-shape`, the harness whose §5 tool-layer pick led to this design.
+
+### TL;DR
 
 One paragraph naming transport, auth, rough tool count, return-shape policy, and state model. A reader should be able to skip the rest and still know the shape.
 
-## Why MCP
+### Why MCP
 
 **Triggers from §1:** which "use MCP" condition(s) fired (multi-framework consumers / out-of-process / shipping as product).
 **One-sentence reason:**
 
-## Transport
+### Transport
 
 **Picked:** stdio | Streamable HTTP | SSE-only | WebSocket | stdio + HTTP
 **Why:**
 **Cited pattern:** `docs/agentic-patterns/06_mcp_design_brief.md`
 
-## Auth
+### Auth
 
 **Picked:** None | Static bearer | OAuth 2.1 (PKCE, DCR/CIMD)
 **Why:**
 
-## Tool surface
+### Tool surface
 
 **Rough count and boundaries:**
 **Naming convention:** verb_noun, `[a-z0-9_]+`, server name never embedded.
 **Per-tool schema discipline:** notes on `inputSchema` (single-type fields, no `oneOf`), `outputSchema` (published), `annotations` (all four hints set), return shape (consistent `structuredContent`), failure mode (`CallToolResult(isError=True)`, never thrown).
 
-## Other primitives
+### Other primitives
 
 | Primitive | Decision | Why |
 |---|---|---|
@@ -184,25 +188,25 @@ One paragraph naming transport, auth, rough tool count, return-shape policy, and
 | Prompts | yes/no | |
 | Sampling | yes/no | |
 
-## State and lifecycle
+### State and lifecycle
 
 **Picked:** Stateless | Per-session (Streamable HTTP) | Persistent stdio process
 **Cold-start policy:** lazy-init expectations.
 **Shutdown behavior:** SIGTERM handler bounds.
 **`list_changed` notifications:** emit on tools/resources mutation.
 
-## Capability declaration
+### Capability declaration
 
 **Advertised in `initialize`:** which capabilities are declared.
 **`MethodNotFound` policy:** return code on unsupported methods.
 
-## Observability
+### Observability
 
 **Logs:** structured JSON to stderr (stdio) or stdout (HTTP); tag with `tool`, `session_id`, `request_id`. Never log credentials, PII, or auth headers.
 **`_meta` on responses:** what's included.
 **Reconnect-able error text:** substring strategy for `'session'`, `'not connected'`, etc.
 
-## Testing strategy
+### Testing strategy
 
 | Test | Included? | Why |
 |---|---|---|
@@ -212,14 +216,14 @@ One paragraph naming transport, auth, rough tool count, return-shape policy, and
 | Fault-isolation test | yes/no | |
 | Startup schema validation | yes/no | |
 
-## Rejected alternatives
+### Rejected alternatives
 
 | Alternative | Why rejected |
 |---|---|
 
 Include at minimum: "in-process tool instead of MCP" (and why it was rejected), plus any transport / auth seriously considered.
 
-## Open questions
+### Open questions
 
 Decisions deferred to `/to-spec` or things that surfaced but couldn't be settled with current information.
 
@@ -227,4 +231,4 @@ Decisions deferred to `/to-spec` or things that surfaced but couldn't be settled
 
 ## 11. Hand-off
 
-Present the saved `definitions/mcp-servers/<file>.md` and ask the user to review. Once approved, prompt them to run `/to-prd` (if not yet done) and `/to-spec` — `/to-spec`'s `Tool layer / ACI` section reads this file automatically.
+Present this server's section of `definitions/mcp-servers.md` and ask the user to review. Once approved, prompt them to run `/to-prd` (if not yet done) and `/to-spec` — `/to-spec`'s `Tool layer / ACI` section reads this file automatically.

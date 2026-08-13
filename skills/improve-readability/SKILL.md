@@ -74,7 +74,7 @@ Vocabulary: **module / interface / seam / depth** as defined in
 
 ## Inputs
 
-- `CONTEXT.md` and the latest PRD (`ls definitions/prds/[0-9]*.md | sort | tail -1`) — the
+- `CONTEXT.md` and the PRD (`definitions/prd.md`) — the
   domain vocabulary and the top user journey, which is also the top *reading* journey
 - The previous report: `ls docs/audits/*-readability.md 2>/dev/null | sort | tail -1` —
   proceed silently if none
@@ -154,8 +154,8 @@ Three sweeps, parallel read-only subagents per lens or per area:
   guides, how-tos for cut features, `docs/audits/` reports older than the latest per kind,
   READMEs describing a layout that changed. One auditor per candidate carrying
   [../clean-house/DELETION-AUDIT.md](../clean-house/DELETION-AUDIT.md) — readership is only
-  half of it; a doc still cited but no longer true is the worse find. **Never touch versioned
-  decision records**: `docs/adr/`, `definitions/prds/`, `definitions/specs/` and their siblings
+  half of it; a doc still cited but no longer true is the worse find. **Never touch
+  decision records**: `docs/adr/` and the `definitions/` artifacts
   are supersede-never-edit by design — superseded is not spent.
 
 Merge into findings: *file:line / check / evidence / responding move / lane*. A

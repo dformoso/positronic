@@ -11,14 +11,14 @@ Ask one question at a time. Surface your recommended answer with each.
 
 ## Amend mode
 
-If a prior `definitions/harness/[0-9]*.md` exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md`: read the latest harness artifact as baseline, carry forward every untouched section *verbatim* (reconcile any the change contradicts), apply the delta, and write a new complete snapshot with an Amendment header. If the tool layer (§5) changed, prompt `design-mcp-server`; then prompt `/to-spec`.
+If `definitions/harness.md` already exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md`: read the harness artifact as baseline, edit only the sections the change touches (reconcile any it contradicts), leave every other section byte-for-byte alone, and update the Amendment header. If the tool layer (§5) changed, prompt `design-mcp-server`; then prompt `/to-spec`.
 
 ## 0. Read the PRD (and surfaces, if any)
 
 Before any picks, read:
 
-- The most recent PRD: `ls definitions/prds/[0-9]*.md | sort | tail -1`. The PRD's user, regulatory, and business constraints (on-prem requirements, sensitive code paths, multi-agent decomposition reasons, trust boundaries) are the inputs that drive sections 1–9 — picking without them is picking blind.
-- The most recent surfaces artifact, if any: `ls definitions/surfaces/[0-9]*.md | sort | tail -1`. When the product has UI, the harness's tool layer (§5) and gates (§6) should slot into known surfaces rather than re-deriving them.
+- The PRD: `definitions/prd.md`. The PRD's user, regulatory, and business constraints (on-prem requirements, sensitive code paths, multi-agent decomposition reasons, trust boundaries) are the inputs that drive sections 1–9 — picking without them is picking blind.
+- The surfaces artifact, if it exists: `definitions/surfaces.md`. When the product has UI, the harness's tool layer (§5) and gates (§6) should slot into known surfaces rather than re-deriving them.
 
 If no PRD exists, stop and prompt the user to run `/to-prd` first. **Exception:** if the harness IS the product or differentiator (case 6 in section 1), the picks may legitimately shape the PRD rather than follow from it. Surface this to the user and let them override before proceeding.
 
@@ -123,7 +123,7 @@ Compaction policy: when does context get summarized vs. truncated? Pick one and 
 Five well-designed tools beat fifty. Decide:
 
 - Rough tool count and boundaries
-- MCP server vs. custom — if MCP, record the rough count and naming convention here; `design-mcp-server` runs *after* this skill completes to walk transport, auth, schema discipline, error model, and testing strategy in depth and write its own `definitions/mcp-servers/<file>.md` artifact. See `${SKILL_DIR}/../../docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation
+- MCP server vs. custom — if MCP, record the rough count and naming convention here; `design-mcp-server` runs *after* this skill completes to walk transport, auth, schema discipline, error model, and testing strategy in depth and write its own section in `definitions/mcp-servers.md`. See `${SKILL_DIR}/../../docs/agentic-patterns/06_mcp_design_brief.md` for the empirical foundation
 - For each tool: what shape does the *agent* see (not the human)?
 - Permission scope per tool
 - Idempotency
@@ -202,7 +202,7 @@ For most teams this is the highest-leverage layer beyond ReAct — the instrumen
 
 ## 10. Save the artifact
 
-Once the sections above have been answered, write the picks to `definitions/harness/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create `definitions/harness/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
+Once the sections above have been answered, write the picks to `definitions/harness.md` (create `definitions/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
 Use the template below. Every section must carry information: cite the pattern brief that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
 
@@ -210,8 +210,8 @@ Use the template below. Every section must carry information: cite the pattern b
 
 ## Sources
 
-- `definitions/prds/<file>.md` — the PRD whose constraints drove these picks. (Or "harness-first override: no PRD yet" with a one-sentence reason, if section 0's exception applied.)
-- `definitions/surfaces/<file>.md` — if read in §0, the UI surfaces these tool/gate picks slot into.
+- `definitions/prd.md` — the PRD whose constraints drove these picks. (Or "harness-first override: no PRD yet" with a one-sentence reason, if section 0's exception applied.)
+- `definitions/surfaces.md` — if read in §0, the UI surfaces these tool/gate picks slot into.
 
 ## TL;DR
 
@@ -256,7 +256,7 @@ One paragraph naming the picked substrate, the Axis A structure and Axis B impro
 ## Tool layer / ACI
 
 **Rough count and boundaries:**
-**MCP vs custom:** if MCP, note that `design-mcp-server` will run after this skill to write its own `definitions/mcp-servers/<file>.md` artifact.
+**MCP vs custom:** if MCP, note that `design-mcp-server` will run after this skill to write its section of `definitions/mcp-servers.md`.
 **Per-tool agent-facing shape:** brief notes — what the *agent* sees, not the human.
 **Permissions & idempotency:**
 **Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`, `docs/agentic-patterns/06_mcp_design_brief.md` (if MCP)
@@ -309,8 +309,8 @@ Decisions deferred to `/to-spec` (e.g., exact module boundaries, schema specific
 
 ## Hand-off
 
-Present the saved `definitions/harness/<file>.md` and ask the user to review. Once approved:
+Present the saved `definitions/harness.md` and ask the user to review. Once approved:
 
-- If the tool layer (§5) chose MCP, prompt them to run `design-mcp-server` next — it writes a versioned `definitions/mcp-servers/<file>.md` that `/to-spec` reads.
-- **Placement gate** — if the system runs autonomously in the cloud (always-on triggers, scheduled work, inbound webhooks) and its production placement isn't already settled: derive a workload profile from this artifact (max single-run duration, state across waits, trigger shape, executes generated code y/n, concurrency, residency constraint, irreversible side effects) and ask the gate question: *does this need more than one boring compute service?* If runs fit platform timeouts, state lives in the project's own store, and no generated code executes — the answer is no: record the verdict + profile in `definitions/runtime/YYYY-MM-DD-HH-mm-SS.md` (one page: gate verdict, workload profile, revisit `TRIGGER:` lines — each at the start of its own line, list markers fine; the sweep greps for them) so the decision isn't reopened. If the gate trips, the placement questions in `${SKILL_DIR}/../../docs/selection-method.md` drive the same artifact section by section (per-pick evidence + exit line, residency-exceptions table, cost envelope + kill switch). This artifact records *where the loop runs*; individual service picks stay `docs/adr/` records via `pick-cloud-services`. Amend-mode applies (`definitions/runtime/` is in the cascade).
+- If the tool layer (§5) chose MCP, prompt them to run `design-mcp-server` next — it writes `definitions/mcp-servers.md`, which `/to-spec` reads.
+- **Placement gate** — if the system runs autonomously in the cloud (always-on triggers, scheduled work, inbound webhooks) and its production placement isn't already settled: derive a workload profile from this artifact (max single-run duration, state across waits, trigger shape, executes generated code y/n, concurrency, residency constraint, irreversible side effects) and ask the gate question: *does this need more than one boring compute service?* If runs fit platform timeouts, state lives in the project's own store, and no generated code executes — the answer is no: record the verdict + profile in `definitions/runtime.md` (one page: gate verdict, workload profile, revisit `TRIGGER:` lines — each at the start of its own line, list markers fine; the sweep greps for them) so the decision isn't reopened. If the gate trips, the placement questions in `${SKILL_DIR}/../../docs/selection-method.md` drive the same artifact section by section (per-pick evidence + exit line, residency-exceptions table, cost envelope + kill switch). This artifact records *where the loop runs*; individual service picks stay `docs/adr/` records via `pick-cloud-services`. Amend-mode applies (`definitions/runtime.md` is in the cascade).
 - Then prompt them to run `/to-spec` — it reads this file (and the placement profile, if one exists) alongside the PRD automatically.

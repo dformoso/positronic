@@ -4,7 +4,7 @@ A personal AI-coding framework — opinionated, solo.
 
 **What positronic does** — carries a software project from a fuzzy idea to shipped code across four concerns:
 
-- **Product management** — surface the assumptions an idea depends on, then lock them into versioned PRDs, specs, and issues.
+- **Product management** — surface the assumptions an idea depends on, then lock them into PRDs, specs, and issues.
 - **Software engineering** — a behavioral floor (below) plus test-driven development that verifies behavior through public interfaces, not implementation details.
 - **Agent-harness engineering** — decide whether a custom LLM/agent harness is warranted (the cut-line is reliability beyond conversational use), then lock its load-bearing shape.
 - **Product-surface engineering** — for products with a UI, lock the structure and visual identity once, before any screen is built.
@@ -25,16 +25,16 @@ A personal AI-coding framework — opinionated, solo.
 
 ## A typical user journey
 
-You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each stage writes a versioned artifact the next one reads:
+You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each stage writes one document into `definitions/` that the next one reads. There is exactly one file per artifact type: later runs amend it in place, and git carries every version it used to be.
 
 | # | Stage | Run | Writes |
 | --- | --- | --- | --- |
 | 1 | Frame the problem | `define` (auto-fires) | a falsifiable hypothesis + a route |
-| 2 | Research *(zero-to-one only)* | `/research-market` → `/ideate` → `/judge-idea` | `definitions/research/`, a chosen idea |
-| 3 | Lock *what & why* | `/to-prd` | `definitions/prds/` |
-| 4 | Lock the UI *(if it has one)* | `pick-ui-surfaces` | `definitions/surfaces/` |
-| 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness/`, `definitions/mcp-servers/`, `definitions/runtime/` *(placement gate)* |
-| 6 | Lock *how* | `/to-spec` | `definitions/specs/` |
+| 2 | Research *(zero-to-one only)* | `/research-market` → `/ideate` → `/judge-idea` | `definitions/research.md`, a chosen idea |
+| 3 | Lock *what & why* | `/to-prd` | `definitions/prd.md` |
+| 4 | Lock the UI *(if it has one)* | `pick-ui-surfaces` | `definitions/surfaces.md` |
+| 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` *(placement gate)* |
+| 6 | Lock *how* | `/to-spec` | `definitions/spec.md` |
 | 7 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` |
 | 8 | Build | `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code |
 | 9 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
@@ -45,24 +45,24 @@ When both apply, stage 4 runs before stage 5 — harness picks then slot into kn
 
 ## Skills
 
-Organized by phase. **Invocation:** `model` = the agent auto-fires it when a prompt matches its description; `slash` = user-invoked only (zero per-turn context cost) — `/name` in Claude Code, `$name` in Codex, the `/name` workflow or ask-by-name in Antigravity, ask-by-name in Gemini CLI. Enforced by `disable-model-invocation` (Claude Code) and `agents/openai.yaml` (Codex); Antigravity and Gemini CLI have no invocation-control field, so those skills carry prompt-level guards instead. **Reads / Writes** name the versioned artifacts each consumes and produces.
+Organized by phase. **Invocation:** `model` = the agent auto-fires it when a prompt matches its description; `slash` = user-invoked only (zero per-turn context cost) — `/name` in Claude Code, `$name` in Codex, the `/name` workflow or ask-by-name in Antigravity, ask-by-name in Gemini CLI. Enforced by `disable-model-invocation` (Claude Code) and `agents/openai.yaml` (Codex); Antigravity and Gemini CLI have no invocation-control field, so those skills carry prompt-level guards instead. **Reads / Writes** name the artifacts each consumes and produces.
 
 | Skill | Invocation | Phase | Reads | Writes | What it does |
 | --- | --- | --- | --- | --- | --- |
 | `define` | model | defining | — | — | Surface assumptions, frame a hypothesis, route to the right path |
-| `research-market` | slash | defining | — | `definitions/research/` | Mine forums + competitive landscape |
-| `ideate` | slash | defining | `definitions/research/` | `definitions/ideas/` | Ten ranked one-pagers; you pick the winner |
-| `judge-idea` | slash | defining | `definitions/ideas/` winner / PRD / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
-| `to-prd` | slash | defining | conversation | `definitions/prds/` | Synthesize the *what & why* |
-| `pick-ui-surfaces` | model | defining | `definitions/prds/` | `definitions/surfaces/` | Lock the UI's structure + visual identity |
-| `pick-harness-shape` | model | defining | `definitions/prds/`, `definitions/surfaces/` | `definitions/harness/` (+ `definitions/runtime/` at the placement gate) | Decide + shape a custom LLM harness |
-| `design-mcp-server` | model | defining | `definitions/prds/`, `definitions/harness/` | `definitions/mcp-servers/` | Design an MCP server you'll build |
+| `research-market` | slash | defining | — | `definitions/research.md` | Mine forums + competitive landscape |
+| `ideate` | slash | defining | `definitions/research.md` | `definitions/ideas.md` | Ten ranked one-pagers; you pick the winner |
+| `judge-idea` | slash | defining | `definitions/ideas.md` winner / PRD / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
+| `to-prd` | slash | defining | conversation | `definitions/prd.md` | Synthesize the *what & why* |
+| `pick-ui-surfaces` | model | defining | `definitions/prd.md` | `definitions/surfaces.md` | Lock the UI's structure + visual identity |
+| `pick-harness-shape` | model | defining | `definitions/prd.md`, `definitions/surfaces.md` | `definitions/harness.md` (+ `definitions/runtime.md` at the placement gate) | Decide + shape a custom LLM harness |
+| `design-mcp-server` | model | defining | `definitions/prd.md`, `definitions/harness.md` | `definitions/mcp-servers.md` | Design an MCP server you'll build |
 | `pick-cloud-services` | slash | defining / anytime | PRD (greenfield), `docs/selection-method.md`, live vendor pages | `docs/adr/` decision records | Pick any external/cloud service via live research; on greenfield, decide the dev-to-prod path first |
-| `to-spec` | slash | defining | `definitions/prds/`, `definitions/harness/`, `definitions/surfaces/`, `definitions/mcp-servers/`, `definitions/runtime/` | `definitions/specs/` | Lock the implementation contract |
-| `to-issues` | slash | defining | `definitions/specs/` | GitHub issues | Break the SPEC into `afk` / `hitl` issues |
-| `test-driven-dev` | model | implementing | `definitions/specs/` | code + tests | Red-green-refactor on one issue |
-| `ui-taste` | model | implementing | `definitions/surfaces/` | styled UI | Apply the locked visual identity + taste rules |
-| `generate-test-assets` | model | implementing | `definitions/specs/`, test plan | `test-assets/` | Generate multimodal test fixtures with Gemini; route load-bearing checks to the human |
+| `to-spec` | slash | defining | `definitions/prd.md`, `definitions/harness.md`, `definitions/surfaces.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` | `definitions/spec.md` | Lock the implementation contract |
+| `to-issues` | slash | defining | `definitions/spec.md` | GitHub issues | Break the SPEC into `afk` / `hitl` issues |
+| `test-driven-dev` | model | implementing | `definitions/spec.md` | code + tests | Red-green-refactor on one issue |
+| `ui-taste` | model | implementing | `definitions/surfaces.md` | styled UI | Apply the locked visual identity + taste rules |
+| `generate-test-assets` | model | implementing | `definitions/spec.md`, test plan | `test-assets/` | Generate multimodal test fixtures with Gemini; route load-bearing checks to the human |
 | `diagnose` | model | diagnosing | — | fix + regression test | Reproduce → minimise → fix hard bugs |
 | `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |
 | `audit-drift` | slash | shipping | doc graph | drift report | Sweep PRDs/SPECs/ADRs for drift |

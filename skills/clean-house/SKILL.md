@@ -53,7 +53,7 @@ Key principles (see [LANGUAGE.md](LANGUAGE.md) for the full list):
 
 ## Inputs
 
-- The latest defining artifacts, whichever exist (`ls <dir>/[0-9]*.md | sort | tail -1` per dir): `definitions/prds/`, `definitions/specs/`, `definitions/surfaces/`, `definitions/harness/`, `definitions/runtime/`, plus `definitions/mcp-servers/*.md`
+- The defining artifacts, whichever exist: `definitions/prd.md`, `definitions/spec.md`, `definitions/surfaces.md`, `definitions/harness.md`, `definitions/runtime.md`, `definitions/mcp-servers.md`
 - `CONTEXT.md` (or `CONTEXT-MAP.md` + each `CONTEXT.md`) and `docs/adr/` — domain language names good seams; ADRs record past decisions, don't re-litigate them. See [CONTEXT-FORMAT.md](CONTEXT-FORMAT.md) and [ADR-FORMAT.md](ADR-FORMAT.md)
 - The previous report: `ls docs/audits/*-clean-house.md 2>/dev/null | sort | tail -1` — proceed silently if none (first run)
 - `git log` since the previous report — what shipped, what got reverted, what came back after a cut
@@ -83,7 +83,7 @@ For every requirement row in the latest PRD and SPEC (and each locked decision i
 
 Drift is evidence here: a doc section that diverged long ago with nobody noticing is a strong signal nobody needed what it described.
 
-**Fired triggers are evidence too.** Sweep the dated decision machinery: run `${SKILL_DIR}/scripts/freshness-sweep.sh` (`${SKILL_DIR}` = the directory containing this file) and read its output — it emits past-due `NEXT REVIEW:` lines and every `TRIGGER:` line across `docs/adr/` and `definitions/runtime/`. A past-due `NEXT REVIEW:` date or a fired `TRIGGER:` condition (on a service pick or the development-to-production path record) is a decision whose ground truth moved — flag it, and the fix is the trigger's own named action (re-run `pick-cloud-services` on that record, start the migration step, formalize custody). A trigger nothing sweeps is decorative; this step is the sweep.
+**Fired triggers are evidence too.** Sweep the dated decision machinery: run `${SKILL_DIR}/scripts/freshness-sweep.sh` (`${SKILL_DIR}` = the directory containing this file) and read its output — it emits past-due `NEXT REVIEW:` lines and every `TRIGGER:` line across `docs/adr/` and `definitions/runtime.md`. A past-due `NEXT REVIEW:` date or a fired `TRIGGER:` condition (on a service pick or the development-to-production path record) is a decision whose ground truth moved — flag it, and the fix is the trigger's own named action (re-run `pick-cloud-services` on that record, start the migration step, formalize custody). A trigger nothing sweeps is decorative; this step is the sweep.
 
 Output: flagged requirements, each with its evidence. These feed step 2.
 
@@ -100,7 +100,7 @@ Hunt cut candidates at every layer:
 | Abstractions | Pass-throughs (deletion test); one-adapter seams nothing else will use; layers with one caller |
 | Process | CI stages, hooks, scripts, doc artifacts, skills nobody runs |
 | Tests | Suites green against nothing: tests for features already cut, tests asserting mocks of deleted seams, implementation-detail pins that break on refactor rather than regression (tests.md red flags). Cut them here; *strengthening* the survivors is `/improve-readability`'s pass — see [`../improve-readability/TESTS.md`](../improve-readability/TESTS.md) |
-| Spent docs | `.md` files nothing reads anymore: executed plans, finished migration guides, how-tos for cut features, superseded audit reports, READMEs describing a layout that changed. **Never** versioned decision records — `docs/adr/`, `definitions/prds/`, `definitions/specs/` supersede rather than delete, and the trail of why is the asset |
+| Spent docs | `.md` files nothing reads anymore: executed plans, finished migration guides, how-tos for cut features, superseded audit reports, READMEs describing a layout that changed. **Never** decision records — `docs/adr/` and the `definitions/` artifacts are amended rather than deleted, and the trail of why is the asset |
 | Method docs / skills / prompts | Embedded perishable facts in files meant to be durable method — vendor names, prices, model versions, "as of" status lines (`grep -rnE '\$[0-9]|20[0-9]{2}|as of' <skill/prompt dirs>`). Each is rot: replace with the category plus a verify-live instruction; dated facts belong only in provenance-stamped records |
 
 Send each candidate to its own read-only auditor carrying [DELETION-AUDIT.md](DELETION-AUDIT.md) — one target per auditor, verdict block back. Self-description doesn't count as evidence there, and a claim the target makes that turns out false is the strongest signal you'll get.

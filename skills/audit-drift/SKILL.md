@@ -1,6 +1,6 @@
 ---
 name: audit-drift
-description: Audit the project's doc graph (definitions/prds/, definitions/harness/, definitions/surfaces/, definitions/mcp-servers/, definitions/runtime/, definitions/specs/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, SPEC contracts the code has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Audit the project's doc graph (definitions/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, SPEC contracts the code has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -26,13 +26,15 @@ Also runs inside `/clean-house` at the end of each pass: after a pass's cuts and
 
 ### 1. Resolve inputs
 
-```bash
-latest_prd=$(ls definitions/prds/[0-9]*.md 2>/dev/null | sort | tail -1)
-latest_harness=$(ls definitions/harness/[0-9]*.md 2>/dev/null | sort | tail -1)
-latest_surfaces=$(ls definitions/surfaces/[0-9]*.md 2>/dev/null | sort | tail -1)
-latest_runtime=$(ls definitions/runtime/[0-9]*.md 2>/dev/null | sort | tail -1)
-latest_spec=$(ls definitions/specs/[0-9]*.md 2>/dev/null | sort | tail -1)
-mcp_files=$(ls definitions/mcp-servers/*.md 2>/dev/null)   # multiple files possible — one per server
+The defining artifacts are one file each, flat in `definitions/`. Any of them may be absent — skip what isn't there:
+
+```text
+definitions/prd.md
+definitions/harness.md
+definitions/surfaces.md
+definitions/runtime.md
+definitions/mcp-servers.md
+definitions/spec.md
 ```
 
 Glossary sources:
@@ -45,24 +47,23 @@ ADR sources:
 - Root: `docs/adr/[0-9]*.md`
 - Per-context: `*/docs/adr/[0-9]*.md` (when `CONTEXT-MAP.md` exists)
 
-If both `latest_prd` and `latest_spec` are empty, stop and say so — there's nothing to audit yet. (Empty `definitions/prds/` or `definitions/specs/` directories slip past a directory-existence check.)
+If neither `definitions/prd.md` nor `definitions/spec.md` exists, stop and say so — there's nothing to audit yet. (Check the files themselves; an empty `definitions/` directory slips past a directory-existence check.)
 
 ### 2. Run checks
 
 #### 2.1. Glossary drift — *worth-noting*
 
-For each `CONTEXT.md` line of the form `_Avoid_: term1, term2, …`, search the latest PRD, harness, surfaces, runtime profile, SPEC, and every MCP-server design file for those terms (skip any var that's empty):
+For each `CONTEXT.md` line of the form `_Avoid_: term1, term2, …`, search every defining artifact for those terms:
 
 ```bash
-# $mcp_files intentionally unquoted: word-splits into multiple grep file args
-grep -nE "\b(term1|term2)\b" "$latest_prd" "$latest_harness" "$latest_surfaces" "$latest_runtime" "$latest_spec" $mcp_files 2>/dev/null
+grep -rnE "\b(term1|term2)\b" definitions/ 2>/dev/null
 ```
 
 Report each hit with the canonical term to use instead. Skip hits inside fenced code blocks.
 
 #### 2.2. Dead cross-references — *must-fix*
 
-Walk every markdown file in `definitions/prds/`, `definitions/harness/`, `definitions/surfaces/`, `definitions/mcp-servers/`, `definitions/runtime/`, `definitions/specs/`, `docs/`, plus `plans/` when it exists (living plan documents drift too), plus root `CONTEXT.md` and `CONTEXT-MAP.md`. For each `[text](path)`:
+Walk every markdown file in `definitions/` and `docs/`, plus `plans/` when it exists (living plan documents drift too), plus root `CONTEXT.md` and `CONTEXT-MAP.md`. For each `[text](path)`:
 
 - Skip if `path` starts with `http`.
 - If `path` contains `#`, split into file + anchor. Verify the file exists and the anchor matches a heading (slugified: lowercase, spaces → hyphens, punctuation stripped).
@@ -83,7 +84,7 @@ This is the LLM-judgment check, not a grep. Be conservative — only flag when t
 
 #### 2.4. The latest SPEC overtaken by the code — *must-fix* (forward) / *worth-noting* (reverse)
 
-Skip if there's no `latest_spec` or no source code. The semantic mirror of 2.3, one layer down: 2.3 asks whether the SPEC still honours each ADR; this asks whether the **code** still honours each SPEC contract. Like 2.3, this is LLM-judgment, not a grep — be conservative, flag only a clear contradiction. It is the heaviest check here: it reads source, not just docs.
+Skip if there's no `definitions/spec.md` or no source code. The semantic mirror of 2.3, one layer down: 2.3 asks whether the SPEC still honours each ADR; this asks whether the **code** still honours each SPEC contract. Like 2.3, this is LLM-judgment, not a grep — be conservative, flag only a clear contradiction. It is the heaviest check here: it reads source, not just docs.
 
 From the latest SPEC, take the named, checkable contracts:
 
@@ -98,7 +99,7 @@ For each, grep the codebase and judge:
 - **Forward — *must-fix*.** The SPEC names a contract the code clearly no longer honours: module deleted, endpoint gone, field renamed, gate removed. The doc graph now lies. (This is also where a `diagnose` fix that changed behaviour without updating the SPEC surfaces.)
 - **Reverse — *worth-noting*.** A *major* surface present in code — a whole module directory, route group, or public tool — that the latest SPEC never mentions. The signature of accumulated drift across many small PRs. Flag surfaces, never individual functions, or this floods.
 
-Also read the latest `definitions/harness/` artifact where it names topology, gates, or tools the code should implement, and apply the same conservative compare. Do the same with the latest `definitions/runtime/` profile where it names placement constraints the SPEC restates (residency exceptions, telemetry backend, cost envelope / kill switch) — flag a SPEC that contradicts the profile, conservatively. Keep every finding to a divergence you can point at — when in doubt, don't flag.
+Also read `definitions/harness.md` where it names topology, gates, or tools the code should implement, and apply the same conservative compare. Do the same with the `definitions/runtime.md` profile where it names placement constraints the SPEC restates (residency exceptions, telemetry backend, cost envelope / kill switch) — flag a SPEC that contradicts the profile, conservatively. Keep every finding to a divergence you can point at — when in doubt, don't flag.
 
 #### 2.5. Orphan ADRs — *worth-noting*
 

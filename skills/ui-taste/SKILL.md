@@ -20,7 +20,7 @@ The visual identity — register, who, feel, signature, accent, neutrals, spacin
 - **Product** (app, dashboard, tool — design *serves* the task): restrained colour, state-rich (hover / focus / active / disabled / loading / error), familiar patterns are a feature, motion only to communicate. The rules below are tuned for this.
 - **Brand** (marketing, landing, portfolio — design *is* the product): can afford ambitious first-load motion, a committed or drenched palette, per-section art direction, asymmetric layout. The rules still hold, but rule 2 (greyscale-first) and rule 11 (motion budget) loosen deliberately — say so when you lean on that.
 
-If no identity is recorded (the SPEC has none and there's no `definitions/surfaces/` artifact), you're working pre-identity: name the register, who, feel, and signature yourself — feel in specific words ("warm like a notebook," never "clean and modern"), signature being one element only this product would have — record them so the next surface inherits them, then proceed.
+If no identity is recorded (the SPEC has none and there's no `definitions/surfaces.md`), you're working pre-identity: name the register, who, feel, and signature yourself — feel in specific words ("warm like a notebook," never "clean and modern"), signature being one element only this product would have — record them so the next surface inherits them, then proceed.
 
 Skip this for isolated tweaks (one button colour, a typo) where the direction is already set.
 
