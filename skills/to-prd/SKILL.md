@@ -4,7 +4,7 @@ description: Turn the current conversation context into a PRD and save it as def
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 Turn the current conversation, codebase understanding, and (if they exist) the most recent ideation winner + research artifact into a PRD. Do NOT interview the user — synthesize what you already know.
 
@@ -52,7 +52,7 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 
 6. Present the saved PRD and ask the user to review. Then prompt for the next step in this order:
    - Prompt them to run `/to-journeys` — it expands each journey above into an executable script with steps, branches, and the end-state proof a test asserts. Everything after this reads that file, so it is the default next step, not an optional one.
-   - On greenfield (this is the project's first PRD), also prompt them to run `/pick-cloud-services` in greenfield mode — it locks the dev-to-prod path as the project's first `docs/adr/` record; the SPEC's Rollout section cites it.
+   - On greenfield (this is the project's first PRD), also prompt them to run `/pick-cloud-services` in greenfield mode — it locks the dev-to-prod path as the first section of `definitions/infrastructure.md`; the SPEC's Rollout section cites it.
    - For a `fix`- or `internal`-tier change that adds no new behaviour, `/to-journeys` can be skipped — go straight to `/to-spec`.
 
    (`/judge-idea` can also gate the finished PRD before `/to-spec` if a bet feels unverified — optional.)

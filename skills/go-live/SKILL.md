@@ -4,7 +4,7 @@ description: Evidence GO/NO-GO gate before real users or real traffic reach a de
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Go Live
 
@@ -144,4 +144,4 @@ After printing, ask:
 
 Default no. Create `docs/audits/` lazily on first save.
 
-A fired `TRIGGER:` line in the project's path record (`docs/adr/`, written by `pick-cloud-services`; method in `${SKILL_DIR}/../../docs/selection-method.md`) is a standing reason to run this gate before the next cutover.
+A fired `TRIGGER:` line in `definitions/infrastructure.md` (written by `pick-cloud-services`; method in `${SKILL_DIR}/../../docs/selection-method.md`) is a standing reason to run this gate before the next cutover.

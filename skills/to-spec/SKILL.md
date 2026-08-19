@@ -4,7 +4,7 @@ description: Turn definitions/prd.md, definitions/journeys.md and (if present) d
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 Synthesize the upstream definitions into a SPEC. Do NOT re-interview — work from prior decisions.
 
@@ -28,13 +28,17 @@ If `definitions/spec.md` already exists and an upstream artifact was amended (or
 
 4. Read the MCP-server designs (if any): `definitions/mcp-servers.md`. Multi-server projects keep one `##` section per server; read every one. For each, the SPEC's "Tool layer / ACI" section adds a paragraph restating its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) plus a pointer to that section — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
 
-4b. Read the placement profile if it exists: `definitions/runtime.md`. Its constraints fold into existing sections — residency exceptions into Security, telemetry backend placement into Observability, cost envelope + kill switch into Rollout — restated, never re-derived. Service-level vendor picks live as `docs/adr/` records (written by `pick-cloud-services`); the SPEC names the capability and points at the record rather than restating the vendor rationale.
+4b. Read the placement profile if it exists: `definitions/runtime.md`. Its constraints fold into existing sections — residency exceptions into Security, telemetry backend placement into Observability, cost envelope + kill switch into Rollout — restated, never re-derived. Service-level vendor picks live in `definitions/infrastructure.md` (written by `pick-cloud-services`); the SPEC names the capability and points at the section rather than restating the vendor rationale.
 
 5. Sketch modules and integration points. Assign each module the design decision it hides — if two modules must agree on a format or assumption, that's leakage; pick one owner. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation, and state per interface which error modes are defined out of existence (semantics that make the special case a non-event) versus surfaced.
 
 6. Confirm with the user which modules need tests; capture them in the Test plan section.
 
-7. Pick the **verification fidelity** — how real development and verification are along five axes: data, external access, eval signal, CUJ verification, deploy. Show the rungs as a table, recommend one per axis, and let the user override per dependency. Default: build and unit/integration-test against the lowest *faithful* stand-in (fixtures plus mock or sandbox adapters at the external seams) so AFK slices run unattended, then schedule an explicit crossover before the release gate — a slice may not claim done on a mock when its PRD CUJ needs the real thing. Settle the crossover shape too: per-slice (true tracer bullet, real deps from the start, credentials needed early), phased (mock through MVP, dedicated crossover slices before launch), or hybrid per-axis (recommended). Capture the picks in the Verification fidelity section and the per-dependency rung in the External dependencies column.
+7. Pick the **verification fidelity** — how real development and verification are along five axes: data, external access, eval signal, CUJ verification, deploy. Show the rungs as a table, recommend one per axis, let the user override per dependency.
+
+   Default: build and test against the lowest *faithful* stand-in — fixtures plus mock or sandbox adapters at the external seams — so AFK slices run unattended. Then schedule an explicit crossover before the release gate; a slice may not claim done on a mock when its journey needs the real thing.
+
+   Settle the crossover shape too: per-slice (true tracer bullet, real deps from the start, credentials needed early), phased (mock through MVP, dedicated crossover slices before launch), or hybrid per-axis (recommended). Picks go in the Verification fidelity section; the per-dependency rung goes in the External dependencies column.
 
 8. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `definitions/spec.md` (create `definitions/` if missing). Commit it.
 
@@ -104,19 +108,7 @@ For each tool: name, MCP / custom, the shape the *agent* sees (not the human), i
 
 If `definitions/mcp-servers.md` exists, add one paragraph per server restating its picks plus a pointer (`See definitions/mcp-servers.md § <server-slug>`) so the full rationale and rejected alternatives stay one click away. Multi-server projects keep one section per server — restate each.
 
-If the SPEC is for an MCP **server** (you're producing tools other agents consume), the entry also locks down the public-API contract:
-
-| Field | What to lock down |
-|---|---|
-| `name` | `[a-z0-9_]+`; verb_noun; never embed the server name (clients namespace as `${server}_${tool}`) |
-| `description` | Embedding target — clients pick tools via semantic search. Concrete domain nouns beat generic "use this to..." |
-| `inputSchema` | Single-type fields, `description` per property, `enum`/`pattern` where the domain is finite. Avoid `oneOf`/`anyOf` discriminators |
-| `outputSchema` | Publish it. Lets agents chain tools |
-| Return shape | `structuredContent` *consistently* — always when `outputSchema` is declared, or never |
-| `annotations` | All four: `readOnlyHint`, `idempotentHint`, `destructiveHint`, `openWorldHint` |
-| Failure mode | `CallToolResult(isError=True, content=[TextContent(...)])`. No throwing |
-
-For the empirical foundation and per-decision tradeoffs, see `${SKILL_DIR}/../../docs/agentic-patterns/06_mcp_design_brief.md`. If the server hasn't been designed yet, invoke `design-mcp-server` first.
+If the SPEC is for an MCP **server** (you're producing tools other agents consume), the per-tool public contract — name, description, schemas, return shape, annotations, failure mode — is locked by `design-mcp-server` and recorded in `definitions/mcp-servers.md`. Restate the picks, don't re-derive the rules; the rules themselves live in `${SKILL_DIR}/../../docs/agentic-patterns/06_mcp_design_brief.md`. If the server hasn't been designed yet, invoke `design-mcp-server` first.
 
 ## Memory & state
 
@@ -177,7 +169,7 @@ For any dependency whose setup involves an external clock — quota approvals, i
 
 ## Rollout / migration
 
-How the change reaches production safely. For reversible changes a paragraph suffices: feature flag, canary cohort, kill switch. Anything **one-way** — a provider re-point, a datastore migration, first production traffic — needs a stepped cutover runbook written per [rollout.md](rollout.md): per-step Verify + Rollback, one-way doors marked and placed late, a risk register whose every risk names the phase that closes it, thin-slice-first phasing, and a scripted exit gate per step (the evidence `/go-live` later verifies).
+How the change reaches production safely. For reversible changes a paragraph suffices: feature flag, canary cohort, kill switch. Anything **one-way** — a provider re-point, a datastore migration, first production traffic — needs a stepped cutover runbook written per [rollout.md](rollout.md). That means per-step Verify and Rollback clauses, one-way doors marked and placed late, thin-slice-first phasing, a risk register where every risk names the phase that closes it, and a scripted exit gate per step — the evidence `/go-live` later verifies.
 
 For schema changes, state the expand/contract contract — destructive changes (drops, renames) land only once no shipped release reads the old shape — and name its enforcement gate (boot the previous release against the migrated store) in the Test plan.
 

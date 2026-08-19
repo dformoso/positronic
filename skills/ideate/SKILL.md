@@ -4,7 +4,7 @@ description: Generate, rank, and pick a product idea grounded in the most recent
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 Generate ten product concepts grounded in the most recent research artifact. Propose a rubric, get it approved, rank, present the top 3, let the user pick.
 

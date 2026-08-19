@@ -1,24 +1,16 @@
 ---
 name: audit-drift
-description: Audit the project's doc graph (definitions/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, SPEC contracts the code has overtaken, mockup panels no journey still contains, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Audit the project's doc graph (definitions/, CONTEXT.md) for drift. Surfaces glossary terms used inconsistently, dead cross-references, decisions the current SPEC has overtaken, SPEC contracts the code has overtaken, and mockup panels no journey still contains. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Audit Drift
 
 Static sweep across the project's doc graph (and the code it describes). Detects drift. Reports only — never auto-fixes. Mirrors `/review-pr`'s posture.
 
-Positions within the shipping phase:
-
-| Skill | Scope | When it fires | What it does |
-|---|---|---|---|
-| `/review-pr` | Current diff | Before a branch ships | Catches what's wrong or risky in the change |
-| `/audit-drift` (this) | Doc graph | Shipping, on demand | Detects drift across PRDs/SPECs/ADRs |
-| `/audit-failure-modes` | Whole system | Before a release cut | Lists latent failure modes; ranks by correctness/reliability/polish |
-
-Complementary, not redundant, with `judge-idea` from the defining phase — that adversarially stress-tests an artifact, while audit-drift detects mechanical drift across the full doc graph.
+Scope is the **doc graph**, not the diff (`/review-pr`) and not system risk (`/audit-failure-modes`). Distinct from `judge-idea` too: that stress-tests one artifact's argument, this detects mechanical drift across all of them.
 
 Also runs inside `/clean-house` at the end of each pass: after a pass's cuts and reshapes, this sweep reconciles the doc graph, and findings the pass's edits don't explain feed the next pass's questioning.
 
@@ -35,6 +27,8 @@ definitions/mockups.md
 definitions/harness.md
 definitions/runtime.md
 definitions/mcp-servers.md
+definitions/infrastructure.md
+definitions/decisions.md
 definitions/spec.md
 ```
 
@@ -42,11 +36,6 @@ Glossary sources:
 
 - If `CONTEXT-MAP.md` exists at the root, parse the context list and use every `CONTEXT.md` it points to.
 - Otherwise, use the root `CONTEXT.md` if it exists.
-
-ADR sources:
-
-- Root: `docs/adr/[0-9]*.md`
-- Per-context: `*/docs/adr/[0-9]*.md` (when `CONTEXT-MAP.md` exists)
 
 If neither `definitions/prd.md` nor `definitions/spec.md` exists, stop and say so — there's nothing to audit yet. (Check the files themselves; an empty `definitions/` directory slips past a directory-existence check.)
 
@@ -72,20 +61,19 @@ Walk every markdown file in `definitions/` and `docs/`, plus `plans/` when it ex
 
 Report each broken link as `source:line → target`.
 
-#### 2.3. ADRs overtaken by the latest SPEC — *must-fix*
+#### 2.3. Decisions overtaken by the latest SPEC — *must-fix*
 
-For each ADR in `docs/adr/[0-9]*.md`:
+For each `##` section in `definitions/decisions.md` and `definitions/infrastructure.md`:
 
-- Skip if frontmatter `status` is `deprecated` or `superseded by ADR-NNNN`.
-- Read the ADR body.
-- Read the latest SPEC's `## Modules & interfaces` and `## Data model / schema` sections.
-- If the ADR's decision is no longer reflected in the current SPEC, flag it.
+- Skip any section carrying a `**Superseded by:**` line.
+- Read the SPEC's `## Modules & interfaces` and `## Data model / schema` sections.
+- If the recorded decision is no longer reflected in the current SPEC, flag it.
 
-This is the LLM-judgment check, not a grep. Be conservative — only flag when the contradiction is clear, not when the ADR and SPEC discuss different layers. Date-named service-pick records (from `pick-cloud-services`) are covered too, but their *freshness* is governed by their own `NEXT REVIEW:`/`TRIGGER:` lines — `/clean-house` sweeps those; here flag only a SPEC that contradicts the recorded decision.
+LLM judgment, not a grep. Be conservative — flag only a clear contradiction, not a section and a SPEC discussing different layers. A record's *freshness* is governed by its own `NEXT REVIEW:`/`TRIGGER:` lines, which `/clean-house` sweeps; here flag only a SPEC that contradicts what was recorded.
 
 #### 2.4. The latest SPEC overtaken by the code — *must-fix* (forward) / *worth-noting* (reverse)
 
-Skip if there's no `definitions/spec.md` or no source code. The semantic mirror of 2.3, one layer down: 2.3 asks whether the SPEC still honours each ADR; this asks whether the **code** still honours each SPEC contract. Like 2.3, this is LLM-judgment, not a grep — be conservative, flag only a clear contradiction. It is the heaviest check here: it reads source, not just docs.
+Skip if there's no `definitions/spec.md` or no source code. The semantic mirror of 2.3, one layer down: 2.3 asks whether the SPEC still honours each recorded decision; this asks whether the **code** still honours each SPEC contract. Like 2.3, this is LLM-judgment, not a grep — be conservative, flag only a clear contradiction. It is the heaviest check here: it reads source, not just docs.
 
 From the latest SPEC, take the named, checkable contracts:
 
@@ -111,16 +99,6 @@ Skip if there's no `definitions/mockups.md`. Mechanical, in both directions:
 - No panel may name a journey the file no longer contains.
 
 A drawing of a screen the product doesn't have misleads the next implementer more than no drawing at all, which is why this is must-fix rather than worth-noting. Report each gap as the missing panel id or the unmatched step.
-
-#### 2.6. Orphan ADRs — *worth-noting*
-
-For each ADR file `docs/adr/NNNN-slug.md`:
-
-```bash
-grep -rln --include='*.md' --include='*.py' --include='*.ts' --include='*.tsx' --include='*.js' "NNNN-slug" .
-```
-
-If the only file returned is the ADR itself, it's an orphan. ADRs newer than 7 days are exempt — they may not have been referenced yet.
 
 ### 3. Report
 
@@ -150,6 +128,7 @@ Named so they aren't re-litigated:
 
 - **PRD-SPEC scope coverage.** Whether the SPEC covers everything the PRD *promised* (forward completeness) — distinct from 2.4, which checks whether the code still *honours* the SPEC (backward conformance). Hard, judgment-heavy, and `/judge-idea` covers neighbouring ground.
 - **Deployed-vs-artifact harness drift.** Prod model swaps, added gates, or topology changes not visible in the repo. Brief-07 production-monitoring territory, not a static sweep.
-- **ADR completeness.** ADR format is intentionally minimal — there's no required-section list to enforce.
+- **Decision-record completeness.** The format is intentionally minimal — there's no required-section list to enforce.
+- **Orphan decisions.** Records live in two known files, not scattered ones; a section in a file everything already reads can't be orphaned.
 - **Issue traceability.** Couples to GitHub and only useful immediately after `/to-issues`.
 - **Auto-fix.** Mirrors `/review-pr` — detection, not repair.

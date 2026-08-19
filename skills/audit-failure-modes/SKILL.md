@@ -4,18 +4,13 @@ description: Pre-mortem of the system. Spawns parallel agents per failure surfac
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Audit Failure Modes
 
 Prospective diagnosis. Walk the system and list how it could break — before it does. Reports only — never auto-fixes. Mirrors `/review-pr`'s and `/audit-drift`'s posture.
 
-| Skill | Scope | When it fires | What it does |
-|---|---|---|---|
-| `/review-pr` | Current diff | Before a branch ships | Catches what's wrong or risky in the change |
-| `/audit-drift` | Doc graph | Shipping, on demand | Detects drift across PRDs/SPECs/ADRs |
-| `/audit-failure-modes` (this) | Whole system | Before a release cut | Lists latent failure modes; ranks by correctness/reliability/polish |
-| `/go-live` | Deployed environment | Before first real traffic or a one-way cutover | Verifies runtime evidence this skill can't see (secrets actually set, backups actually retaining, alerts actually firing) |
+Scope is the **whole system, read from code**. The one worth keeping straight is `/go-live`: it verifies runtime evidence no code-read can see — whether the secret is actually set, whether backups are actually retaining, whether an alert actually fires. Enumerate here; verify there.
 
 ## Process
 

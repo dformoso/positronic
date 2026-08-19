@@ -8,7 +8,7 @@ How to choose an external service or provider for a category — and re-choose w
 - **~3 innovation tokens per project; boring everywhere else.** You get about three places to pick the exciting, unproven option. "Boring" is not old — it's the option your tools and model already know best and that *you* can debug when it breaks at the worst possible time. Spend a token only where the novelty is the point.
 - **Build core, buy context, rent commodity.** Build what differentiates you. Buy what supports it but isn't yours to invent. Rent the undifferentiated utilities (compute, mail, DNS) from whoever runs them most cheaply and reliably.
 - **Exit before entry.** Write the exit paragraph — escape hatch, egress path, honest rewrite cost — *before* you adopt anything. No exit answer means no adoption, for anything holding data you can't re-derive. If leaving isn't describable, you haven't finished choosing.
-- **Records supersede, never edit.** Each decision is one dated record. When it changes, write a *new* record that supersedes the old; never rewrite history — the trail of why is the asset.
+- **Records supersede, never edit.** Each decision is one dated section in `definitions/infrastructure.md`. When it changes, append a *new* section and mark the old one superseded; never rewrite it — the trail of why is the asset.
 - **Keep a personal Hold list.** A vendor or product that burned you goes on a written list: nothing new starts on this. Past pain is data; don't pay to re-learn it.
 - **Instrument unit economics before launch.** Know the cost per customer per month before the first customer, not after the bill. Wire budget alerts at 50 / 80 / 100% of the ceiling. For every free tier, write down the unit price *past the cliff* — a free tier is a loan, and the overage rate is the interest.
 - **The startup-vendor rule.** Assume a young infrastructure vendor is gone, acquired, or frozen within ~18 months unless it has an escape hatch: an open-source core you can self-host, a standard protocol you can re-point, or a drop-in rival you could swap to. The newer the vendor, the further it must sit from your core data path.
@@ -112,7 +112,7 @@ TRIGGER: more than one person touches running infra → shared cloud
 TRIGGER: deploy or rollback feels manual and risky → deploy automation + a rollback contract
 ```
 
-A fired trigger is the input to the `/go-live` gate. `pick-cloud-services` in greenfield mode records this path as the project's **first** decision record, and that record's exit-plan field *is* this trigger list. All revisit machinery is grep-able: records carry a `NEXT REVIEW: YYYY-MM-DD` line and `TRIGGER:` lines each at the start of its own line; `/clean-house`'s step-1 sweep (the canonical check) flags past-due reviews and fired triggers each pass.
+A fired trigger is the input to the `/go-live` gate. `pick-cloud-services` in greenfield mode records this path as the **first** section of `definitions/infrastructure.md`, and that section's exit-plan field *is* this trigger list. All revisit machinery is grep-able: sections carry a `NEXT REVIEW: YYYY-MM-DD` line and `TRIGGER:` lines each at the start of its own line; `/clean-house`'s step-1 sweep (the canonical check) flags past-due reviews and fired triggers each pass.
 
 ## This doc is method
 

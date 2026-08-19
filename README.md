@@ -64,7 +64,7 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `to-mockups` | slash | defining | `definitions/prd.md`, `definitions/journeys.md` | `definitions/mockups.md`, `definitions/mockups.html` | Lock the UI's structure + visual identity, then draw every screen |
 | `pick-harness-shape` | model | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md` | `definitions/harness.md` (+ `definitions/runtime.md` at the placement gate) | Decide + shape a custom LLM harness |
 | `design-mcp-server` | model | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/harness.md` | `definitions/mcp-servers.md` | Design an MCP server you'll build |
-| `pick-cloud-services` | slash | defining / anytime | PRD (greenfield), `docs/selection-method.md`, live vendor pages | `docs/adr/` decision records | Pick any external/cloud service via live research; on greenfield, decide the dev-to-prod path first |
+| `pick-cloud-services` | slash | defining / anytime | PRD (greenfield), `docs/selection-method.md`, live vendor pages | `definitions/infrastructure.md` | Pick any external/cloud service via live research; on greenfield, decide the dev-to-prod path first |
 | `to-spec` | slash | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` | `definitions/spec.md` | Lock the implementation contract |
 | `to-issues` | slash | defining | `definitions/spec.md`, `definitions/journeys.md` | GitHub issues | Break the SPEC into `afk` / `hitl` slices, ranked into waves |
 | `run-wave` | slash | implementing | GitHub issues, `definitions/spec.md`, `definitions/journeys.md` | merged code, reconciled backlog | Run one wave in parallel, then re-judge every remaining issue |
@@ -73,7 +73,7 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `generate-test-assets` | model | implementing | `definitions/spec.md`, test plan | `test-assets/` | Generate multimodal test fixtures with Gemini; route load-bearing checks to the human |
 | `diagnose` | model | diagnosing | — | fix + regression test | Reproduce → minimise → fix hard bugs |
 | `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |
-| `audit-drift` | slash | shipping | doc graph | drift report | Sweep PRDs/SPECs/ADRs for drift |
+| `audit-drift` | slash | shipping | doc graph | drift report | Sweep the `definitions/` artifacts and the code for drift |
 | `audit-failure-modes` | slash | shipping | the system | P0/P1/P2 list | Pre-mortem of latent failure modes |
 | `go-live` | slash | operating | runbooks, gate scripts, the deployed environment | GO/NO-GO report | Evidence gate before first real traffic or a one-way cutover |
 | `readout` | slash | operating | `definitions/prd.md` metrics, live instrumentation | `docs/audits/` readout | Weeks post-launch: did the number move? keep / iterate / cut / pivot |

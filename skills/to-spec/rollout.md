@@ -61,13 +61,13 @@ The rest of the environment ladder is deliberately not one document. Four places
 
 | Question | Owner | Written when |
 |---|---|---|
-| Which route from dev to prod — local-first, cloud-first, hybrid — and what fires a change of route | the path record in `docs/adr/`, via `pick-cloud-services` greenfield mode; method in `../../docs/selection-method.md` | Once, before the first service pick |
-| Which vendor provides each capability, at what cost, with what exit | one dated `docs/adr/` record per category, via `pick-cloud-services` | Per pick |
+| Which route from dev to prod — local-first, cloud-first, hybrid — and what fires a change of route | `definitions/infrastructure.md` § Development-to-production path, via `pick-cloud-services` greenfield mode; method in `../../docs/selection-method.md` | Once, before the first service pick |
+| Which vendor provides each capability, at what cost, with what exit | one `##` section per category in the same file | Per pick |
 | Where an autonomous agent loop runs, and under what residency and cost envelope | `definitions/runtime.md`, via `pick-harness-shape`'s placement gate | Once, if the harness runs unattended |
 | How real each environment is while building — data, external access, deploy rung | the SPEC's **Verification fidelity** section | Per SPEC |
 | Whether the promised environment facts are actually true in the running system | `/go-live` §(a) | Before first traffic or a one-way cutover |
 
-The SPEC's Rollout section **cites** these; it never restates them. A restated environment fact is a second source of truth that will disagree with the first within a release. In practice that means one line naming the path record and its armed `TRIGGER:` lines — and the Verification-fidelity **Deploy** axis inheriting the rung that path implies (local / staging / prod-flagged) rather than re-deriving it.
+The SPEC's Rollout section **cites** these; it never restates them. A restated environment fact is a second source of truth that will disagree with the first within a release. In practice that means one line naming the path section and its armed `TRIGGER:` lines — and the Verification-fidelity **Deploy** axis inheriting the rung that path implies (local / staging / prod-flagged) rather than re-deriving it.
 
 ## 8. External clocks
 

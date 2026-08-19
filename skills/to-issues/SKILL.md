@@ -4,7 +4,7 @@ description: Break a plan, spec, or PRD into independently-grabbable GitHub issu
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # To Issues
 
@@ -97,9 +97,7 @@ AFK agents run non-interactively in isolated worktrees — they can't open a das
 
 From the SPEC's **External dependencies** and **Security / authn / authz** sections (plus any integration the slices touch), list every credential the AFK slices need — but only for dependencies the **Verification fidelity** section marks **sandbox** or **live**. A dependency kept at the **mock** rung needs no credential and no `.env` entry; skip it here (its swap-to-live crossover, if any, carries its own credential when that slice runs). For each credential, work out:
 
-- **Env var** — the name the code reads (`STRIPE_SECRET_KEY`), matching the SPEC or existing code.
-- **Used by** — the slice(s) that need it.
-- **How to obtain** — a few steps plus the provider's credentials URL. Use the canonical console URL when you know it (Stripe → `https://dashboard.stripe.com/apikeys`, Anthropic → `https://console.anthropic.com/settings/keys`, OpenAI → `https://platform.openai.com/api-keys`); when you don't, link the provider's docs or credentials page rather than guessing a deep link. Flag any that need a paid plan, org-admin rights, or a consent flow — those often have to stay HITL.
+For each: the **env var** the code reads, the **slices** that need it, and **how to obtain it** — a few steps plus the provider's own credentials page. Link the canonical console URL when you know it, the provider's docs when you don't; never guess a deep link. Flag any needing a paid plan, org-admin rights, or a consent flow — those usually stay HITL.
 
 Then:
 
@@ -112,7 +110,7 @@ Then:
    fi
    ```
 
-2. Write a gitignored `.env` at the repo root (or extend the project's existing one) with one commented block per credential: the purpose and the how-to-obtain steps + link as comments, and an empty assignment for the user to fill. Append only missing keys — never overwrite a value already present, and never write or print a real secret value yourself.
+2. Write a gitignored `.env` at the repo root (or extend the existing one), one commented block per credential in this shape. Append only missing keys — never overwrite a value already present, and never write or print a real secret value yourself.
 
    <credentials-guide>
    # STRIPE_SECRET_KEY — charges + webhooks for the checkout slice (#12)
@@ -121,9 +119,9 @@ Then:
    STRIPE_SECRET_KEY=
    </credentials-guide>
 
-3. Show the user the same how-to-obtain list and ask them to fill in the file, then tell you which they could and couldn't get. You write the template and the guide; the user supplies the values — so no secret lands in git or the transcript.
+3. Ask the user to fill the file in and say which they could and couldn't get. You write the template; they supply the values — so no secret lands in git or the transcript.
 
-4. Re-classify: a slice stays `afk` only once every credential it needs is filled in and nothing about its setup is interactive (no consent screen, no dashboard toggle the agent can't reach). Otherwise mark it `hitl`. Tell the user which slices moved and why.
+4. Re-classify: a slice stays `afk` only once every credential it needs is filled and nothing about its setup is interactive (no consent screen, no dashboard toggle the agent can't reach). Otherwise mark it `hitl`, and say which slices moved and why.
 
 ### 6. Create the GitHub issues
 

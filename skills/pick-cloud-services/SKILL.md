@@ -1,10 +1,10 @@
 ---
 name: pick-cloud-services
-description: Choose an external or cloud service for a category — hosting/compute, database, cache, queue, object storage, secrets, auth, transactional email, SMS/voice/telephony, DNS/CDN, CI/CD, logs/metrics, error tracking, LLM observability, backups, feature flags, or payments — from live research rather than memory, and lock it as a dated decision record. Also use to re-pick when a vendor's pricing or terms change or a free tier dies, and — on a greenfield project — to decide the development-to-production path (local-first / cloud-first / hybrid) before any service pick. Use when choosing or re-choosing a provider for any infrastructure category. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Choose an external or cloud service for a category — hosting/compute, database, cache, queue, object storage, secrets, auth, transactional email, SMS/voice/telephony, DNS/CDN, CI/CD, logs/metrics, error tracking, LLM observability, backups, feature flags, or payments — from live research rather than memory, and lock it as a dated entry in definitions/infrastructure.md. Also use to re-pick when a vendor's pricing or terms change or a free tier dies, and — on a greenfield project — to decide the development-to-production path (local-first / cloud-first / hybrid) before any service pick. Use when choosing or re-choosing a provider for any infrastructure category. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Pick cloud services
 
@@ -26,7 +26,7 @@ Choose an external service for a category the way `pick-harness-shape` chooses a
 
 On the **first** invocation for a new project, before any service pick, decide the development-to-production path. Walk the method doc's 7 discriminating questions, then write the path record as the project's first decision record:
 
-`docs/adr/YYYY-MM-DD-dev-to-prod-path.md` (create `docs/adr/` lazily; flat — no subdirectories), containing:
+the `## Development-to-production path` section of `definitions/infrastructure.md` (create the file and `definitions/` lazily), containing:
 
 - The picked route (local-first / cloud-first / hybrid) + the one-sentence trade-off.
 - Answers to the 7 questions.
@@ -34,7 +34,7 @@ On the **first** invocation for a new project, before any service pick, decide t
 - The armed `TRIGGER:` lines (line-start), drawn from the doc's trigger catalog.
 - A `NEXT REVIEW: YYYY-MM-DD` line.
 
-Then proceed category by category through the stack's needs, each as its own anytime-mode decision.
+Then proceed category by category through the stack's needs, each as its own anytime-mode decision — one `##` section each, appended to the same file.
 
 ## Anytime mode — one decision
 
@@ -60,7 +60,14 @@ Then proceed category by category through the stack's needs, each as its own any
 
 ## The record
 
-`docs/adr/YYYY-MM-DD-<category>-<choice>.md` — flat, no subdirectories (the freshness sweep does not recurse). Date-prefixed rather than the house `NNNN-` sequential numbering, so the records sort chronologically for the sweep. Extends the house ADR shape (`${SKILL_DIR}/../clean-house/ADR-FORMAT.md`) with these mandatory fields:
+One `##` section per category in `definitions/infrastructure.md`, headed `## <Category> — <choice> (YYYY-MM-DD)`. The file is amended in place per `${SKILL_DIR}/../../docs/amend-mode.md`: a later re-pick **appends the new section and marks the old one superseded** — it never deletes it. The trail of what was chosen before, and why it stopped being right, is the asset; keeping it in the file rather than in git means one read recovers it.
+
+```
+## Transactional email — <choice> (2026-08-20)
+**Superseded by:** <choice> (2027-02-11)     ← added when re-picked; the body stays
+```
+
+Every section carries these mandatory fields:
 
 - **Requirements sheet** — the 5 lines.
 - **Shortlist with research provenance** — every fact tagged with its source page + the date fetched.
@@ -111,4 +118,4 @@ Ask only the 2–3 that gate the pick. **Governing default, every row: take what
 
 ## Freshness & sweep wiring
 
-Every fact in a record is dated at the point it was fetched. `/clean-house` sweeps every record's `NEXT REVIEW:`/`TRIGGER:` lines each pass (its step-1 sweep owns the canonical check, covering `docs/adr/` and `definitions/runtime.md`) — and a fired path trigger is the input to the `/go-live` gate. This skill names **no vendor, product, price, or version** on purpose: if one ever appears here, it is a bug in an example, never the method. Fix the example; leave the method alone.
+Every fact in a section is dated at the point it was fetched. `/clean-house` sweeps every `NEXT REVIEW:`/`TRIGGER:` line each pass (its step-1 sweep owns the canonical check, covering `definitions/infrastructure.md`, `definitions/decisions.md`, and `definitions/runtime.md`) — and a fired path trigger is the input to the `/go-live` gate. This skill names **no vendor, product, price, or version** on purpose: if one ever appears here, it is a bug in an example, never the method. Fix the example; leave the method alone.

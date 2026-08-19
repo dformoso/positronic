@@ -209,6 +209,8 @@ Use the template below. Every section must carry information: cite the pattern b
 
 <harness-template>
 
+*Every section below cites the `docs/agentic-patterns/` brief that grounded it; name the brief inline in the Why sentence rather than as a separate line.*
+
 ## Sources
 
 - `definitions/prd.md` — the PRD whose constraints drove these picks. (Or "harness-first override: no PRD yet" with a one-sentence reason, if section 0's exception applied.)
@@ -228,14 +230,12 @@ One paragraph naming the picked substrate, the Axis A structure and Axis B impro
 
 **Picked:** Claude Agent SDK | OpenAI Agents SDK | Google ADK | LangGraph | smolagents | thin custom loop | fork of `<harness>`
 **Why:**
-**Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`
 
 ## Topology
 
 **Axis A — structure:** Single ReAct | Planner-Executor | Reason-Plan-ReAct | Multi-agent (orchestrator) | Multi-agent (A2A)
 **Axis B — improvement loop:** None | Reflexion | Search (ToT / GoT / self-consistency) | Skill library | Harness self-optimization
 **Why:** for multi-agent, name the real decomposition reason — independent lifecycles, trust boundaries, or parallelism gain >2×. For any Axis B rung past Reflexion, name the reason.
-**Cited pattern:** `docs/agentic-patterns/05_harness_architectures_brief.md`, `docs/agentic-patterns/02_role_design_brief.md`
 
 ## Role decomposition
 
@@ -247,13 +247,11 @@ One paragraph naming the picked substrate, the Axis A structure and Axis B impro
 **Topology shape:** sequential | parallel workers | hierarchical | conversational — and why.
 **Communication:** artifacts | dialog; what each role sees of others.
 **Assignment:** static | dynamic.
-**Cited pattern:** `docs/agentic-patterns/02_role_design_brief.md`
 
 ## Memory & state
 
 **Approach:** None | Long context | Memory-as-action | Hierarchical | Episodic+semantic+procedural
 **Compaction policy:** when context gets summarized vs. truncated.
-**Cited pattern:** `docs/agentic-patterns/03_context_management_brief.md`
 
 ## Tool layer / ACI
 
@@ -261,7 +259,6 @@ One paragraph naming the picked substrate, the Axis A structure and Axis B impro
 **MCP vs custom:** if MCP, note that `design-mcp-server` will run after this skill to write its section of `definitions/mcp-servers.md`.
 **Per-tool agent-facing shape:** brief notes — what the *agent* sees, not the human.
 **Permissions & idempotency:**
-**Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`, `docs/agentic-patterns/06_mcp_design_brief.md` (if MCP)
 
 ## Verification gates, recovery & budget
 
@@ -269,7 +266,6 @@ One paragraph naming the picked substrate, the Axis A structure and Axis B impro
 |---|---|---|---|---|---|
 
 **Stop & budget envelope:** max iterations / actions, token budget (+ child-agent quota if multi-agent), wall-clock ceiling, terminal stop condition.
-**Cited pattern:** `docs/agentic-patterns/05_harness_architectures_brief.md`
 
 ## Security & trust boundary
 
@@ -279,14 +275,12 @@ One paragraph naming the picked substrate, the Axis A structure and Axis B impro
 **Multi-agent trust surface:** (if Axis A is multi-agent)
 **Audit trail:** (if regulated / auditable)
 Skip rows that don't apply — state why.
-**Cited pattern:** `docs/agentic-patterns/01_harness_engineering_brief.md`
 
 ## Per-stage sampling & model choice
 
 | Stage | Model tier | Temperature | Reasoning effort | Max tokens / step |
 |---|---|---|---|---|
 
-**Cited pattern:** `docs/agentic-patterns/04_prompt_management_brief.md`
 
 ## Observability & evaluation
 
@@ -294,7 +288,6 @@ Skip rows that don't apply — state why.
 **Success signal:** verifiable definition of a good run (ties to PRD CUJs).
 **Harness-level eval:** held-out task set, or note it's deferred to `/to-spec`.
 **Production monitoring:** (if always-on) cost-per-success, trajectory length, gate hit-rate, drift thresholds.
-**Cited pattern:** `docs/agentic-patterns/07_eval_observability_brief.md`
 
 ## Rejected alternatives
 
@@ -314,5 +307,5 @@ Decisions deferred to `/to-spec` (e.g., exact module boundaries, schema specific
 Present the saved `definitions/harness.md` and ask the user to review. Once approved:
 
 - If the tool layer (§5) chose MCP, prompt them to run `design-mcp-server` next — it writes `definitions/mcp-servers.md`, which `/to-spec` reads.
-- **Placement gate** — if the system runs autonomously in the cloud (always-on triggers, scheduled work, inbound webhooks) and its production placement isn't already settled: derive a workload profile from this artifact (max single-run duration, state across waits, trigger shape, executes generated code y/n, concurrency, residency constraint, irreversible side effects) and ask the gate question: *does this need more than one boring compute service?* If runs fit platform timeouts, state lives in the project's own store, and no generated code executes — the answer is no: record the verdict + profile in `definitions/runtime.md` (one page: gate verdict, workload profile, revisit `TRIGGER:` lines — each at the start of its own line, list markers fine; the sweep greps for them) so the decision isn't reopened. If the gate trips, the placement questions in `${SKILL_DIR}/../../docs/selection-method.md` drive the same artifact section by section (per-pick evidence + exit line, residency-exceptions table, cost envelope + kill switch). This artifact records *where the loop runs*; individual service picks stay `docs/adr/` records via `pick-cloud-services`. Amend-mode applies (`definitions/runtime.md` is in the cascade).
+- **Placement gate** — if the system runs autonomously in the cloud (always-on triggers, scheduled work, inbound webhooks) and its production placement isn't already settled: derive a workload profile from this artifact (max single-run duration, state across waits, trigger shape, executes generated code y/n, concurrency, residency constraint, irreversible side effects) and ask the gate question: *does this need more than one boring compute service?* If runs fit platform timeouts, state lives in the project's own store, and no generated code executes — the answer is no: record the verdict + profile in `definitions/runtime.md` (one page: gate verdict, workload profile, revisit `TRIGGER:` lines — each at the start of its own line, list markers fine; the sweep greps for them) so the decision isn't reopened. If the gate trips, the placement questions in `${SKILL_DIR}/../../docs/selection-method.md` drive the same artifact section by section (per-pick evidence + exit line, residency-exceptions table, cost envelope + kill switch). This artifact records *where the loop runs*; individual service picks are sections of `definitions/infrastructure.md` via `pick-cloud-services`. Amend-mode applies (`definitions/runtime.md` is in the cascade).
 - Then prompt them to run `/to-spec` — it reads this file (and the placement profile, if one exists) alongside the PRD automatically.

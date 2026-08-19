@@ -4,19 +4,13 @@ description: Review the current branch against main before shipping. Includes a 
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Review
 
 Review the current branch before it ships. Focus on what's wrong or risky, not what's fine.
 
-Positions within the shipping phase:
-
-| Skill | Scope | When it fires | What it does |
-|---|---|---|---|
-| `/review-pr` (this) | Current diff | Before a branch ships | Catches what's wrong or risky in the change |
-| `/audit-drift` | Doc graph | Shipping, on demand | Detects drift across PRDs/SPECs/ADRs |
-| `/audit-failure-modes` | Whole system | Before a release cut | Lists latent failure modes; ranks by correctness/reliability/polish |
+Scope is the **current diff**. Whole-system risk is `/audit-failure-modes`; doc-graph drift is `/audit-drift`.
 
 ## Process
 
@@ -45,7 +39,7 @@ Read every changed file in full. For each, check against the AGENTS.md principle
 - **Comments git already holds** — history notes (`// was: oldName()`, dated change annotations, changelog blocks at a file head), commented-out code, docstrings that restate the signature. Flag them for deletion; the commit message is where history belongs.
 - **Private-API reach** — flag any access to underscore-prefixed attributes across module boundaries. If a public surface needs the data, the underscore reach is a bug-in-waiting and the deepening opportunity should go to `/clean-house` (targeted mode).
 - **User-facing reliability** — for new >2s operations, confirm a progress signal is shown; for new external calls, confirm failure paths map to actionable messages, not raw exception strings. AGENTS.md §7.
-- **MCP-server changes** — if the diff adds or modifies an MCP tool / resource / prompt: `inputSchema` is the public contract (single-type fields, `description` per property, `enum`/`pattern` where the domain is finite, no `oneOf`/`anyOf` discriminators); tool name `[a-z0-9_]+` with no embedded server name; failures wrap as `CallToolResult(isError=True, content=[TextContent(...)])` — never thrown; `annotations` set (`readOnlyHint`, `idempotentHint`, `destructiveHint`, `openWorldHint`); capabilities advertised match what's implemented; `tools/list_changed` emitted on mutation; schemas validated at server startup. See `${SKILL_DIR}/../../docs/agentic-patterns/06_mcp_design_brief.md` (`${SKILL_DIR}` = the directory containing this file).
+- **MCP-server changes** — if the diff adds or modifies an MCP tool / resource / prompt, check it against `${SKILL_DIR}/../../docs/agentic-patterns/06_mcp_design_brief.md` (`${SKILL_DIR}` = the directory containing this file) and against `definitions/mcp-servers.md` if the project has one. Flag drift from either, plus the three the brief can't see from a schema: advertised capabilities that aren't implemented, `tools/list_changed` missing on mutation, schemas not validated at startup.
 - **Trace-to-task** — every changed line traces to a sentence in the user's request. Pre-existing dirty state (files modified before the session started) gets surfaced explicitly — never quietly bundled.
 
 ### 2a. Coverage check (for cross-surface or removal diffs)
@@ -61,7 +55,7 @@ Prompt files include system prompts, agent instructions, SKILL.md bodies, prompt
 - **Tool-list drift** — if the prompt has a tool catalogue: every registered tool appears with a "call this when …" rule; every listed tool is actually registered; each tool has an example unless the rule is sharp enough.
 - **Output-format drift** — if the prompt prescribes structured output: every parser-read field is described; every prompt-mentioned field is consumed (or marked optional); examples use exact parser field names.
 
-**MCP tool descriptions also count.** Clients embed `f"{tool.name}: {tool.description}"` for semantic search — concrete domain nouns beat generic verbs ("Get GitHub pull request details" > "Use this tool to retrieve information about pull requests"). Tool name `[a-z0-9_]+`, no embedded server name (clients namespace as `${server}_${tool}`). Annotations (`readOnlyHint`, `idempotentHint`, `destructiveHint`, `openWorldHint`) drive client security gating; omission gets worst-case defaults. See `${SKILL_DIR}/../../docs/agentic-patterns/06_mcp_design_brief.md`.
+**MCP tool descriptions also count.** Clients embed `f"{tool.name}: {tool.description}"` for semantic search, so a vague description is a discoverability bug — concrete domain nouns beat generic verbs ("Get GitHub pull request details" > "Use this tool to retrieve information about pull requests"). Everything else about the tool surface is checked by the bullet above.
 
 ### 3. Report
 
@@ -73,7 +67,7 @@ Output a review with two sections:
 
 Do not summarise what the code does. Do not praise things that are fine. The author can read the diff.
 
-**Doc-graph nudge** — if `definitions/` or `docs/adr/` exist in the repo, append: "Consider `/audit-drift` next for whole-graph doc drift (glossary inconsistencies, dead refs, ADRs overtaken by SPEC, orphan ADRs). If you're approaching a release cut, also consider `/audit-failure-modes` to enumerate latent failure modes by surface."
+**Doc-graph nudge** — if `definitions/` exists in the repo, append: "Consider `/audit-drift` next for whole-graph doc drift (glossary inconsistencies, dead refs, decisions overtaken by the SPEC, mockup panels no journey contains). If you're approaching a release cut, also consider `/audit-failure-modes` to enumerate latent failure modes by surface."
 
 ### 4. Resolve
 

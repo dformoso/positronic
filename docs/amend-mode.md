@@ -12,9 +12,13 @@ positronic keeps one document per artifact type, flat in `definitions/`, each na
 | `definitions/harness.md` | `pick-harness-shape` |
 | `definitions/mcp-servers.md` | `design-mcp-server` (one section per server) |
 | `definitions/runtime.md` | `pick-harness-shape`, at the placement gate |
+| `definitions/infrastructure.md` | `/pick-cloud-services` (one section per category) |
+| `definitions/decisions.md` | `/clean-house`, `/improve-readability` (one section per decision) |
 | `definitions/spec.md` | `/to-spec` |
 
 Each one is a **whole-product** document that every consumer reads by name. There are no subdirectories, no timestamps, and no second copy — the file *is* the current truth, and git holds every version it used to be.
+
+The last two work slightly differently: they are **append-and-supersede** rather than edit-in-place. A re-pick or a reversed decision adds a new section and marks the old one `**Superseded by:**`, leaving its body intact. Keeping the trail inside the file rather than only in git means one read recovers why a path was abandoned — which is the whole value of a decision record.
 
 That leaves one trap. When a feature lands after the first cut, the tempting move is to regenerate the file around the new feature — and everything the product already did, which the change never touched, quietly disappears. Amend mode is the discipline that prevents it: read the file as **baseline**, change only the delta, leave the rest byte-for-byte alone. The product stays whole, the work stays incremental, and `git log -p definitions/prd.md` is the changelog.
 
@@ -23,7 +27,7 @@ That leaves one trap. When a feature lands after the first cut, the tempting mov
 | Situation | Path |
 |---|---|
 | Typo / bug, no behaviour-contract change | `diagnose` — no artifact change |
-| A settled decision or tradeoff, no scope change | ADR (`docs/adr/`) — existing |
+| A settled decision or tradeoff, no scope change | A section in `definitions/decisions.md` (or `definitions/infrastructure.md` for a service pick) |
 | A scoped change: new, changed, or dropped capability | **Amend** the implicated artifact(s) |
 | A pivot — the product is now a different product | Rewrite the file from scratch, **no** Amendment header |
 
@@ -87,7 +91,7 @@ What stops "rewrite five artifacts per feature." An amended artifact forces a do
 
 **Termination:** any amended upstream artifact (`definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md`) implies a `/to-spec` amend; a `/to-spec` amend implies `/to-issues`; `/to-issues` hands to `/run-wave`. The cascade ends at `/to-issues` — the executable unit, and the last place a stale issue can be caught. A change confined to one section travels one edge, not the whole graph.
 
-**Mid-graph edge:** an amended `definitions/harness.md` whose Topology (trigger classes), Gates (waits), Security (residency, sandbox posture), or Substrate sections changed implicates `definitions/runtime.md` — the placement profile, when one exists (written at `pick-harness-shape`'s placement gate). Service-level vendor picks are ADRs (`docs/adr/`, via `pick-cloud-services`) and sit outside this cascade; their revisit triggers are swept by `/clean-house` instead.
+**Mid-graph edge:** an amended `definitions/harness.md` whose Topology (trigger classes), Gates (waits), Security (residency, sandbox posture), or Substrate sections changed implicates `definitions/runtime.md` — the placement profile, when one exists (written at `pick-harness-shape`'s placement gate). Service-level vendor picks are sections of `definitions/infrastructure.md` (via `pick-cloud-services`) and sit outside this cascade; their revisit triggers are swept by `/clean-house` instead.
 
 This is also the path a production-learning loop takes: brief 07's optimizer amends `definitions/harness.md` directly → cascades to `/to-spec` → `/to-issues`. Same machinery, different trigger.
 

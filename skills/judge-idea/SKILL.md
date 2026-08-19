@@ -4,7 +4,7 @@ description: Adversarial pass on the most recent ideation winner (or PRD / journ
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 Try to invalidate the chosen direction. Enumerate everything that could be wrong. Output a single named verdict with what to fix on the next iteration if loop-back is required.
 

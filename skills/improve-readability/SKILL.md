@@ -4,7 +4,7 @@ description: Supervised comprehension-and-reduction pass over an established cod
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Improve Readability
 
@@ -18,22 +18,17 @@ pass does not stop at explaining the code; it cuts the code down to what the job
 makes the tests strong enough that the cutting was safe. Every move either lowers
 time-till-understanding or is out of scope.
 
-Grounding, one line per book (the full checklist is [CHECKS.md](CHECKS.md)):
+Two ideas do most of the work here; the rest is in [CHECKS.md](CHECKS.md).
 
-- Complexity is whatever makes code hard to understand and change; it accumulates in small
-  messes and it costs most where readers actually spend time (Ousterhout, *A Philosophy of
-  Software Design*).
-- Confusion is diagnosable. Every stumble is a shortage of **knowledge** (don't know what a
-  thing means), **information** (know it, but must fetch it from somewhere else), or
-  **processing power** (too much to hold at once) — and each shortage has a different fix
-  (Hermans, *The Programmer's Brain*).
-- Most excess machinery is braided concerns that could stand apart — deciding tangled with
-  performing, state with time, validation with transport (Hickey, *Simple Made Easy*).
-- Failure paths are interface surface. The strongest fix is making the bad state
-  unrepresentable, not handling it (Ousterhout's *define errors out of existence*; King,
-  *Parse, Don't Validate*).
-- The fixes are small, named, behavior-preserving moves, kept in their own commits, worth
-  applying where change actually happens (Fowler, *Refactoring*; Beck, *Tidy First?*).
+- **Confusion is diagnosable.** Every stumble is a shortage of **knowledge** (don't know what
+  a thing means), **information** (know it, but must fetch it from elsewhere), or
+  **processing power** (too much to hold at once) — and each shortage has a different fix.
+- **Failure paths are interface surface.** The strongest fix is making the bad state
+  unrepresentable, not handling it.
+
+(Ousterhout, *A Philosophy of Software Design*; Hermans, *The Programmer's Brain*; Hickey,
+*Simple Made Easy*; King, *Parse, Don't Validate*; Fowler, *Refactoring*; Beck, *Tidy
+First?*)
 
 Neighbours — keep the questions distinct:
 
@@ -155,7 +150,7 @@ Three sweeps, parallel read-only subagents per lens or per area:
   READMEs describing a layout that changed. One auditor per candidate carrying
   [../clean-house/DELETION-AUDIT.md](../clean-house/DELETION-AUDIT.md) — readership is only
   half of it; a doc still cited but no longer true is the worse find. **Never touch
-  decision records**: `docs/adr/` and the `definitions/` artifacts
+  decision records**: the `definitions/` artifacts
   are supersede-never-edit by design — superseded is not spent.
 
 Merge into findings: *file:line / check / evidence / responding move / lane*. A
@@ -186,9 +181,9 @@ Per approved slice, in this order:
    shape beside old, callers moved over one at a time, old shape deleted last.
 4. **Route what isn't yours.** Module-level and deletion candidates → `/clean-house`
    (targeted mode) with the evidence; bugs → `diagnose`.
-5. **Rejected with a load-bearing reason** → offer an ADR
-   (see [../clean-house/ADR-FORMAT.md](../clean-house/ADR-FORMAT.md)) so later passes don't
-   re-suggest it. Skip ephemeral reasons.
+5. **Rejected with a load-bearing reason** → offer a record in `definitions/decisions.md`
+   (see [../clean-house/DECISIONS-FORMAT.md](../clean-house/DECISIONS-FORMAT.md)) so later
+   passes don't re-suggest it. Skip ephemeral reasons.
 
 ### 6. Newcomer artifacts
 

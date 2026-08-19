@@ -4,7 +4,7 @@ description: Work the issue backlog in waves — launch one wave of issues in pa
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Run Wave
 
@@ -70,11 +70,7 @@ While the wave runs, keep the user informed — which agents are still working, 
 
 Coalesce — this is yours, not the agents' (AGENTS.md §9). Merge each agent's branch, reconcile overlaps, resolve conflicts, and run the full test suite on the merged result. **A wave isn't done when the agents return; it's done when their output is integrated and green.** An agent whose work doesn't merge cleanly gets its issue reopened with what conflicted, not a silent revert.
 
-Then collect the out-of-scope observations. The rule the agents worked under, and why it exists:
-
-- **Bugs inside a slice are fixed in place, by the agent, in that issue.** Filing an issue to fix something you are already looking at converts five minutes of work into a backlog entry, a review, and a second context load.
-- **Bugs outside a slice are reported, not filed and not fixed.** A backlog that grows during a wave never converges, and half of what gets filed mid-wave is made moot by a later slice in the same wave. Holding them until step 4 means they're judged against the finished wave rather than a half-built one.
-- **The exception:** something that breaks a shipped user journey or loses data. That interrupts — ask the user immediately, don't hold it for the review.
+Then collect the out-of-scope observations the agents reported. They worked under `test-driven-dev` § Bugs found along the way: fix inside the slice, report outside it, interrupt for anything that breaks a shipped journey or loses data. Holding the outside-the-slice reports until step 4 is what keeps the backlog converging — half of what would get filed mid-wave is made moot by a later slice in the same wave.
 
 ### 4. Review every remaining issue
 

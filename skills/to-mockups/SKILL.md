@@ -4,7 +4,7 @@ description: Design the user-facing shape of a product with persistent UI, then 
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 You are designing the user-facing shape of a product with persistent UI surfaces, in two halves that belong to one activity:
 
@@ -90,15 +90,7 @@ What the user sees before, during, and after the first CUJ.
 | Moment | Trigger | What user sees | Skippable? |
 |---|---|---|---|
 
-Common moments to consider:
-
-- First app load (cold)
-- Account creation / signup
-- Email verification
-- Permission asks (notifications, mic, camera, location)
-- Welcome screen / value-prop reminder
-- Empty-state defaults (sample data, pre-filled workspace)
-- First CUJ completion (next-step nudge)
+Cover cold first load, signup and verification, every permission ask, empty-state defaults, and the nudge after the first CUJ completes.
 
 Hard pushback on long tours: every tour step is a tax on time-to-value. Default to no tour; rely on empty states with inline CTAs.
 
@@ -109,17 +101,7 @@ One row per section, not per individual setting:
 | Section | Contents | Default | Scope (user / workspace / org) |
 |---|---|---|---|
 
-Common sections:
-
-- Profile (name, avatar, email, timezone, language)
-- Notifications (channel toggles, cadence overrides)
-- Integrations (connected services, OAuth tokens)
-- Billing (plan, payment, invoices) — if commercial
-- Security (password, MFA, sessions, devices, API keys)
-- Workspace / org (members, roles, invites) — if multi-user
-- Privacy (analytics opt-out, third-party sharing)
-- Theme / accessibility (light/dark toggle, font size, motion) — the user-facing switch, not the palette itself (that's the visual identity)
-- Danger zone (delete workspace, delete account)
+The usual set — profile, notifications, integrations, security, privacy, theme, danger zone, plus billing if commercial and workspace if multi-user. Two that get mis-scoped: **theme** here is the user-facing switch, not the palette (that's §2), and **danger zone** must reach every store the account touches, or §10's deletion touchpoint is a lie.
 
 Default policy: ship privacy-protective defaults (analytics off, sharing off) and convenience defaults for productivity (autosave on).
 
@@ -145,17 +127,7 @@ What the user sees when things go wrong or aren't there yet.
 | State | Trigger | What user sees | Recovery path |
 |---|---|---|---|
 
-Common states:
-
-- 404 not found
-- 403 forbidden
-- 500 server error
-- Network offline
-- Rate limit hit
-- Validation error (form-level)
-- Session expired
-- Maintenance mode
-- Quota / plan limit exceeded
+Cover the standard set: 404, 403, 500, offline, rate-limited, session expired, maintenance, quota exceeded.
 
 Recovery path matters more than copy: every error state needs a way out (retry, sign in, contact support, switch plan).
 
@@ -177,14 +149,7 @@ Drop if not regulated and not consumer-facing in regulated regions.
 | Touchpoint | When | What user sees |
 |---|---|---|
 
-Common:
-
-- TOS / Privacy Policy acceptance (signup)
-- Cookie consent (first page load — EU/UK/CA)
-- GDPR data export (in settings; user-triggered)
-- GDPR data deletion (in settings; user-triggered)
-- Age verification (signup, if applicable)
-- Region / data residency selection (signup, for enterprise)
+Terms and privacy acceptance at signup, cookie consent on first load (EU/UK/CA), user-triggered data export and deletion in settings, plus age verification and residency selection where they apply.
 
 If the PRD names a regulated industry (financial, healthcare, government) or EU/UK users, this section is mandatory.
 
@@ -298,7 +263,7 @@ Now make the picks real. **The drawing is a decision instrument, not a deliverab
 
 Then write one file: `definitions/mockups.html`. Self-contained — no build step, no framework, no CDN, no network request of any kind. It must open correctly from a `file://` URL on a machine with no toolchain.
 
-- **Identity comes from section 2, not from taste.** Declare the visual identity once as CSS custom properties at the top — accent ramp, neutrals, spacing scale, fonts, radius, the two shadow sizes — and let every panel inherit them. This is the first place those picks become real, and `ui-taste` reads the same values from the SPEC later. A value invented here and not written back to section 2 is drift you are creating on purpose.
+- **Identity comes from section 2, not from taste.** Declare it once as CSS custom properties at the top and let every panel inherit them. A value invented here and not written back to section 2 is drift you are creating on purpose.
 - **Content is real.** Use the Data line from each journey — the actual names, numbers, and timestamps it already specifies. Never lorem ipsum, never "Item 1 / Item 2": fake-shaped content hides the layout problems the drawing exists to find. A list that looks fine at three rows and breaks at forty is exactly what you are looking for.
 - **Every panel is annotated, in the page** — visible in the browser, not buried in an HTML comment. Which journey step or branch it renders (`J1 · step 4`, `J1 · branch: carrier rejects`), what it locks, and the open question it raises if it raises one.
 - **Structure for both readers.** A person needs a sticky index rail to jump between journeys. Automation needs a stable hook: give every panel `id="<journey>-<step-or-branch>"` and `data-state="…"`, matching the Panel column in `definitions/journeys.md`, so a Playwright check can screenshot a named state directly. Group panels by journey, in inventory order.

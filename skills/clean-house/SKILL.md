@@ -4,7 +4,7 @@ description: Between-versions subtraction loop over a built system — question 
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Clean the House
 
@@ -55,7 +55,7 @@ Key principles (see [LANGUAGE.md](LANGUAGE.md) for the full list):
 
 - The defining artifacts, whichever exist: `definitions/prd.md`, `definitions/journeys.md`, `definitions/spec.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/runtime.md`, `definitions/mcp-servers.md`
 - The most recent readouts: `ls docs/audits/*-readout.md 2>/dev/null | sort | tail -3` — these already asked, with real numbers, whether each shipped bet worked. Step 1 below is much sharper with them and mostly guesswork without; a `cut` verdict in one is a deletion candidate already argued
-- `CONTEXT.md` (or `CONTEXT-MAP.md` + each `CONTEXT.md`) and `docs/adr/` — domain language names good seams; ADRs record past decisions, don't re-litigate them. See [CONTEXT-FORMAT.md](CONTEXT-FORMAT.md) and [ADR-FORMAT.md](ADR-FORMAT.md)
+- `CONTEXT.md` (or `CONTEXT-MAP.md` + each `CONTEXT.md`), plus `definitions/decisions.md` and `definitions/infrastructure.md` — domain language names good seams; the decision files record what was settled, so don't re-litigate them. See [CONTEXT-FORMAT.md](CONTEXT-FORMAT.md) and [DECISIONS-FORMAT.md](DECISIONS-FORMAT.md)
 - The previous report: `ls docs/audits/*-clean-house.md 2>/dev/null | sort | tail -1` — proceed silently if none (first run)
 - `git log` since the previous report — what shipped, what got reverted, what came back after a cut
 - The codebase
@@ -84,7 +84,7 @@ For every requirement row in the latest PRD, journeys artifact and SPEC (and eac
 
 Drift is evidence here: a doc section that diverged long ago with nobody noticing is a strong signal nobody needed what it described.
 
-**Fired triggers are evidence too.** Sweep the dated decision machinery: run `${SKILL_DIR}/scripts/freshness-sweep.sh` (`${SKILL_DIR}` = the directory containing this file) and read its output — it emits past-due `NEXT REVIEW:` lines and every `TRIGGER:` line across `docs/adr/` and `definitions/runtime.md`. A past-due `NEXT REVIEW:` date or a fired `TRIGGER:` condition (on a service pick or the development-to-production path record) is a decision whose ground truth moved — flag it, and the fix is the trigger's own named action (re-run `pick-cloud-services` on that record, start the migration step, formalize custody). A trigger nothing sweeps is decorative; this step is the sweep.
+**Fired triggers are evidence too.** Sweep the dated decision machinery: run `${SKILL_DIR}/scripts/freshness-sweep.sh` (`${SKILL_DIR}` = the directory containing this file) and read its output — it emits past-due `NEXT REVIEW:` lines and every `TRIGGER:` line across `definitions/infrastructure.md`, `definitions/decisions.md`, and `definitions/runtime.md`. A past-due `NEXT REVIEW:` date or a fired `TRIGGER:` condition (on a service pick or the development-to-production path) is a decision whose ground truth moved — flag it, and the fix is the trigger's own named action (re-run `pick-cloud-services` on that section, start the migration step, formalize custody). A trigger nothing sweeps is decorative; this step is the sweep.
 
 Output: flagged requirements, each with its evidence. These feed step 2.
 
@@ -101,7 +101,7 @@ Hunt cut candidates at every layer:
 | Abstractions | Pass-throughs (deletion test); one-adapter seams nothing else will use; layers with one caller |
 | Process | CI stages, hooks, scripts, doc artifacts, skills nobody runs |
 | Tests | Suites green against nothing: tests for features already cut, tests asserting mocks of deleted seams, implementation-detail pins that break on refactor rather than regression (tests.md red flags). Cut them here; *strengthening* the survivors is `/improve-readability`'s pass — see [`../improve-readability/TESTS.md`](../improve-readability/TESTS.md) |
-| Spent docs | `.md` files nothing reads anymore: executed plans, finished migration guides, how-tos for cut features, superseded audit reports, READMEs describing a layout that changed. **Never** decision records — `docs/adr/` and the `definitions/` artifacts are amended rather than deleted, and the trail of why is the asset |
+| Spent docs | `.md` files nothing reads anymore: executed plans, finished migration guides, how-tos for cut features, superseded audit reports, READMEs describing a layout that changed. **Never** the `definitions/` artifacts — they are amended rather than deleted, and the trail of why is the asset |
 | Method docs / skills / prompts | Embedded perishable facts in files meant to be durable method — vendor names, prices, model versions, "as of" status lines (`grep -rnE '\$[0-9]|20[0-9]{2}|as of' <skill/prompt dirs>`). Each is rot: replace with the category plus a verify-live instruction; dated facts belong only in provenance-stamped records |
 
 Send each candidate to its own read-only auditor carrying [DELETION-AUDIT.md](DELETION-AUDIT.md) — one target per auditor, verdict block back. Self-description doesn't count as evidence there, and a claim the target makes that turns out false is the strongest signal you'll get.
@@ -109,7 +109,7 @@ Send each candidate to its own read-only auditor carrying [DELETION-AUDIT.md](DE
 Present cuts ranked by blast radius, each with **what / evidence / re-add trigger** — the observable signal that would justify bringing it back. Then the gate:
 
 - **Approved** → execute now: the thing, its tests, its docs, its orphans, in one stroke. Requirement-level cuts also land in step 6's amendments.
-- **Rejected with a load-bearing reason** → offer an ADR so later passes and future reviews don't re-suggest it (see [ADR-FORMAT.md](ADR-FORMAT.md)). Skip ephemeral reasons ("not right now") and self-evident ones.
+- **Rejected with a load-bearing reason** → offer a record in `definitions/decisions.md` so later passes and future reviews don't re-suggest it (see [DECISIONS-FORMAT.md](DECISIONS-FORMAT.md)). Skip ephemeral reasons ("not right now") and self-evident ones.
 
 ### 3. Deepen what survived
 
@@ -127,7 +127,7 @@ Only now, and only on survivors of step 2.
 
 Use `CONTEXT.md` vocabulary for the domain and [LANGUAGE.md](LANGUAGE.md) vocabulary for the architecture. If `CONTEXT.md` defines "Order," talk about "the Order intake module" — not "the FooBarHandler," and not "the Order service."
 
-**ADR conflicts**: only surface a candidate that contradicts an existing ADR when the friction is real enough to revisit it. Mark it clearly (_"contradicts ADR-0007 — but worth reopening because…"_). Don't list every refactor an ADR forbids.
+**Decision conflicts**: only surface a candidate that contradicts a recorded decision when the friction is real enough to revisit it. Mark it clearly (_"contradicts the event-sourcing record — but worth reopening because…"_). Don't list every refactor a record forbids.
 
 Do NOT propose interfaces yet. Ask the user: "Which of these would you like to explore?"
 
@@ -135,7 +135,7 @@ Do NOT propose interfaces yet. Ask the user: "Which of these would you like to e
 
 - **Naming a deepened module after a concept not in `CONTEXT.md`?** Add the term to `CONTEXT.md` (see [CONTEXT-FORMAT.md](CONTEXT-FORMAT.md)). Create the file lazily if it doesn't exist.
 - **Sharpening a fuzzy term during the conversation?** Update `CONTEXT.md` right there.
-- **User rejects the candidate with a load-bearing reason?** Offer an ADR so future passes don't re-suggest it. Skip ephemeral and self-evident reasons.
+- **User rejects the candidate with a load-bearing reason?** Offer a record in `definitions/decisions.md` so future passes don't re-suggest it. Skip ephemeral and self-evident reasons.
 - **Want to explore alternative interfaces for the deepened module?** See [INTERFACE-DESIGN.md](INTERFACE-DESIGN.md).
 
 ### 4. Accelerate — sweep, not redesign
@@ -170,14 +170,14 @@ Always write `docs/audits/YYYY-MM-DD-clean-house.md` (create `docs/audits/` lazi
 - {what} — {evidence} — re-add trigger: {signal}
 
 ## Cuts rejected
-- {what} — {reason} — {ADR-NNNN or "no ADR"}
+- {what} — {reason} — {recorded in decisions.md, or "not recorded"}
 
 ## Re-adds since last report
 - {what came back, why}
 {None across two consecutive reports? Say so: cutting too shallow.}
 
 ## Deepenings
-- {candidate} — {reshaped | rejected (ADR) | deferred}
+- {candidate} — {reshaped | rejected (recorded) | deferred}
 
 ## Accelerations & automation changes
 - {what changed, including de-automations}

@@ -4,7 +4,7 @@ description: Expand each PRD journey into an executable script — preconditions
 disable-model-invocation: true
 ---
 
-If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
+Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 Expand the PRD's journeys into scripts detailed enough to build from and to test against. Do NOT re-interview the user on *why* or *who* — the PRD settled those. Work from it, the codebase, and the conversation.
 
@@ -41,15 +41,13 @@ If `definitions/journeys.md` already exists and this run is a scoped change (not
 
 5. **Then write the reference half** — what the journeys run on and what no journey touches. Data model, external channels, agent autonomy, queues, notifications, integrations, permissions. If a rule applies inside exactly one journey it belongs in that journey's Rules row; if it crosses journeys it is hoisted to the cross-journey table; if it belongs to no journey at all it goes under *Behaviour with no journey*.
 
-6. **Every requirement carries an owner and a failure.** An owner you could trace it to — a person, a research finding, a judgment — and a failure you can name if it's dropped. "Best practice" and "the model suggested it" are departments, not owners. Rows without an answer go to the PRD's Out of Scope. (`/clean-house` re-asks both questions of every surviving row between versions.)
+6. **Every row carries an owner and a failure.** Someone you could trace it to — a person, a research finding, a judgment — and a failure you can name if it's dropped. "Best practice" and "the model suggested it" are departments, not owners. Rows with neither go to the PRD's Out of Scope. (`/clean-house` re-asks both between versions.)
 
 7. Save as `definitions/journeys.md` (create `definitions/` if missing). Commit it.
 
-8. **Length and density.** As long as the product needs — this is the artifact that scales, and the PRD stays short precisely so this one can be complete. Tables wherever they carry the meaning; prose only when they can't.
+8. **Length and style.** As long as the product needs — this is the artifact that scales, and the PRD stays short precisely so this one can be complete. Tables wherever they carry the meaning. This is also the technical tier: vendor names, SDK names, protocol mechanics and regulatory rules belong here, in cells rather than prose. Reuse the PRD's product nouns; never mint a synonym for something it already named.
 
-9. **Style.** This is the technical tier — vendor names, SDK names, protocol mechanics, regulatory rules belong here, packed into cells rather than prose. One layer of detail per sentence. Use the same bolded product nouns the PRD used for surfaces; never mint a synonym for something the PRD already named.
-
-10. Present the saved file and ask the user to review. Then prompt the next step:
+9. Present the saved file and ask the user to review. Then prompt the next step:
     - If the product has persistent UI surfaces, prompt them to run `to-mockups` — it locks the identity and structure and draws every step and branch as a panel.
     - If the project involves a custom LLM/agent harness, prompt them to run `pick-harness-shape`.
     - Otherwise, prompt them to run `/to-spec`.
@@ -145,7 +143,7 @@ What the journeys run on. `/to-spec`, `pick-harness-shape`, and `design-mcp-serv
 | Mode | Default? | Behaviour | Override |
 |---|---|---|---|
 
-**Integrations & migration.** Third parties the product reads from or writes to, and how users bring existing data in. Which vendor and why is a `docs/adr/` record via `/pick-cloud-services`.
+**Integrations & migration.** Third parties the product reads from or writes to, and how users bring existing data in. Which vendor and why is a `definitions/infrastructure.md` section via `/pick-cloud-services`.
 
 | Integration | Direction | Behaviour | Auth | Failure behaviour |
 |---|---|---|---|---|
