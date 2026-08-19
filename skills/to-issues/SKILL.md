@@ -19,8 +19,8 @@ Work from what's already in the conversation, plus whichever of these exist:
 | Source | What it supplies |
 |---|---|
 | `definitions/spec.md` | The implementation contract — the primary source, and what the slices decompose |
-| `definitions/frd.md` | Per-feature acceptance criteria, already written as Given/When/Then. **Copy them; do not invent new ones.** If a slice needs a criterion the FRD doesn't have, that's a gap in the FRD — amend it there, so the next increment inherits the fix |
-| `definitions/mockup.md` | Panel ids. A UI slice's acceptance criteria name the panels it must render (`#f3-over-limit`), which is also what a Playwright check screenshots |
+| `definitions/journeys.md` | Each journey's **end-state proof** and branches. **Copy them into acceptance criteria; do not invent new ones.** If a slice needs a criterion the journeys artifact doesn't have, that's a gap there — amend it, so the next increment inherits the fix |
+| `definitions/mockups.md` | Panel ids. A UI slice's acceptance criteria name the panels it must render (`#j1-step4`), which is also what a Playwright check screenshots |
 | `definitions/prd.md` | Fall back to this only if there's no SPEC |
 
 If the user passes a GitHub issue number or URL as an argument, fetch it with `gh issue view <number>` (with comments).
@@ -57,7 +57,7 @@ Score every slice:
 
 | Band | All of these hold | Goes to |
 |---|---|---|
-| **Certain** | The SPEC or FRD section it implements is unambiguous · an exemplar exists to mirror, or this slice *is* the shape-establisher · every dependency is available at its fidelity rung (a mock, or a credential already filled) · no PRD open question or risk touches it | Wave 1 |
+| **Certain** | The SPEC or journey it implements is unambiguous · an exemplar exists to mirror, or this slice *is* the shape-establisher · every dependency is available at its fidelity rung (a mock, or a credential already filled) · no PRD open question or risk touches it | Wave 1 |
 | **Likely** | The contract is clear but one support is soft — no exemplar yet, or a sandbox dependency nobody has exercised | Wave 2 |
 | **Unclear** | It depends on an unresolved open question, a decision the user hasn't made, or a dependency whose real behaviour nobody has seen | Last wave — and say so out loud, because the honest move may be to settle the question instead of scheduling the guess |
 
@@ -178,9 +178,10 @@ Path of a file whose shape this issue should follow (e.g., `backend/app/extracto
 
 ## Acceptance criteria
 
-Copied from the FRD's feature section, as Given/When/Then. For a UI slice, name the mockup panel ids this must render.
+Copied from `definitions/journeys.md` — the journey's end-state proof plus the branches this slice covers. For a UI slice, name the panel ids it must render.
 
-- [ ] **Given** … **when** … **then** …
+- [ ] End state: <the journey's proof, asserted>
+- [ ] Branch: **when** … **then** …
 - [ ] …
 
 ## Scope discipline

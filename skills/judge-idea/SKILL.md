@@ -1,6 +1,6 @@
 ---
 name: judge-idea
-description: Adversarial pass on the most recent ideation winner (or PRD/FRD/SPEC). Enumerates weak assumptions, data gaps, logic holes, missed pivots; outputs verdict = proceed | loop-back-to-{research, ideate} | pivot. Use after /ideate, before /to-prd. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Adversarial pass on the most recent ideation winner (or PRD / journeys / SPEC). Enumerates weak assumptions, data gaps, logic holes, missed pivots; outputs verdict = proceed | loop-back-to-{research, ideate} | pivot. Use after /ideate, before /to-prd. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -12,7 +12,7 @@ Try to invalidate the chosen direction. Enumerate everything that could be wrong
 
 By default, the ideation winner: the section tagged WINNER in `definitions/ideas.md`. Plus `definitions/research.md` for cross-reference.
 
-Can also be run on a PRD, FRD or SPEC after the fact. If invoked after `/to-prd` target `definitions/prd.md`; after `/to-frd` target `definitions/frd.md`; after `/to-spec` target `definitions/spec.md`.
+Can also be run on a PRD, journeys artifact or SPEC after the fact. If invoked after `/to-prd` target `definitions/prd.md`; after `/to-journeys` target `definitions/journeys.md`; after `/to-spec` target `definitions/spec.md`.
 
 If no target artifact exists, prompt the user for which artifact to judge and stop.
 

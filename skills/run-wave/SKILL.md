@@ -31,7 +31,7 @@ Neighbours:
 gh issue list --state open --json number,title,labels,body --limit 200
 ```
 
-Read `definitions/spec.md` and `definitions/frd.md` if they exist — the review in step 4 judges issues against them, and you cannot judge relevance without knowing what the product is currently defined to be.
+Read `definitions/spec.md` and `definitions/journeys.md` if they exist — the review in step 4 judges issues against them, and you cannot judge relevance without knowing what the product is currently defined to be.
 
 **No wave labels?** The backlog predates this loop. Assign waves now using the certainty bands in `${SKILL_DIR}/../to-issues/SKILL.md` §3b (`${SKILL_DIR}` = the directory containing this file), show the user the cut, and get their agreement before launching anything.
 
@@ -83,7 +83,7 @@ The heart of the loop, and the reason waves beat a flat backlog. The codebase is
 | Question | If yes |
 |---|---|
 | **Already satisfied?** Does the merged code meet its acceptance criteria — because a wave slice covered it, or an in-place fix absorbed it? | Close it, with a comment naming what satisfied it |
-| **Still wanted?** Is the capability still in the current FRD and SPEC? | If not, close it citing the artifact that dropped it |
+| **Still wanted?** Is the capability still in the current journeys artifact and SPEC? | If not, close it citing the artifact that dropped it |
 | **Still correct?** Does it still name the right module, exemplar, interface, or convention? The wave may have moved all four | Edit the body. Don't file a replacement |
 | **Still in the right wave?** The wave resolved unknowns — some later issues are now certain. It may also have exposed new ones | Relabel `wave-N`. Promote what got certain; demote what got murky |
 

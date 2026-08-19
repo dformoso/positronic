@@ -1,6 +1,6 @@
 ---
 name: to-spec
-description: Turn definitions/prd.md, definitions/frd.md and (if present) definitions/surfaces.md, definitions/mockup.md and definitions/harness.md into an implementation SPEC. Save it as definitions/spec.md. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics, product surfaces). User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Turn definitions/prd.md, definitions/journeys.md and (if present) definitions/mockups.md and definitions/harness.md into an implementation SPEC. Save it as definitions/spec.md. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics, product surfaces). User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ If the user did not explicitly invoke this skill — by name, by slash/dollar co
 
 Synthesize the upstream definitions into a SPEC. Do NOT re-interview — work from prior decisions.
 
-The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observability, security. The PRD owns *why and for whom*, the FRD owns *what each feature does*, and the mockup owns *what the screens look like* — don't duplicate any of them here. Where the SPEC needs one of their facts, restate the minimum and point at the source.
+The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observability, security. The PRD owns *why and for whom*, the journeys artifact owns *what the user does and how you prove it worked*, and the mockups own *what the screens look like* — don't duplicate any of them here. Where the SPEC needs one of their facts, restate the minimum and point at the source.
 
 ## Amend mode
 
@@ -18,13 +18,13 @@ If `definitions/spec.md` already exists and an upstream artifact was amended (or
 
 1. Read the PRD: `definitions/prd.md`. If it doesn't exist, prompt the user to run `/to-prd` first and stop.
 
-1b. Read the FRD: `definitions/frd.md` — the feature inventory, product-wide tables, per-feature states and rules, and the acceptance criteria each slice has to satisfy. This is the primary *what* the SPEC turns into *how*; the modules below should cover its feature inventory with nothing left over and nothing invented. If it doesn't exist and the change is `feature`- or `launch`-tier (see the PRD's Change tier field), stop and prompt the user to run `/to-frd` first. A `fix`- or `internal`-tier change proceeds without one.
+1b. Read the journeys: `definitions/journeys.md` — the journey scripts, their branches and end-state proofs, the cross-journey rules, the behaviour no journey touches, and the reference tables. This is the primary *what* the SPEC turns into *how*; the modules below should carry every journey and every reference row, with nothing left over and nothing invented. Each journey's **end-state proof** is what the Test plan's end-to-end row asserts. If it doesn't exist and the change is `feature`- or `launch`-tier (see the PRD's Change tier field), stop and prompt the user to run `/to-journeys` first. A `fix`- or `internal`-tier change proceeds without one.
 
-1c. Read the mockup index if it exists: `definitions/mockup.md`. Its agreed panel inventory is the UI contract — every panel is a state some slice has to render, and the Test plan below names how each is checked. Don't restate the panels; point at the index and let `/to-issues` carry the panel ids into acceptance criteria.
+1c. Read the mockups artifact if it exists: `definitions/mockups.md`. Its agreed panel inventory is the UI contract — every panel is a state some slice has to render, and the Test plan below names how each is checked. Don't restate the panels; point at the file and let `/to-issues` carry the panel ids into acceptance criteria.
 
 2. Read the harness artifact: `definitions/harness.md`. If it exists, the SPEC's "Harness shape" section restates its picks (substrate, topology, memory, tool layer, gates, per-stage sampling) — do not re-derive them, and do not contradict them silently. If the SPEC needs to deviate, surface the conflict to the user before writing. If no harness artifact exists and the section matrix below indicates one is needed (custom agent / multi-agent / computer use), stop and prompt the user to run `pick-harness-shape` first.
 
-3. Read the surfaces artifact: `definitions/surfaces.md`. If it exists, the SPEC's "Product surfaces" section restates its picks (visual identity, nav, account, onboarding, settings, integration placement, error states, compliance) and the SPEC's Modules section should reflect them — do not re-derive, and do not contradict silently. If the SPEC needs to deviate, surface the conflict before writing. If the product has persistent UI surfaces and no surfaces artifact exists, stop and prompt the user to run `pick-ui-surfaces` first.
+3. Read the mockups artifact: `definitions/mockups.md`. If it exists, the SPEC's "Product surfaces" section restates its picks (visual identity, nav, account, onboarding, settings, integration placement, error states, compliance) and the SPEC's Modules section should reflect them — do not re-derive, and do not contradict silently. If the SPEC needs to deviate, surface the conflict before writing. If the product has persistent UI surfaces and no mockups artifact exists, stop and prompt the user to run `/to-mockups` first.
 
 4. Read the MCP-server designs (if any): `definitions/mcp-servers.md`. Multi-server projects keep one `##` section per server; read every one. For each, the SPEC's "Tool layer / ACI" section adds a paragraph restating its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) plus a pointer to that section — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
 
@@ -47,7 +47,7 @@ If `definitions/spec.md` already exists and an upstream artifact was amended (or
 | Section | Web/CRUD | LLM pipeline | Custom agent | Multi-agent | Computer use |
 |---|:---:|:---:|:---:|:---:|:---:|
 | Harness shape (from pick-harness-shape) | | | ✓ | ✓ | ✓ |
-| Product surfaces (from pick-ui-surfaces — UI products only) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Product surfaces (from /to-mockups — UI products only) | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Modules & interfaces | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Data model / schema | ✓ | ✓ | ✓ | ✓ | ✓ |
 | API contracts | ✓ | ✓ | ✓ | ✓ | ✓ |
@@ -76,9 +76,9 @@ Restate the picks from `definitions/harness.md` — substrate, topology, memory,
 
 ## Product surfaces
 
-Restate the picks from `definitions/surfaces.md` — nav, account lifecycle, onboarding, settings, integration placement, error/system states, compliance touchpoints. One paragraph plus a pointer (`See definitions/surfaces.md`) so the full rationale and rejected alternatives stay one click away. The Modules section below should reflect these surfaces (e.g., `onboarding/`, `settings/`) rather than scattering the logic.
+Restate the picks from `definitions/mockups.md` — nav, account lifecycle, onboarding, settings, integration placement, error/system states, compliance touchpoints — plus a pointer to its **Panel inventory**, which is the UI contract each slice satisfies. One paragraph plus a pointer (`See definitions/mockups.md`) so the full rationale and rejected alternatives stay one click away. The Modules section below should reflect these surfaces (e.g., `onboarding/`, `settings/`) rather than scattering the logic.
 
-Restate the **visual identity** inline as a table (register, who, feel, signature, accent + ramp, neutrals, spacing base, fonts, depth/motion) — not just a pointer. The implementing agent reads this SPEC, not the surfaces artifact, so the locked values must live here for every UI issue to inherit one identity; `ui-taste` reads them at build time and applies them.
+Restate the **visual identity** inline as a table (register, who, feel, signature, accent + ramp, neutrals, spacing base, fonts, depth/motion) — not just a pointer. The implementing agent reads this SPEC, not the mockups artifact, so the locked values must live here for every UI issue to inherit one identity; `ui-taste` reads them at build time and applies them.
 
 ## Modules & interfaces
 

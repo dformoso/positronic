@@ -54,7 +54,7 @@ Before writing any code:
 - [ ] Draft the interface comment before the implementation — the contract a caller must know (inputs, invariants, units, error modes); if it comes out long or hedged, fix the interface, not the wording
 - [ ] Where the contract allows, define errors out of existence — pick semantics that make the special case a non-event (delete-absent is a no-op, out-of-range clamps) instead of adding an error path every caller must know
 - [ ] If the slice touches web UI, the tracer-bullet test is a Playwright CUJ (real browser, real flow) — not a component unit test
-- [ ] If the slice touches user-facing UI, invoke `ui-taste` before styling — it applies the visual rules and reads the locked style from the SPEC's Product surfaces section (the `pick-ui-surfaces` picks `/to-spec` restated)
+- [ ] If the slice touches user-facing UI, invoke `ui-taste` before styling — it applies the visual rules and reads the locked style from the SPEC's Product surfaces section (the `to-mockups` picks `/to-spec` restated)
 - [ ] If a test needs a multimodal fixture (image, audio, video, rich text), invoke `generate-test-assets` — it generates the stand-in into `test-assets/` and routes load-bearing / user-dependent checks to the human
 - [ ] If the slice's acceptance criteria depend on model behavior (an LLM call, an agent loop), the red test is an eval case graded against a threshold — see [evals.md](evals.md); the deterministic seams around the model still get normal tests
 

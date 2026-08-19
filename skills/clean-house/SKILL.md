@@ -53,7 +53,7 @@ Key principles (see [LANGUAGE.md](LANGUAGE.md) for the full list):
 
 ## Inputs
 
-- The defining artifacts, whichever exist: `definitions/prd.md`, `definitions/frd.md`, `definitions/spec.md`, `definitions/surfaces.md`, `definitions/mockup.md`, `definitions/harness.md`, `definitions/runtime.md`, `definitions/mcp-servers.md`
+- The defining artifacts, whichever exist: `definitions/prd.md`, `definitions/journeys.md`, `definitions/spec.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/runtime.md`, `definitions/mcp-servers.md`
 - The most recent readouts: `ls docs/audits/*-readout.md 2>/dev/null | sort | tail -3` — these already asked, with real numbers, whether each shipped bet worked. Step 1 below is much sharper with them and mostly guesswork without; a `cut` verdict in one is a deletion candidate already argued
 - `CONTEXT.md` (or `CONTEXT-MAP.md` + each `CONTEXT.md`) and `docs/adr/` — domain language names good seams; ADRs record past decisions, don't re-litigate them. See [CONTEXT-FORMAT.md](CONTEXT-FORMAT.md) and [ADR-FORMAT.md](ADR-FORMAT.md)
 - The previous report: `ls docs/audits/*-clean-house.md 2>/dev/null | sort | tail -1` — proceed silently if none (first run)
@@ -76,7 +76,7 @@ Hunting is read-only — fan out subagents and parallelize freely. Execution is 
 
 ### 1. Question requirements against reality
 
-For every requirement row in the latest PRD, FRD and SPEC (and each locked decision in surfaces / harness artifacts), ask:
+For every requirement row in the latest PRD, journeys artifact and SPEC (and each locked decision in the mockups / harness artifacts), ask:
 
 - **Exercised?** Does evidence show it's used — routes hit, feature touched, code path reachable, tests that exist for a reason?
 - **Owned?** Can it still name who wants it and the observable failure if dropped? "Best practice", "the framework expects it", and "the model suggested it" are departments, not names.

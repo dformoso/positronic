@@ -18,7 +18,7 @@ If `definitions/mcp-servers.md` already carries a section for this server and th
 Before any picks, read:
 
 - The PRD, if it exists: `definitions/prd.md`. The PRD's user and regulatory constraints anchor the design — picking blind invites rework.
-- The FRD, if it exists: `definitions/frd.md`. Its **External channels & touchpoints** and **Integrations & migration** tables name what this server actually has to reach, and its **Agent autonomy matrix** says which of those calls an agent may make unattended — both shape the tool surface.
+- The journeys artifact, if it exists: `definitions/journeys.md`. Its **External channels & touchpoints** and **Integrations & migration** tables name what this server actually has to reach, and its **Agent autonomy matrix** says which of those calls an agent may make unattended — both shape the tool surface.
 - The harness artifact, if it exists: `definitions/harness.md`. When invoked from `pick-harness-shape`'s hand-off, this names the tool count, naming convention, and permission scope the harness expects — the MCP design slots into that contract.
 
 If no PRD exists, surface that to the user — `design-mcp-server` can run standalone but the resulting picks are weaker. If the user confirms standalone use, proceed and note "standalone — no PRD" in the artifact's Sources field.
@@ -152,7 +152,7 @@ Use the template below. Every section must carry information: cite the named pat
 ### Sources
 
 - `definitions/prd.md` — the PRD whose constraints drove these picks. (Or "standalone — no PRD" with a one-sentence reason if invoked without a PRD.)
-- `definitions/frd.md` — if read in §0, the channels, integrations, and autonomy rules the tool surface serves.
+- `definitions/journeys.md` — if read in §0, the channels, integrations, and autonomy rules the tool surface serves.
 - `definitions/harness.md` — if invoked from `pick-harness-shape`, the harness whose §5 tool-layer pick led to this design.
 
 ### TL;DR

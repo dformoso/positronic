@@ -4,7 +4,7 @@ A personal AI-coding framework — opinionated, solo.
 
 **What positronic does** — carries a software project from a fuzzy idea to shipped code across four concerns:
 
-- **Product management** — surface the assumptions an idea depends on, lock them into a brief PRD, a detailed FRD, drawn screens, a spec and issues, then go back weeks after launch and check whether the numbers moved.
+- **Product management** — surface the assumptions an idea depends on, lock them into a brief PRD, executable user journeys, drawn screens, a spec and issues, then go back weeks after launch and check whether the numbers moved.
 - **Software engineering** — a behavioral floor (below) plus test-driven development that verifies behavior through public interfaces, not implementation details.
 - **Agent-harness engineering** — decide whether a custom LLM/agent harness is warranted (the cut-line is reliability beyond conversational use), then lock its load-bearing shape.
 - **Product-surface engineering** — for products with a UI, lock the structure and visual identity once, before any screen is built.
@@ -32,21 +32,20 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 | 1 | Frame the problem | `define` (auto-fires) | a falsifiable hypothesis, kill criteria, a change tier, and a route |
 | 2 | Research *(zero-to-one only)* | `/research-market` → `/ideate` → `/judge-idea` | `definitions/research.md`, a chosen idea |
 | 3 | Lock *what & why* | `/to-prd` | `definitions/prd.md` — two pages |
-| 4 | Detail every feature | `/to-frd` | `definitions/frd.md` — states, rules, acceptance criteria |
-| 5 | Lock the UI *(if it has one)* | `pick-ui-surfaces` | `definitions/surfaces.md` |
+| 4 | Script every journey | `/to-journeys` | `definitions/journeys.md` — steps, branches, end-state proofs |
+| 5 | Design + draw the UI *(if it has one)* | `/to-mockups` | `definitions/mockups.md`, `definitions/mockups.html` |
 | 6 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` *(placement gate)* |
-| 7 | Draw the screens *(if it has UI)* | `/to-mockup` | `definitions/mockup.html` + `definitions/mockup.md` |
-| 8 | Lock *how* | `/to-spec` | `definitions/spec.md` |
-| 9 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` / `wave-N` |
-| 10 | Build, in waves | `/run-wave` — each issue via `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code, a reconciled backlog |
-| 11 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
-| 12 | Go live *(first real traffic / one-way cutovers)* | `/go-live` | GO / NO-GO + ranked blockers |
-| 13 | Read the result *(2–6 weeks after launch)* | `/readout` | keep / iterate / cut / pivot, `docs/audits/` |
-| 14 | Clean the house *(between versions)* | `/clean-house` | cuts + deepenings, `docs/audits/` report |
+| 7 | Lock *how* | `/to-spec` | `definitions/spec.md` |
+| 8 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` / `wave-N` |
+| 9 | Build, in waves | `/run-wave` — each issue via `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code, a reconciled backlog |
+| 10 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
+| 11 | Go live *(first real traffic / one-way cutovers)* | `/go-live` | GO / NO-GO + ranked blockers |
+| 12 | Read the result *(2–6 weeks after launch)* | `/readout` | keep / iterate / cut / pivot, `docs/audits/` |
+| 13 | Clean the house *(between versions)* | `/clean-house` | cuts + deepenings, `docs/audits/` report |
 
-When both apply, stage 5 runs before stage 6 — harness picks then slot into known surfaces. Stage 7 is a loop, not a gate: what the drawing reveals amends stages 3–5 and gets redrawn.
+When both apply, stage 5 runs before stage 6 — harness picks then slot into known surfaces. Stage 5 is itself a loop, not a gate: it picks the identity, draws it, and sends what the drawing reveals back up to stages 3–4 before redrawing.
 
-**Not every change walks all fourteen.** The PRD's change tier decides how far a change travels — a copy fix touches no artifact at all, an internal refactor touches only the SPEC, and only a launch walks the whole chain. The ladder is in [amend-mode.md](docs/amend-mode.md).
+**Not every change walks all thirteen.** The PRD's change tier decides how far a change travels — a copy fix touches no artifact at all, an internal refactor touches only the SPEC, and only a launch walks the whole chain. The ladder is in [amend-mode.md](docs/amend-mode.md).
 
 Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`; a service pick ("which email provider?") goes to `/pick-cloud-services`; a first deployment or provider cutover goes to `/go-live`; an accreted system between versions goes to `/clean-house`.
 
@@ -59,19 +58,18 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `define` | model | defining | — | — | Surface assumptions, frame a hypothesis, route to the right path |
 | `research-market` | slash | defining | — | `definitions/research.md` | Mine forums + competitive landscape |
 | `ideate` | slash | defining | `definitions/research.md` | `definitions/ideas.md` | Ten ranked one-pagers; you pick the winner |
-| `judge-idea` | slash | defining | `definitions/ideas.md` winner / PRD / FRD / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
+| `judge-idea` | slash | defining | `definitions/ideas.md` winner / PRD / journeys / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
 | `to-prd` | slash | defining | conversation | `definitions/prd.md` | Synthesize the *what & why*, in two pages |
-| `to-frd` | slash | defining | `definitions/prd.md` | `definitions/frd.md` | Detail every feature: states, rules, acceptance criteria |
-| `pick-ui-surfaces` | model | defining | `definitions/prd.md`, `definitions/frd.md` | `definitions/surfaces.md` | Lock the UI's structure + visual identity |
-| `pick-harness-shape` | model | defining | `definitions/prd.md`, `definitions/frd.md`, `definitions/surfaces.md` | `definitions/harness.md` (+ `definitions/runtime.md` at the placement gate) | Decide + shape a custom LLM harness |
-| `design-mcp-server` | model | defining | `definitions/prd.md`, `definitions/frd.md`, `definitions/harness.md` | `definitions/mcp-servers.md` | Design an MCP server you'll build |
+| `to-journeys` | slash | defining | `definitions/prd.md` | `definitions/journeys.md` | Script each journey: steps, branches, end-state proof |
+| `to-mockups` | slash | defining | `definitions/prd.md`, `definitions/journeys.md` | `definitions/mockups.md`, `definitions/mockups.html` | Lock the UI's structure + visual identity, then draw every screen |
+| `pick-harness-shape` | model | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md` | `definitions/harness.md` (+ `definitions/runtime.md` at the placement gate) | Decide + shape a custom LLM harness |
+| `design-mcp-server` | model | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/harness.md` | `definitions/mcp-servers.md` | Design an MCP server you'll build |
 | `pick-cloud-services` | slash | defining / anytime | PRD (greenfield), `docs/selection-method.md`, live vendor pages | `docs/adr/` decision records | Pick any external/cloud service via live research; on greenfield, decide the dev-to-prod path first |
-| `to-mockup` | slash | defining | `definitions/frd.md`, `definitions/surfaces.md` | `definitions/mockup.html`, `definitions/mockup.md` | Draw every feature state as annotated screens |
-| `to-spec` | slash | defining | `definitions/prd.md`, `definitions/frd.md`, `definitions/surfaces.md`, `definitions/mockup.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` | `definitions/spec.md` | Lock the implementation contract |
-| `to-issues` | slash | defining | `definitions/spec.md`, `definitions/frd.md` | GitHub issues | Break the SPEC into `afk` / `hitl` slices, ranked into waves |
-| `run-wave` | slash | implementing | GitHub issues | merged code, reconciled backlog | Run one wave in parallel, then re-judge every remaining issue |
+| `to-spec` | slash | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` | `definitions/spec.md` | Lock the implementation contract |
+| `to-issues` | slash | defining | `definitions/spec.md`, `definitions/journeys.md` | GitHub issues | Break the SPEC into `afk` / `hitl` slices, ranked into waves |
+| `run-wave` | slash | implementing | GitHub issues, `definitions/spec.md`, `definitions/journeys.md` | merged code, reconciled backlog | Run one wave in parallel, then re-judge every remaining issue |
 | `test-driven-dev` | model | implementing | `definitions/spec.md` | code + tests | Red-green-refactor on one issue |
-| `ui-taste` | model | implementing | `definitions/surfaces.md` | styled UI | Apply the locked visual identity + taste rules |
+| `ui-taste` | model | implementing | `definitions/spec.md` § Product surfaces | styled UI | Apply the locked visual identity + taste rules |
 | `generate-test-assets` | model | implementing | `definitions/spec.md`, test plan | `test-assets/` | Generate multimodal test fixtures with Gemini; route load-bearing checks to the human |
 | `diagnose` | model | diagnosing | — | fix + regression test | Reproduce → minimise → fix hard bugs |
 | `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |

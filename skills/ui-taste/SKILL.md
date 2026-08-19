@@ -11,7 +11,7 @@ These rules are safe defaults, not laws. Break them when you have a reason; surf
 
 ## Work from the locked style
 
-The visual identity — register, who, feel, signature, accent, neutrals, spacing base, fonts, depth/motion — is decided once, up front, by `pick-ui-surfaces` and restated in the SPEC's "Product surfaces" section. **Read it and apply it. Do not re-pick it per surface** — that is what makes parallel-built screens diverge.
+The visual identity — register, who, feel, signature, accent, neutrals, spacing base, fonts, depth/motion — is decided once, up front, by `/to-mockups` and restated in the SPEC's "Product surfaces" section. **Read it and apply it. Do not re-pick it per surface** — that is what makes parallel-built screens diverge.
 
 **State the design read first.** Before building a surface, say in one line what you're building and how it should feel — "Reading this as: a settings page for a B2B admin (product register), restrained, state-rich, familiar patterns." It catches a wrong direction before any code.
 
@@ -20,7 +20,7 @@ The visual identity — register, who, feel, signature, accent, neutrals, spacin
 - **Product** (app, dashboard, tool — design *serves* the task): restrained colour, state-rich (hover / focus / active / disabled / loading / error), familiar patterns are a feature, motion only to communicate. The rules below are tuned for this.
 - **Brand** (marketing, landing, portfolio — design *is* the product): can afford ambitious first-load motion, a committed or drenched palette, per-section art direction, asymmetric layout. The rules still hold, but rule 2 (greyscale-first) and rule 11 (motion budget) loosen deliberately — say so when you lean on that.
 
-If no identity is recorded (the SPEC has none and there's no `definitions/surfaces.md`), you're working pre-identity: name the register, who, feel, and signature yourself — feel in specific words ("warm like a notebook," never "clean and modern"), signature being one element only this product would have — record them so the next surface inherits them, then proceed.
+If no identity is recorded (the SPEC has none and there's no `definitions/mockups.md`), you're working pre-identity: name the register, who, feel, and signature yourself — feel in specific words ("warm like a notebook," never "clean and modern"), signature being one element only this product would have — record them so the next surface inherits them, then proceed.
 
 Skip this for isolated tweaks (one button colour, a typo) where the direction is already set.
 

@@ -7,9 +7,8 @@ positronic keeps one document per artifact type, flat in `definitions/`, each na
 | `definitions/research.md` | `/research-market` |
 | `definitions/ideas.md` | `/ideate` |
 | `definitions/prd.md` | `/to-prd` |
-| `definitions/frd.md` | `/to-frd` |
-| `definitions/surfaces.md` | `pick-ui-surfaces` |
-| `definitions/mockup.md` + `definitions/mockup.html` | `/to-mockup` |
+| `definitions/journeys.md` | `/to-journeys` |
+| `definitions/mockups.md` + `definitions/mockups.html` | `/to-mockups` |
 | `definitions/harness.md` | `pick-harness-shape` |
 | `definitions/mcp-servers.md` | `design-mcp-server` (one section per server) |
 | `definitions/runtime.md` | `pick-harness-shape`, at the placement gate |
@@ -38,10 +37,10 @@ Which artifacts a change must touch, decided once at the top of the PRD rather t
 |---|---|---|
 | `fix` | A bug or a copy change. No contract moves | None. `diagnose` or `test-driven-dev`, straight to the code |
 | `internal` | A refactor, a dependency swap, anything with no user-visible surface | `definitions/spec.md` only |
-| `feature` | A new, changed, or dropped capability the user can see | PRD (if the promise moves) → FRD → surfaces + mockup (if it has UI) → SPEC → issues |
+| `feature` | A new, changed, or dropped capability the user can see | PRD (if the promise moves) → journeys → mockups (if it has UI) → SPEC → issues |
 | `launch` | First real traffic, a migration, a provider re-point, a new service | Everything in `feature`, plus the SPEC's Rollout runbook, `/go-live`, and a `/readout` date |
 
-**Applying the heaviest tier to everything is the failure mode of a framework like this.** A copy change does not get an FRD, a mockup, and a cutover runbook; a datastore migration does not get to skip them. The tier is a judgment someone makes out loud, which is why it is a field and not a default.
+**Applying the heaviest tier to everything is the failure mode of a framework like this.** A copy change does not get a journey script, a redrawn mockup, and a cutover runbook; a datastore migration does not get to skip them. The tier is a judgment someone makes out loud, which is why it is a field and not a default.
 
 
 ## The protocol
@@ -66,7 +65,7 @@ Directly under the artifact's title, so the document is self-describing about it
 - **Carried forward unchanged:** all others
 ```
 
-Each artifact's header names its own sections — the example above is a PRD's. The same amendment's FRD header would name the features it touched (`Data model; Permissions; F7 — Invite a teammate`), and its mockup header the panels re-rendered.
+Each artifact's header names its own sections — the example above is a PRD's. The same amendment's journeys header would name what it touched (`Reference (Data model, Permissions); J7 — Invite a teammate`), and its mockups header the panels re-rendered.
 
 **This header is the increment's record** — it plays the role `define`'s hypothesis frame plays for greenfield. There is no separate change-request artifact.
 
@@ -78,15 +77,15 @@ What stops "rewrite five artifacts per feature." An amended artifact forces a do
 
 | Touched | Implicates |
 |---|---|
-| PRD — Solution Overview, Key User Journeys, or anything that changes what the product does | `definitions/frd.md` (`/to-frd`) |
-| PRD — Solution Overview surfaces / form factor | `definitions/surfaces.md` (`pick-ui-surfaces`) |
+| PRD — Solution Overview, Key User Journeys, or anything that changes what the product does | `definitions/journeys.md` (`/to-journeys`) |
+| PRD — Solution Overview surfaces / form factor | `definitions/mockups.md` (`/to-mockups`) |
 | PRD — Goals & Success Metrics or kill criteria | the SPEC's Observability § product-metric table — and the `/readout` date |
-| FRD — Agent autonomy matrix | `definitions/harness.md` (`pick-harness-shape`) |
-| FRD — External channels & touchpoints / new agent tools | `definitions/mcp-servers.md` (`design-mcp-server`, if the tool layer is MCP) |
-| FRD — any feature's States table, or a new/dropped feature | `definitions/mockup.html` (`/to-mockup`) — the panels for those states |
-| surfaces — visual identity, nav, or system error states | `definitions/mockup.html` (`/to-mockup`) — every panel wears the identity, so this one re-renders all of them |
+| journeys — Agent autonomy matrix | `definitions/harness.md` (`pick-harness-shape`) |
+| journeys — External channels & touchpoints / new agent tools | `definitions/mcp-servers.md` (`design-mcp-server`, if the tool layer is MCP) |
+| journeys — any journey's steps or branches | `definitions/mockups.html` (`/to-mockups`) — the panels for those steps |
+| mockups — the visual identity | every other panel in `definitions/mockups.html` — they all inherit it, so an identity change re-renders the file |
 
-**Termination:** any amended upstream artifact (`definitions/prd.md`, `definitions/frd.md`, `definitions/surfaces.md`, `definitions/mockup.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md`) implies a `/to-spec` amend; a `/to-spec` amend implies `/to-issues`; `/to-issues` hands to `/run-wave`. The cascade ends at `/to-issues` — the executable unit, and the last place a stale issue can be caught. A change confined to one section travels one edge, not the whole graph.
+**Termination:** any amended upstream artifact (`definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md`) implies a `/to-spec` amend; a `/to-spec` amend implies `/to-issues`; `/to-issues` hands to `/run-wave`. The cascade ends at `/to-issues` — the executable unit, and the last place a stale issue can be caught. A change confined to one section travels one edge, not the whole graph.
 
 **Mid-graph edge:** an amended `definitions/harness.md` whose Topology (trigger classes), Gates (waits), Security (residency, sandbox posture), or Substrate sections changed implicates `definitions/runtime.md` — the placement profile, when one exists (written at `pick-harness-shape`'s placement gate). Service-level vendor picks are ADRs (`docs/adr/`, via `pick-cloud-services`) and sit outside this cascade; their revisit triggers are swept by `/clean-house` instead.
 
