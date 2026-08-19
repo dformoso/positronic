@@ -35,7 +35,7 @@ Neighbours — keep the questions distinct:
 | Skill | Its question |
 |---|---|
 | `/improve-readability` (this) | Can the next person understand it, and is any of it needless? Comprehension and reduction, inside the code that stays |
-| `/clean-house` | What shouldn't exist *at all*? Cutting features, requirements, dependencies, modules, process |
+| `/clean-house` | What shouldn't exist *at all*? Cutting features, requirements, dependencies, modules, process. **Runs before this pass when both are due** — polishing code that is about to be deleted is wasted work |
 | `/review-pr` | Is this diff safe to ship? A gate on the change, not a pass over the codebase |
 | `/audit-failure-modes` | What will break? Enumerates risk and adds handling; this pass removes the failures worth removing |
 | `diagnose` | Why is it broken? Bugs found here route there; obscurity found there routes here |
@@ -215,7 +215,9 @@ never loop silently.
 ## Report
 
 Always write `docs/audits/YYYY-MM-DD-readability.md` (create `docs/audits/` lazily); print
-the same to chat. The next run reads it for calibration. Delete the previous readability
+the same to chat.
+
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4). The next run reads it for calibration. Delete the previous readability
 report as part of the spent-docs sweep — only the latest is ever read.
 
 ```text

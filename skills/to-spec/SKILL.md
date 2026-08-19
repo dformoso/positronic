@@ -28,7 +28,7 @@ If `definitions/spec.md` already exists and an upstream artifact was amended (or
 
 4. Read the MCP-server designs (if any): `definitions/mcp-servers.md`. Multi-server projects keep one `##` section per server; read every one. For each, the SPEC's "Tool layer / ACI" section adds a paragraph restating its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) plus a pointer to that section — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
 
-4b. Read the placement profile if it exists: `definitions/runtime.md`. Its constraints fold into existing sections — residency exceptions into Security, telemetry backend placement into Observability, cost envelope + kill switch into Rollout — restated, never re-derived. Service-level vendor picks live in `definitions/infrastructure.md` (written by `pick-cloud-services`); the SPEC names the capability and points at the section rather than restating the vendor rationale.
+4b. Read the placement profile if it exists: `definitions/runtime.md`. Its constraints fold into existing sections — residency exceptions into Security, telemetry backend placement into Observability, cost envelope + kill switch into Rollout — restated, never re-derived. Service-level vendor picks live in `definitions/infrastructure.md` (written by `/to-infrastructure`); the SPEC names the capability and points at the section rather than restating the vendor rationale.
 
 5. Sketch modules and integration points. Assign each module the design decision it hides — if two modules must agree on a format or assumption, that's leakage; pick one owner. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation, and state per interface which error modes are defined out of existence (semantics that make the special case a non-event) versus surfaced.
 
@@ -42,7 +42,7 @@ If `definitions/spec.md` already exists and an upstream artifact was amended (or
 
 8. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `definitions/spec.md` (create `definitions/` if missing). Commit it.
 
-9. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information.
+9. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information, in plain English — short sentences, one idea each, concrete before abstract, every term of art glossed on first use (AGENTS.md §4).
 
 10. Present the saved SPEC and wait for the user's approval before they run `/to-issues`. (If the SPEC adds load-bearing decisions worth stress-testing, mention `/judge-idea` can run adversarially on it first — optional.)
 
@@ -143,7 +143,7 @@ How real development and verification are, per axis — the rung each is built a
 | CUJ verification | unit-integration / scripted e2e on mocks / driven on real deps | |
 | Deploy | local / staging / prod (flagged) | |
 
-A slice may not claim done on a mock when its PRD CUJ needs the real thing. Generated fixtures (`generate-test-assets`) raise the Data axis only — never the CUJ axis; a user-dependent journey stays human-verified. List crossovers that are their own unit of work — build eval set, swap `<dep>` mock→live, deploy to staging, drive `<CUJ>` end-to-end — so `/to-issues` makes each a slice (often HITL, often the shape-establishing anchor others mirror).
+A slice may not claim done on a mock when its PRD CUJ needs the real thing. Generated fixtures (`test-driven-dev`'s [test-assets.md](../test-driven-dev/test-assets.md)) raise the Data axis only — never the CUJ axis; a user-dependent journey stays human-verified. List crossovers that are their own unit of work — build eval set, swap `<dep>` mock→live, deploy to staging, drive `<CUJ>` end-to-end — so `/to-issues` makes each a slice (often HITL, often the shape-establishing anchor others mirror).
 
 ## Test plan
 

@@ -38,7 +38,7 @@ A case is an input plus the hardest expectation the behavior allows:
 {"input": "what's your refund policy?", "expect": {"tool_path": [], "judge": "answers from policy doc, no order lookup"}}
 ```
 
-If a case needs a multimodal input (image, audio, document), invoke `generate-test-assets`
+If a case needs a multimodal input (image, audio, document), see [test-assets.md](test-assets.md)
 — same as any other fixture.
 
 ## 3. Grade the cheapest way that can fail honestly

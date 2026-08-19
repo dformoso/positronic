@@ -1,9 +1,4 @@
----
-name: generate-test-assets
-description: Generate multimodal test fixtures (image, audio, video, text) with Gemini into test-assets/, so automated tests exercise real-shaped inputs instead of hand-stubbed blobs. Invoked by test-driven-dev when a slice's test needs a fixture it can assert on in code. Use when a test needs an image to classify, audio to transcribe, video to analyze, or a corpus to parse. Routes load-bearing and user-dependent verification to the human instead of fabricating it.
----
-
-# Generate test assets
+# Multimodal test assets
 
 Manufacture the *input* side of a test — a real-shaped image, audio clip, video, or text corpus — so the test drives the production path instead of a planted blob. Gemini is the engine. Assets land in `test-assets/`, reproducible from a committed manifest.
 

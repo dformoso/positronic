@@ -2,7 +2,7 @@
 
 Settled decisions live in `definitions/decisions.md`, one `##` section each, newest first. Create the file lazily — only when the first decision needs recording.
 
-Its neighbour: **service and vendor picks go to `definitions/infrastructure.md`** instead, written by `/pick-cloud-services` with a richer body (requirements, scorecard, cost at 1× and 10×, exit plan, dated research provenance). The line is what the decision is about — infrastructure records *what we rent*, this file records *how we built what we made*.
+Its neighbour: **service and vendor picks go to `definitions/infrastructure.md`** instead, written by `/to-infrastructure` with a richer body (requirements, scorecard, cost at 1× and 10×, exit plan, dated research provenance). The line is what the decision is about — infrastructure records *what we rent*, this file records *how we built what we made*.
 
 ## The shape
 

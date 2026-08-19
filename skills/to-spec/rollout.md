@@ -61,7 +61,7 @@ The rest of the environment ladder is deliberately not one document. Four places
 
 | Question | Owner | Written when |
 |---|---|---|
-| Which route from dev to prod — local-first, cloud-first, hybrid — and what fires a change of route | `definitions/infrastructure.md` § Development-to-production path, via `pick-cloud-services` greenfield mode; method in `../../docs/selection-method.md` | Once, before the first service pick |
+| Which route from dev to prod — local-first, cloud-first, hybrid — and what fires a change of route | `definitions/infrastructure.md` § Development-to-production path, via `/to-infrastructure` greenfield mode; method in `../../docs/selection-method.md` | Once, before the first service pick |
 | Which vendor provides each capability, at what cost, with what exit | one `##` section per category in the same file | Per pick |
 | Where an autonomous agent loop runs, and under what residency and cost envelope | `definitions/runtime.md`, via `pick-harness-shape`'s placement gate | Once, if the harness runs unattended |
 | How real each environment is while building — data, external access, deploy rung | the SPEC's **Verification fidelity** section | Per SPEC |

@@ -45,7 +45,7 @@ If `definitions/journeys.md` already exists and this run is a scoped change (not
 
 7. Save as `definitions/journeys.md` (create `definitions/` if missing). Commit it.
 
-8. **Length and style.** As long as the product needs — this is the artifact that scales, and the PRD stays short precisely so this one can be complete. Tables wherever they carry the meaning. This is also the technical tier: vendor names, SDK names, protocol mechanics and regulatory rules belong here, in cells rather than prose. Reuse the PRD's product nouns; never mint a synonym for something it already named.
+8. **Length and style.** Plain English throughout — short sentences, one idea each, concrete before abstract, every term of art glossed on first use (AGENTS.md §4). As long as the product needs — this is the artifact that scales, and the PRD stays short precisely so this one can be complete. Tables wherever they carry the meaning. This is also the technical tier: vendor names, SDK names, protocol mechanics and regulatory rules belong here, in cells rather than prose. Reuse the PRD's product nouns; never mint a synonym for something it already named.
 
 9. Present the saved file and ask the user to review. Then prompt the next step:
     - If the product has persistent UI surfaces, prompt them to run `to-mockups` — it locks the identity and structure and draws every step and branch as a panel.
@@ -143,7 +143,7 @@ What the journeys run on. `/to-spec`, `pick-harness-shape`, and `design-mcp-serv
 | Mode | Default? | Behaviour | Override |
 |---|---|---|---|
 
-**Integrations & migration.** Third parties the product reads from or writes to, and how users bring existing data in. Which vendor and why is a `definitions/infrastructure.md` section via `/pick-cloud-services`.
+**Integrations & migration.** Third parties the product reads from or writes to, and how users bring existing data in. Which vendor and why is a `definitions/infrastructure.md` section via `/to-infrastructure`.
 
 | Integration | Direction | Behaviour | Auth | Failure behaviour |
 |---|---|---|---|---|

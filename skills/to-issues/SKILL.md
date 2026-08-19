@@ -139,6 +139,8 @@ For each approved slice, create a GitHub issue with two labels: `afk` or `hitl` 
 
 Create issues in dependency order (blockers first) so you can reference real issue numbers in the "Blocked by" field.
 
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+
 The wave label is the only scheduling state that lives in GitHub, and `/run-wave` both reads and rewrites it — an issue the between-wave review re-scopes gets relabelled rather than re-filed.
 
 <issue-template>

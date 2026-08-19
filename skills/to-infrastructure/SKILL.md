@@ -1,20 +1,26 @@
 ---
-name: pick-cloud-services
-description: Choose an external or cloud service for a category — hosting/compute, database, cache, queue, object storage, secrets, auth, transactional email, SMS/voice/telephony, DNS/CDN, CI/CD, logs/metrics, error tracking, LLM observability, backups, feature flags, or payments — from live research rather than memory, and lock it as a dated entry in definitions/infrastructure.md. Also use to re-pick when a vendor's pricing or terms change or a free tier dies, and — on a greenfield project — to decide the development-to-production path (local-first / cloud-first / hybrid) before any service pick. Use when choosing or re-choosing a provider for any infrastructure category. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+name: to-infrastructure
+description: Define how the software gets built, deployed and run — the development-to-production path, the environment ladder (dev / test / staging / prod), CI/CD, infrastructure-as-code, deploy and rollback mechanics — and choose every external service (compute, database, cache, queue, object storage, secrets, auth, email, SMS/voice, DNS/CDN, CI/CD, telemetry, error tracking, backups, feature flags, payments) from live research rather than memory. Writes definitions/infrastructure.md. Use on a greenfield project before /to-spec, when adding or re-picking any provider, or when the deploy path itself needs deciding. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
 Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
-# Pick cloud services
+# To Infrastructure
 
-Choose an external service for a category the way `pick-harness-shape` chooses a harness: gate first, shortlist, decide against fixed criteria, lock a dated record. The method is shared and lives in one file — this skill is the walk; the doc is the law.
+Decide how this software gets built, deployed and run, and write it down in one place: `definitions/infrastructure.md`. Two kinds of decision live here and they share a file because every consumer needs both at once.
+
+- **The plumbing** — the development-to-production path, the environment ladder, CI/CD, infrastructure-as-code, and how a merged commit becomes running code. Decided once, revisited on a trigger.
+- **The services** — one entry per external provider, chosen the way `pick-harness-shape` chooses a harness: gate first, shortlist, decide against fixed criteria, lock a dated record. The method is shared and lives in one file — this skill is the walk; the doc is the law.
+
+**This skill defines; `/go-live` verifies.** Everything written here is a promise about the running system — that prod refuses dev affordances, that rollback was rehearsed, that backups retain. `/go-live` is the gate that goes and checks whether those promises are true before real traffic. Producer and consumer: don't collapse them, or the launch has nothing independent to fail against.
 
 ## When to use
 
+- On a greenfield project, after `/to-prd` and before `/to-spec` — greenfield mode below walks the path, the environments, and the build-and-deploy pipeline in order.
 - Choosing a provider for any infrastructure category — compute, relational store, cache, queue/events, object storage, secrets, auth, transactional email, SMS/voice, DNS/CDN/TLS, CI/CD, logs/metrics, error tracking, LLM observability, backups/DR, feature flags, payments.
 - Re-picking because a vendor's pricing or terms changed, a free tier died, or a `NEXT REVIEW` / `TRIGGER` line fired.
-- On a greenfield project — deciding the development-to-production path *before* any service pick (greenfield mode below).
+- When the deploy path itself changes — a new environment, a pipeline rewrite, moving from console-clicked infrastructure to code.
 
 **Skip when** the pick is already a dated record with an *unfired* revisit trigger and a *future* `NEXT REVIEW`. Don't relitigate a settled decision that nothing has disturbed — that's churn, not diligence.
 
@@ -22,11 +28,13 @@ Choose an external service for a category the way `pick-harness-shape` chooses a
 
 `${SKILL_DIR}/../../docs/selection-method.md` (`${SKILL_DIR}` = the directory containing this file) — the shared method: core principles, the verify-at-decision-time checklist, the disqualifiers, the agent-workload wrinkles, and the full development-to-production path. This skill *executes* that method one category at a time; it does not restate it. If the doc and this skill ever disagree, the doc wins.
 
-## Greenfield mode — path first
+## Greenfield mode — the plumbing, in order
 
-On the **first** invocation for a new project, before any service pick, decide the development-to-production path. Walk the method doc's 7 discriminating questions, then write the path record as the project's first decision record:
+On the **first** invocation for a new project, walk these four before any service pick. Each answers a question the next one depends on, so don't reorder them. Ask one at a time and recommend an answer.
 
-the `## Development-to-production path` section of `definitions/infrastructure.md` (create the file and `definitions/` lazily), containing:
+### 1. Development-to-production path
+
+Walk the method doc's 7 discriminating questions, then write the `## Development-to-production path` section (create the file and `definitions/` lazily):
 
 - The picked route (local-first / cloud-first / hybrid) + the one-sentence trade-off.
 - Answers to the 7 questions.
@@ -34,7 +42,48 @@ the `## Development-to-production path` section of `definitions/infrastructure.m
 - The armed `TRIGGER:` lines (line-start), drawn from the doc's trigger catalog.
 - A `NEXT REVIEW: YYYY-MM-DD` line.
 
-Then proceed category by category through the stack's needs, each as its own anytime-mode decision — one `##` section each, appended to the same file.
+### 2. Environment ladder
+
+Which environments exist, and what is *real* in each. The trap is an environment nobody can describe: "staging" that quietly holds production data, or a "test" that is one developer's laptop.
+
+One row per environment. Fewer rows is better — every environment is a thing to keep honest, and an unowned one drifts into a second production.
+
+| Environment | Exists to | Data | External services | Who/what deploys to it | Lifetime |
+|---|---|---|---|---|---|
+
+Three rules the table has to satisfy, all from `${SKILL_DIR}/../to-spec/rollout.md` §7:
+
+- **Every environment is a config profile over one SHA-tagged artifact.** A demo is a profile, never a forked build.
+- **Prodness is declared, not inferred** from a hostname or a missing variable — and a production boot with a dev/test flag set must fail loudly rather than run with the flag live.
+- **Synthetic data outside production.** If a non-production environment needs real records, say which, why, and what masks them; an unmasked copy makes that environment production for custody purposes.
+
+Name the SPEC's **Verification fidelity** Deploy rung this ladder implies (local / staging / prod-flagged) so `/to-spec` inherits it rather than re-deriving it.
+
+### 3. Build & deploy pipeline
+
+How a commit becomes running code. Decide, in this order:
+
+| Decision | Options | The question that settles it |
+|---|---|---|
+| CI provider | The host's built-in (GitHub Actions, GitLab CI) · a dedicated service · none yet | Where does the code already live? Bundled wins unless minutes pricing or a self-host requirement forces otherwise |
+| What CI runs | The repo's own gate scripts | AGENTS.md §5: gates are versioned scripts a human can run by hand; CI calls the identical script. A gate that only exists inside a CI config is unrunnable locally and untestable |
+| Trigger | On PR · on merge to main · on tag | Does a merge deploy, or does a tag? Say which, once |
+| Artifact | Container image · language package · source deploy | One SHA-tagged artifact promoted across environments, never rebuilt per environment |
+| Promotion | Automatic on green · manual approval · manual for prod only | Automatic promotion to production needs the rollback rehearsal (below) already done |
+| Secrets in CI | The host's secret store · the cloud's secret manager | Never in the config file, never echoed in logs (AGENTS.md §8) |
+| Rollback | Re-point to the previous revision · redeploy the previous tag · flag flip | It must be rehearsed once for real before automatic promotion to production is allowed. `/go-live` asks for the dated rehearsal note, so produce one |
+
+### 4. Infrastructure as code
+
+| Rung | When it's right | Cost of staying here |
+|---|---|---|
+| **Console-clicked, undocumented** | Never past the first week | Nothing is reproducible; the environment is a single point of failure with no backup |
+| **Console-clicked, written down** | A genuinely tiny surface — one service, one database | Drift between the doc and reality is invisible until a rebuild |
+| **Declarative, in the repo** (Terraform, Pulumi, OpenTofu, CDK, or the platform's own manifest) | The default once more than one service or more than one environment exists | Real learning cost; state has to live somewhere durable |
+
+If declarative, settle three things that bite later and are expensive to change: **where state lives** (a remote backend with locking and versioning — never a laptop, never unversioned), **what is *not* in code** and why (secrets values, manually-provisioned accounts, anything with a human approval step), and **who may apply** (a person, CI, or both — and whether production apply is gated).
+
+Record the picks as `## Environments`, `## Build & deploy`, and `## Infrastructure as code` sections. Then proceed category by category through the stack's needs, each as its own anytime-mode decision — one `##` section each, appended to the same file.
 
 ## Anytime mode — one decision
 
@@ -56,7 +105,7 @@ Then proceed category by category through the stack's needs, each as its own any
 
    Any **red** is either justified in the record or kills the candidate.
 5. **Tie ⇒ spike.** A time-boxed spike (≤ 1 day) with kill criteria *written before* the spike starts. No open-ended evaluations.
-6. **Lock the record.** Write it (below). The decision is not made until it is recorded.
+6. **Lock the record.** Write it (below). The decision is not made until it is recorded. **Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
 
 ## The record
 

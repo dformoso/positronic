@@ -142,6 +142,8 @@ After printing, ask:
 
 > Save to `docs/audits/YYYY-MM-DD-go-live.md`? (y/N)
 
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+
 Default no. Create `docs/audits/` lazily on first save.
 
-A fired `TRIGGER:` line in `definitions/infrastructure.md` (written by `pick-cloud-services`; method in `${SKILL_DIR}/../../docs/selection-method.md`) is a standing reason to run this gate before the next cutover.
+A fired `TRIGGER:` line in `definitions/infrastructure.md` (written by `/to-infrastructure`; method in `${SKILL_DIR}/../../docs/selection-method.md`) is a standing reason to run this gate before the next cutover.

@@ -141,6 +141,8 @@ See [mcp-testing.md](../test-driven-dev/mcp-testing.md) for code patterns.
 
 Once the sections above have been answered, write the picks to `definitions/mcp-servers.md` (create `definitions/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+
 One file holds every server this project designs, one `##` section each, under a `# MCP servers` title. Append this server's section if the file exists; create it if not. Never touch another server's section.
 
 Use the template below. Every section must carry information: cite the named pattern that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.

@@ -42,7 +42,7 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 
 4. Length and density: ≤ 2 pages. Target User + Solution Overview together must fit in ≤ 1 page: tight but comprehensive. These two anchor the contract every downstream artifact is built against; drift from them produces unusable output. Nothing here scales with product surface — that is `/to-journeys`'s job, and it is why this document can stay short. Every sentence must carry information. No padding, no repetition, no restating the obvious.
 
-5. **Style.** One register throughout: plain English a person matching the target persona could follow without a glossary.
+5. **Style.** One register throughout: plain English a person matching the target persona could follow without a glossary. Short sentences, one idea each, concrete before abstract, every term of art glossed on first use (AGENTS.md §4).
 
    - No vendor, SDK, protocol, or regulatory jargon anywhere. "Twilio Voice SDK", "CallKit-integrated", "OAuth flow" belong in `definitions/journeys.md`. This document says what the user experiences; the journeys say how.
    - One layer of detail per sentence — no inline tutorials, nested parentheticals, or em-dash asides inside parentheses. More layers means a bullet list or table row.
@@ -52,7 +52,7 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 
 6. Present the saved PRD and ask the user to review. Then prompt for the next step in this order:
    - Prompt them to run `/to-journeys` — it expands each journey above into an executable script with steps, branches, and the end-state proof a test asserts. Everything after this reads that file, so it is the default next step, not an optional one.
-   - On greenfield (this is the project's first PRD), also prompt them to run `/pick-cloud-services` in greenfield mode — it locks the dev-to-prod path as the first section of `definitions/infrastructure.md`; the SPEC's Rollout section cites it.
+   - On greenfield (this is the project's first PRD), also prompt them to run `/to-infrastructure` in greenfield mode — it locks the dev-to-prod path as the first section of `definitions/infrastructure.md`; the SPEC's Rollout section cites it.
    - For a `fix`- or `internal`-tier change that adds no new behaviour, `/to-journeys` can be skipped — go straight to `/to-spec`.
 
    (`/judge-idea` can also gate the finished PRD before `/to-spec` if a bet feels unverified — optional.)

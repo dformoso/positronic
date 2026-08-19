@@ -30,7 +30,7 @@ Neighbours — keep the questions distinct:
 | `/audit-drift` | Do the documents still agree with each other and the code? Consistency — standalone at shipping, and run here at the end of each pass |
 | `/audit-failure-modes` | What will break? Risk — the additive move; untouched by this skill |
 | `/judge-idea` | Is the bet sound? Pre-build adversarial gate; runs on speculation, this runs on evidence |
-| `/improve-readability` | Can the next person understand it, and is any of it needless? Comprehension and reduction *inside* the code that stays — cuts machinery, comments, spent docs and weak tests without changing what a caller sees; hands feature-level cuts and module reshaping here |
+| `/improve-readability` | Can the next person understand it, and is any of it needless? Comprehension and reduction *inside* the code that stays — cuts machinery, comments, spent docs and weak tests without changing what a caller sees; hands feature-level cuts and module reshaping here. **Runs after this pass**, on what survived |
 
 ## Glossary
 
@@ -84,7 +84,7 @@ For every requirement row in the latest PRD, journeys artifact and SPEC (and eac
 
 Drift is evidence here: a doc section that diverged long ago with nobody noticing is a strong signal nobody needed what it described.
 
-**Fired triggers are evidence too.** Sweep the dated decision machinery: run `${SKILL_DIR}/scripts/freshness-sweep.sh` (`${SKILL_DIR}` = the directory containing this file) and read its output — it emits past-due `NEXT REVIEW:` lines and every `TRIGGER:` line across `definitions/infrastructure.md`, `definitions/decisions.md`, and `definitions/runtime.md`. A past-due `NEXT REVIEW:` date or a fired `TRIGGER:` condition (on a service pick or the development-to-production path) is a decision whose ground truth moved — flag it, and the fix is the trigger's own named action (re-run `pick-cloud-services` on that section, start the migration step, formalize custody). A trigger nothing sweeps is decorative; this step is the sweep.
+**Fired triggers are evidence too.** Sweep the dated decision machinery: run `${SKILL_DIR}/scripts/freshness-sweep.sh` (`${SKILL_DIR}` = the directory containing this file) and read its output — it emits past-due `NEXT REVIEW:` lines and every `TRIGGER:` line across `definitions/infrastructure.md`, `definitions/decisions.md`, and `definitions/runtime.md`. A past-due `NEXT REVIEW:` date or a fired `TRIGGER:` condition (on a service pick or the development-to-production path) is a decision whose ground truth moved — flag it, and the fix is the trigger's own named action (re-run `/to-infrastructure` on that section, start the migration step, formalize custody). A trigger nothing sweeps is decorative; this step is the sweep.
 
 Output: flagged requirements, each with its evidence. These feed step 2.
 
@@ -161,6 +161,8 @@ No new approved cut + no new deepening candidate + no unexplained drift → the 
 ## Report
 
 Always write `docs/audits/YYYY-MM-DD-clean-house.md` (create `docs/audits/` lazily) — the next run reads it for calibration. Print the same to chat.
+
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
 
 ```text
 ## Result

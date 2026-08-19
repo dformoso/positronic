@@ -157,7 +157,7 @@ If the PRD names a regulated industry (financial, healthcare, government) or EU/
 
 Once the sections above have been answered, write them to `definitions/mockups.md` (create `definitions/` if missing). This file is the source of truth `/to-spec` reads and `ui-taste` applies at build time — do not skip it, and do not paraphrase only in-conversation. Leave *Panel inventory* and *What the drawing changed* empty for now; section 12 fills them.
 
-Length and density: as long as you need — preferably tight. Tables only, no prose, drop sections that don't apply. Every section must carry information: cite the PRD or journey constraint that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions.
+Length and density: as long as you need — preferably tight. Tables only, no prose, drop sections that don't apply. Plain English in every cell — no jargon a reader outside this conversation would have to look up (AGENTS.md §4). Every section must carry information: cite the PRD or journey constraint that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions.
 
 <mockups-template>
 

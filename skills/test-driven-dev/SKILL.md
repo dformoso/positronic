@@ -13,7 +13,7 @@ description: Test-driven development with red-green-refactor loop. Use when impl
 
 **Bad tests** are coupled to implementation. They mock internal collaborators, test private methods, or verify through external means (like querying a database directly instead of using the interface). The warning sign: your test breaks when you refactor, but behavior hasn't changed. If you rename an internal function and tests fail, those tests were testing implementation, not behavior.
 
-See [tests.md](tests.md) for examples, [mocking.md](mocking.md) for mocking guidelines, [evals.md](evals.md) for grading model behavior, and [mcp-testing.md](mcp-testing.md) for MCP server tests.
+See [tests.md](tests.md) for examples, [mocking.md](mocking.md) for mocking guidelines, [evals.md](evals.md) for grading model behavior, [test-assets.md](test-assets.md) for generating multimodal fixtures, and [mcp-testing.md](mcp-testing.md) for MCP server tests.
 
 ## Anti-Pattern: Horizontal Slices
 
@@ -55,7 +55,7 @@ Before writing any code:
 - [ ] Where the contract allows, define errors out of existence — pick semantics that make the special case a non-event (delete-absent is a no-op, out-of-range clamps) instead of adding an error path every caller must know
 - [ ] If the slice touches web UI, the tracer-bullet test is a Playwright CUJ (real browser, real flow) — not a component unit test
 - [ ] If the slice touches user-facing UI, invoke `ui-taste` before styling — it applies the visual rules and reads the locked style from the SPEC's Product surfaces section (the `to-mockups` picks `/to-spec` restated)
-- [ ] If a test needs a multimodal fixture (image, audio, video, rich text), invoke `generate-test-assets` — it generates the stand-in into `test-assets/` and routes load-bearing / user-dependent checks to the human
+- [ ] If a test needs a multimodal fixture (image, audio, video, rich text), see [test-assets.md](test-assets.md) — it generates the stand-in into `test-assets/` and routes load-bearing / user-dependent checks to the human
 - [ ] If the slice's acceptance criteria depend on model behavior (an LLM call, an agent loop), the red test is an eval case graded against a threshold — see [evals.md](evals.md); the deterministic seams around the model still get normal tests
 
 State the plan inline (interface, top behaviors, what's out of scope) and proceed. Ask only if a scope question would change the slice — the upstream issue is the contract; don't relitigate it.
