@@ -55,7 +55,19 @@ the drill record exists is scheduling a NO-GO.
 
 ## 7. Environments
 
-Every environment is a **config profile over one SHA-tagged artifact** — a demo is a profile, never a fork. Production **declares itself** (a profile flag, not a hostname guess) and **refuses dev/test affordances by construction**. Write this into the SPEC so the build can't drift into a forked prod.
+The canonical rule, stated here once: every environment is a **config profile over one SHA-tagged artifact** — a demo is a profile, never a fork. Production **declares itself** (a profile flag, not a hostname guess) and **refuses dev/test affordances by construction**. Write this into the SPEC so the build can't drift into a forked prod.
+
+The rest of the environment ladder is deliberately not one document. Four places own four different questions, and each is written at the moment its answer is actually known:
+
+| Question | Owner | Written when |
+|---|---|---|
+| Which route from dev to prod — local-first, cloud-first, hybrid — and what fires a change of route | the path record in `docs/adr/`, via `pick-cloud-services` greenfield mode; method in `../../docs/selection-method.md` | Once, before the first service pick |
+| Which vendor provides each capability, at what cost, with what exit | one dated `docs/adr/` record per category, via `pick-cloud-services` | Per pick |
+| Where an autonomous agent loop runs, and under what residency and cost envelope | `definitions/runtime.md`, via `pick-harness-shape`'s placement gate | Once, if the harness runs unattended |
+| How real each environment is while building — data, external access, deploy rung | the SPEC's **Verification fidelity** section | Per SPEC |
+| Whether the promised environment facts are actually true in the running system | `/go-live` §(a) | Before first traffic or a one-way cutover |
+
+The SPEC's Rollout section **cites** these; it never restates them. A restated environment fact is a second source of truth that will disagree with the first within a release. In practice that means one line naming the path record and its armed `TRIGGER:` lines — and the Verification-fidelity **Deploy** axis inheriting the rung that path implies (local / staging / prod-flagged) rather than re-deriving it.
 
 ## 8. External clocks
 
@@ -67,7 +79,3 @@ Name the uncompressible waits in the SPEC's schedule — they dominate real cuto
 - soak / bake windows
 
 A schedule that omits these is fiction. Put each on the calendar against the actor you're waiting on.
-
-## 9. Dev-to-prod path
-
-One line citing the project's path record — the ADR in `docs/adr/` written by `pick-cloud-services` — and its armed `TRIGGER:` lines. The Verification-fidelity **Deploy** axis defaults to the rung that path implies (local / staging / prod-flagged); inherit it here, don't re-derive it.

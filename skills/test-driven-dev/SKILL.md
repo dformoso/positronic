@@ -103,6 +103,20 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 
 **Never refactor while RED.** Get to GREEN first.
 
+## Bugs found along the way
+
+You will notice things that are broken and not yours. What happens next depends only on where the bug is.
+
+| Where | What to do |
+|---|---|
+| **Inside this slice** | Fix it here, now, with a test. Don't file anything. Filing an issue for something already open in front of you turns five minutes of work into a backlog entry, a review, and a second context load |
+| **Outside this slice** | Leave it. Report it in your final message — what you saw, where, and how you'd confirm it. **Don't open an issue and don't fix it.** Whoever is holding the whole backlog decides; from inside one slice you can't see whether the next slice already deletes that code |
+| **Breaks a shipped journey or loses data** | Stop and ask the user, immediately. Don't hold it, don't file it, don't fix it unprompted |
+
+Working under `/run-wave`, the middle row's reports are collected and decided in the between-wave review — the one place a human sees the whole backlog at once. Working standalone, they go to the user in your summary. Either way the judgment happens with the whole picture in view, not from inside one slice.
+
+Pre-existing dead code follows the same shape: mention it, don't delete it (AGENTS.md §3).
+
 ## Checklist Per Cycle
 
 ```

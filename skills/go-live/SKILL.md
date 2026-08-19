@@ -29,6 +29,8 @@ Each row: the check · the evidence that settles it · pass/fail. A row with no 
 
 **(a) Environments & config**
 
+The ladder itself is recorded upstream, split across four owners — the map is in `${SKILL_DIR}/../to-spec/rollout.md` §7. Read it first, then verify the running system against what it claims. Every row below checks a *fact*, not a document.
+
 | Check | Evidence | ✓/✗ |
 |---|---|---|
 | Prod is a config profile over the same SHA-tagged artifact as every environment — never a forked build | release provenance; profile diff | |

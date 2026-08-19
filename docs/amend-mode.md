@@ -7,7 +7,9 @@ positronic keeps one document per artifact type, flat in `definitions/`, each na
 | `definitions/research.md` | `/research-market` |
 | `definitions/ideas.md` | `/ideate` |
 | `definitions/prd.md` | `/to-prd` |
+| `definitions/frd.md` | `/to-frd` |
 | `definitions/surfaces.md` | `pick-ui-surfaces` |
+| `definitions/mockup.md` + `definitions/mockup.html` | `/to-mockup` |
 | `definitions/harness.md` | `pick-harness-shape` |
 | `definitions/mcp-servers.md` | `design-mcp-server` (one section per server) |
 | `definitions/runtime.md` | `pick-harness-shape`, at the placement gate |
@@ -28,6 +30,20 @@ That leaves one trap. When a feature lands after the first cut, the tempting mov
 
 **Pivot test (sharp line):** if the change rewrites the PRD's **Target User** or **Problem Statement**, it's a pivot — start fresh. Amend only while those two anchors hold; everything downstream is negotiable, those two are the product's identity.
 
+## The change tier
+
+Which artifacts a change must touch, decided once at the top of the PRD rather than inherited. Four tiers:
+
+| Tier | What it is | Artifacts it touches |
+|---|---|---|
+| `fix` | A bug or a copy change. No contract moves | None. `diagnose` or `test-driven-dev`, straight to the code |
+| `internal` | A refactor, a dependency swap, anything with no user-visible surface | `definitions/spec.md` only |
+| `feature` | A new, changed, or dropped capability the user can see | PRD (if the promise moves) → FRD → surfaces + mockup (if it has UI) → SPEC → issues |
+| `launch` | First real traffic, a migration, a provider re-point, a new service | Everything in `feature`, plus the SPEC's Rollout runbook, `/go-live`, and a `/readout` date |
+
+**Applying the heaviest tier to everything is the failure mode of a framework like this.** A copy change does not get an FRD, a mockup, and a cutover runbook; a datastore migration does not get to skip them. The tier is a judgment someone makes out loud, which is why it is a field and not a default.
+
+
 ## The protocol
 
 1. **Read the baseline** — the artifact's file, whole.
@@ -44,10 +60,13 @@ Directly under the artifact's title, so the document is self-describing about it
 ```
 ## Amendment — 2026-03-01
 - **Increment:** team-workspaces                    (optional human label)
+- **Tier:** feature
 - **Change:** Add seat-based team workspaces so a buyer can invite members — closes the top churn risk.
-- **Sections touched:** Solution Overview; Functional Requirements (Data model, Agent autonomy)
+- **Sections touched:** Solution Overview; Key User Journeys (CUJ 4)
 - **Carried forward unchanged:** all others
 ```
+
+Each artifact's header names its own sections — the example above is a PRD's. The same amendment's FRD header would name the features it touched (`Data model; Permissions; F7 — Invite a teammate`), and its mockup header the panels re-rendered.
 
 **This header is the increment's record** — it plays the role `define`'s hypothesis frame plays for greenfield. There is no separate change-request artifact.
 
@@ -57,13 +76,17 @@ It describes the **latest** amendment only, and each amend replaces it. Earlier 
 
 What stops "rewrite five artifacts per feature." An amended artifact forces a downstream amend **only** where a touched section feeds it. The amending skill names the implicated artifacts and prompts only those:
 
-| Touched in the PRD | Implicates |
+| Touched | Implicates |
 |---|---|
-| Agent autonomy matrix / autonomy contract / multi-agent decomposition | `definitions/harness.md` (`pick-harness-shape`) |
-| Solution Overview surfaces / form factor | `definitions/surfaces.md` (`pick-ui-surfaces`) |
-| External channels & touchpoints / new agent tools | `definitions/mcp-servers.md` (`design-mcp-server`, if the tool layer is MCP) |
+| PRD — Solution Overview, Key User Journeys, or anything that changes what the product does | `definitions/frd.md` (`/to-frd`) |
+| PRD — Solution Overview surfaces / form factor | `definitions/surfaces.md` (`pick-ui-surfaces`) |
+| PRD — Goals & Success Metrics or kill criteria | the SPEC's Observability § product-metric table — and the `/readout` date |
+| FRD — Agent autonomy matrix | `definitions/harness.md` (`pick-harness-shape`) |
+| FRD — External channels & touchpoints / new agent tools | `definitions/mcp-servers.md` (`design-mcp-server`, if the tool layer is MCP) |
+| FRD — any feature's States table, or a new/dropped feature | `definitions/mockup.html` (`/to-mockup`) — the panels for those states |
+| surfaces — visual identity, nav, or system error states | `definitions/mockup.html` (`/to-mockup`) — every panel wears the identity, so this one re-renders all of them |
 
-**Termination:** any amended upstream artifact (`definitions/prd.md`, `definitions/surfaces.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md`) implies a `/to-spec` amend; a `/to-spec` amend implies `/to-issues`. The cascade ends at `/to-issues` — the executable unit. A change confined to one section travels one edge, not the whole graph.
+**Termination:** any amended upstream artifact (`definitions/prd.md`, `definitions/frd.md`, `definitions/surfaces.md`, `definitions/mockup.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md`) implies a `/to-spec` amend; a `/to-spec` amend implies `/to-issues`; `/to-issues` hands to `/run-wave`. The cascade ends at `/to-issues` — the executable unit, and the last place a stale issue can be caught. A change confined to one section travels one edge, not the whole graph.
 
 **Mid-graph edge:** an amended `definitions/harness.md` whose Topology (trigger classes), Gates (waits), Security (residency, sandbox posture), or Substrate sections changed implicates `definitions/runtime.md` — the placement profile, when one exists (written at `pick-harness-shape`'s placement gate). Service-level vendor picks are ADRs (`docs/adr/`, via `pick-cloud-services`) and sit outside this cascade; their revisit triggers are swept by `/clean-house` instead.
 
@@ -71,4 +94,4 @@ This is also the path a production-learning loop takes: brief 07's optimizer ame
 
 ## What does not change
 
-Every execution and read-only skill already reads the artifact by filename and keeps working untouched: `/to-issues`, `/to-spec` (reading upstream), `/review-pr`, `/audit-drift`, `test-driven-dev`, `judge-idea`. Amend mode is purely an *authoring* convention — it changes how a document is edited, never how it is read. That is why it is low-risk.
+Every execution and read-only skill already reads the artifact by filename and keeps working untouched: `/to-issues`, `/run-wave`, `/to-spec` (reading upstream), `/review-pr`, `/audit-drift`, `/readout`, `test-driven-dev`, `judge-idea`. Amend mode is purely an *authoring* convention — it changes how a document is edited, never how it is read. That is why it is low-risk.

@@ -14,7 +14,16 @@ Break a plan into independently-grabbable GitHub issues using vertical slices (t
 
 ### 1. Gather context
 
-Work from what's already in the conversation. If `definitions/spec.md` exists, read it as the primary source — the SPEC carries the implementation contract and is what issues should decompose. Otherwise, if `definitions/prd.md` exists, read that as the source. If the user passes a GitHub issue number or URL as an argument, fetch it with `gh issue view <number>` (with comments).
+Work from what's already in the conversation, plus whichever of these exist:
+
+| Source | What it supplies |
+|---|---|
+| `definitions/spec.md` | The implementation contract — the primary source, and what the slices decompose |
+| `definitions/frd.md` | Per-feature acceptance criteria, already written as Given/When/Then. **Copy them; do not invent new ones.** If a slice needs a criterion the FRD doesn't have, that's a gap in the FRD — amend it there, so the next increment inherits the fix |
+| `definitions/mockup.md` | Panel ids. A UI slice's acceptance criteria name the panels it must render (`#f3-over-limit`), which is also what a Playwright check screenshots |
+| `definitions/prd.md` | Fall back to this only if there's no SPEC |
+
+If the user passes a GitHub issue number or URL as an argument, fetch it with `gh issue view <number>` (with comments).
 
 Read the SPEC's **Verification fidelity** section — its per-axis rung (data, external access, eval signal, CUJ verification, deploy) and crossover list drive which slices verify against mocks vs. real deps, which credentials step 5 provisions, and which crossovers become their own slices. If the SPEC predates this section (or there's no SPEC), ask the user the per-axis fidelity and crossover question now, before drafting — default to building against faithful stand-ins (fixtures plus mock/sandbox adapters) with an explicit crossover before the release gate.
 
@@ -40,14 +49,36 @@ Slices may be 'HITL' or 'AFK'. HITL slices need human input (architectural decis
 
 **Template-first pattern.** If multiple slices share the same shape (e.g., one standardizer per entity type, one extractor per data source), identify which slice *establishes* the shape and mark the others as `Blocked by` it. This serializes the mirror slices behind a working in-repo example and prevents parallel AFK agents from drifting into divergent shapes. The shape-establishing slice is often a good candidate for HITL (do it inline) so subsequent AFK agents can reference a finished file.
 
+### 3b. Rank by certainty, then cut the waves
+
+Issues are worked in **waves** — batches run in parallel, most certain first, with a review between each. Order matters because uncertainty is not evenly spread: the code that exists after wave 1 answers questions wave 2 would otherwise have had to guess at. Doing the least certain work last is how you avoid building on a guess.
+
+Score every slice:
+
+| Band | All of these hold | Goes to |
+|---|---|---|
+| **Certain** | The SPEC or FRD section it implements is unambiguous · an exemplar exists to mirror, or this slice *is* the shape-establisher · every dependency is available at its fidelity rung (a mock, or a credential already filled) · no PRD open question or risk touches it | Wave 1 |
+| **Likely** | The contract is clear but one support is soft — no exemplar yet, or a sandbox dependency nobody has exercised | Wave 2 |
+| **Unclear** | It depends on an unresolved open question, a decision the user hasn't made, or a dependency whose real behaviour nobody has seen | Last wave — and say so out loud, because the honest move may be to settle the question instead of scheduling the guess |
+
+Then cut waves from that ranking, subject to two hard constraints:
+
+- **No blocker crosses into its own wave.** A slice `Blocked by` another lands in a later wave than its blocker. The shape-establishing slice of any template-first group is always in an earlier wave than its mirrors.
+- **No two slices in one wave edit the same files.** They run concurrently (AGENTS.md §9); colliding slices are a merge conflict you scheduled deliberately. When two certain slices collide, push one to the next wave.
+
+A wave of one is fine. A wave of fifteen is fine if none of them collide. Size the wave to the work, not to a number.
+
 ### 4. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each slice, show:
 
 - **Title**: short, plain-English task description — written as something a human would say, not a file path or module name. Good: "Build the login page". Bad: "api/auth.py — JWT handler + middleware".
 - **Type**: HITL / AFK
+- **Wave**: 1, 2, 3 … and the certainty band that put it there
 - **Blocked by**: which other slices (if any) must complete first
 - **Journeys covered**: which Key User Journeys (or user stories, if older format) this addresses
+
+Also show the wave cut: which slices are in wave 1, 2, 3, and one line on why anything landed in a late wave.
 
 Ask the user:
 
@@ -56,6 +87,7 @@ Ask the user:
 - Should any slices be merged or split further?
 - Are the correct slices marked as HITL and AFK?
 - Is there a shape-establishing slice that others should mirror? If so, are the mirrors `Blocked by` it?
+- Is anything in wave 1 less certain than it looks — and is anything in a late wave actually blocked on a decision the user could make right now?
 
 Iterate on user feedback.
 
@@ -100,11 +132,16 @@ First, ensure the labels exist (idempotent — safe to run even if they already 
 ```bash
 gh label create afk  --color "#9ca3af" --force
 gh label create hitl --color "#3b82f6" --force
+for w in $(seq 1 <highest-wave>); do
+  gh label create "wave-$w" --color "#a78bfa" --force
+done
 ```
 
-For each approved slice, create a GitHub issue using `gh issue create --label afk` or `gh issue create --label hitl` based on the slice type. Use the issue body template below.
+For each approved slice, create a GitHub issue with two labels: `afk` or `hitl` for its type, and `wave-N` for its wave. Use the issue body template below.
 
 Create issues in dependency order (blockers first) so you can reference real issue numbers in the "Blocked by" field.
+
+The wave label is the only scheduling state that lives in GitHub, and `/run-wave` both reads and rewrites it — an issue the between-wave review re-scopes gets relabelled rather than re-filed.
 
 <issue-template>
 ## Parent
@@ -141,9 +178,17 @@ Path of a file whose shape this issue should follow (e.g., `backend/app/extracto
 
 ## Acceptance criteria
 
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] Criterion 3
+Copied from the FRD's feature section, as Given/When/Then. For a UI slice, name the mockup panel ids this must render.
+
+- [ ] **Given** … **when** … **then** …
+- [ ] …
+
+## Scope discipline
+
+- Fix bugs you find inside this slice, in place, in this issue. Do not open new issues for them.
+- A bug **outside** this slice: leave it alone and report it in your final message. Do not open an issue for it, and do not fix it — the between-wave review decides what happens to it.
+- The one exception: a bug that makes a shipped user journey fail or loses data. Stop and ask the user before doing anything about it.
+- See `test-driven-dev` § Bugs found along the way for why.
 
 ## Blocked by
 
@@ -157,4 +202,6 @@ Do NOT close or modify any parent issue.
 
 ### 7. Hand off
 
-Hand the backlog off to implementation: the unblocked `afk` issues can be worked unattended, each with `/test-driven-dev`. `hitl` issues (and any `afk` issue still blocked by one) need you in the loop — name them so the user knows what's waiting.
+Prompt the user to run `/run-wave`. It launches wave 1 in parallel, reviews the backlog against what the wave actually built, and re-fires until the backlog is empty — that loop, not this skill, is where issues get worked.
+
+Name what's waiting: how many issues in each wave, which are `hitl` (they need the user in the loop, along with any `afk` issue blocked by one), and any slice whose wave placement the user should reconsider before the first wave starts. A single issue can still be worked directly with `test-driven-dev`; `/run-wave` is for the backlog.

@@ -18,6 +18,7 @@ If `definitions/harness.md` already exists and this run is a scoped change (not 
 Before any picks, read:
 
 - The PRD: `definitions/prd.md`. The PRD's user, regulatory, and business constraints (on-prem requirements, sensitive code paths, multi-agent decomposition reasons, trust boundaries) are the inputs that drive sections 1–9 — picking without them is picking blind.
+- The FRD, if it exists: `definitions/frd.md`. Its **Agent autonomy matrix** is the direct input to §6 (gates) and §7 (irreversible-action gating) — one row per action, with its default, its confidence gate, and what hands it to a human. Don't re-derive that table here; the gates you pick have to implement it.
 - The surfaces artifact, if it exists: `definitions/surfaces.md`. When the product has UI, the harness's tool layer (§5) and gates (§6) should slot into known surfaces rather than re-deriving them.
 
 If no PRD exists, stop and prompt the user to run `/to-prd` first. **Exception:** if the harness IS the product or differentiator (case 6 in section 1), the picks may legitimately shape the PRD rather than follow from it. Surface this to the user and let them override before proceeding.
@@ -211,6 +212,7 @@ Use the template below. Every section must carry information: cite the pattern b
 ## Sources
 
 - `definitions/prd.md` — the PRD whose constraints drove these picks. (Or "harness-first override: no PRD yet" with a one-sentence reason, if section 0's exception applied.)
+- `definitions/frd.md` — if read in §0, the autonomy matrix these gates implement.
 - `definitions/surfaces.md` — if read in §0, the UI surfaces these tool/gate picks slot into.
 
 ## TL;DR

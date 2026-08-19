@@ -1,6 +1,6 @@
 ---
 name: audit-drift
-description: Audit the project's doc graph (definitions/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, SPEC contracts the code has overtaken, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Audit the project's doc graph (definitions/, CONTEXT.md, docs/adr/) for drift. Surfaces glossary terms used inconsistently, dead cross-references, ADRs the current SPEC has overtaken, SPEC contracts the code has overtaken, mockup panels the FRD no longer contains, and orphan ADRs. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -30,8 +30,10 @@ The defining artifacts are one file each, flat in `definitions/`. Any of them ma
 
 ```text
 definitions/prd.md
+definitions/frd.md
 definitions/harness.md
 definitions/surfaces.md
+definitions/mockup.md
 definitions/runtime.md
 definitions/mcp-servers.md
 definitions/spec.md
@@ -101,7 +103,17 @@ For each, grep the codebase and judge:
 
 Also read `definitions/harness.md` where it names topology, gates, or tools the code should implement, and apply the same conservative compare. Do the same with the `definitions/runtime.md` profile where it names placement constraints the SPEC restates (residency exceptions, telemetry backend, cost envelope / kill switch) — flag a SPEC that contradicts the profile, conservatively. Keep every finding to a divergence you can point at — when in doubt, don't flag.
 
-#### 2.5. Orphan ADRs — *worth-noting*
+#### 2.5. Mockup panels vs. FRD states — *must-fix*
+
+Skip if there's no `definitions/mockup.md`. Mechanical, both directions:
+
+- Every row of the mockup index's **Panel inventory** must have a matching `id` in `definitions/mockup.html`.
+- Every state in every FRD feature's **States** table must appear as a panel row.
+- No panel may name a feature the FRD no longer contains.
+
+A drawing of a screen the product doesn't have misleads the next implementer more than no drawing at all, which is why this is must-fix rather than worth-noting. Report each gap as the missing panel id or the unmatched state.
+
+#### 2.6. Orphan ADRs — *worth-noting*
 
 For each ADR file `docs/adr/NNNN-slug.md`:
 

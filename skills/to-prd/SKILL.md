@@ -8,11 +8,20 @@ If the user did not explicitly invoke this skill — by name, by slash/dollar co
 
 Turn the current conversation, codebase understanding, and (if they exist) the most recent ideation winner + research artifact into a PRD. Do NOT interview the user — synthesize what you already know.
 
-The PRD answers *what and why* — including the product surface behaviour under Functional Requirements (data shapes the user sees, external channels, autonomy rules, queues, integrations). UX shape and visual identity (nav, onboarding, settings, account lifecycle, error states; feel, accent, type) live in `pick-ui-surfaces`. Implementation decisions (modules, code-level schema, API contracts, test plans, rollout, observability) live in `/to-spec`, not here.
+The PRD answers *what and why*, and nothing else. Keep it short enough that a person actually re-reads it before every increment — that is the job it does that no other artifact does.
+
+Everything downstream has its own home. Don't write here what belongs there:
+
+| Detail | Owner |
+|---|---|
+| What each feature does, in every state — entities, channels, autonomy matrix, queues, validation, acceptance criteria | `definitions/frd.md` (`/to-frd`) |
+| How the app is arranged and how it looks — nav, onboarding, settings, account lifecycle, system error states; feel, accent, type | `definitions/surfaces.md` (`pick-ui-surfaces`) |
+| What the screens look like | `definitions/mockup.html` (`/to-mockup`) |
+| How it is built — modules, code-level schema, API contracts, test plan, rollout, observability | `definitions/spec.md` (`/to-spec`) |
 
 ## Amend mode
 
-If `definitions/prd.md` already exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read the PRD as baseline, edit only the sections the change touches (reconcile any it contradicts), leave every other section byte-for-byte alone, and update the Amendment header. Then name which downstream artifacts the touched sections implicate (Agent autonomy → `definitions/harness.md`; Solution Overview surfaces / form factor → `definitions/surfaces.md`; new channels or tools → `definitions/mcp-servers.md`) and prompt only those, then `/to-spec`.
+If `definitions/prd.md` already exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read the PRD as baseline, edit only the sections the change touches (reconcile any it contradicts), leave every other section byte-for-byte alone, and update the Amendment header. Then name which downstream artifacts the touched sections implicate (any change to what the product does → `definitions/frd.md`; Solution Overview surfaces / form factor → `definitions/surfaces.md` and `definitions/mockup.html`) and prompt only those, then `/to-spec`.
 
 ## Inputs
 
@@ -32,25 +41,32 @@ If the latest judgment targets the current winner, ensure its `**Verdict.**` lin
 
 3. Write the PRD using the template below. Save as `definitions/prd.md` (create `definitions/` if missing). Commit it. Do not submit it as a GitHub issue.
 
-4. Length and density: ≤ 5 pages — preferably less. Target User + Solution Overview together must fit in ≤ 1 page: tight but comprehensive. These two anchor the contract `/to-spec` and implementation work against; drift from them produces unusable output. Functional Requirements is the section that scales with product surface — drop tables that don't apply. Every sentence must carry information. No padding, no repetition, no restating the obvious.
+4. Length and density: ≤ 2 pages. Target User + Solution Overview together must fit in ≤ 1 page: tight but comprehensive. These two anchor the contract every downstream artifact is built against; drift from them produces unusable output. Nothing here scales with product surface — that is `/to-frd`'s job, and it is why this document can stay short. Every sentence must carry information. No padding, no repetition, no restating the obvious.
 
-5. **Style.** Two registers. **Functional Requirements** is the technical tier — vendor names, SDK names, regulatory mechanics, OAuth flows, MMS pricing — packed into tables, not prose. Every other section is plain English: someone matching the target persona could follow it without a glossary.
+5. **Style.** One register throughout: plain English a person matching the target persona could follow without a glossary.
 
-   - No vendor, SDK, protocol, or regulatory jargon outside Functional Requirements. "Twilio Voice SDK", "CallKit-integrated", "OAuth flow" belong in cells. Solution Overview says what the user experiences; Functional Requirements says how.
+   - No vendor, SDK, protocol, or regulatory jargon anywhere. "Twilio Voice SDK", "CallKit-integrated", "OAuth flow" belong in `definitions/frd.md`. This document says what the user experiences; the FRD says how.
    - One layer of detail per sentence — no inline tutorials, nested parentheticals, or em-dash asides inside parentheses. More layers means a bullet list or table row.
    - Name concrete artifacts, not abstract actions. "Drafts customers, jobs, quotes, invoices" beats "structures inbound". Offenders: *absorbs*, *structures*, *processes*, *handles* — usually a sign you haven't named the artifact yet.
    - Cross-cutting / multi-channel behaviour → short lede + one bullet per channel.
    - Name surfaces with real product nouns (Convos, Triage, Ledger, To-Approve — not "data pane / agent pane"). Bold every mention in Solution Overview and Key User Journeys.
 
 6. Present the saved PRD and ask the user to review. Then prompt for the next step in this order:
-   - If the product has persistent UI surfaces, prompt them to run `pick-ui-surfaces`.
-   - If the project involves a custom LLM/agent harness, prompt them to run `pick-harness-shape` (after `pick-ui-surfaces`, if both apply).
+   - Prompt them to run `/to-frd` — it expands each feature's behaviour, states, and acceptance criteria into `definitions/frd.md`. Everything after this reads that file, so it is the default next step, not an optional one.
    - On greenfield (this is the project's first PRD), also prompt them to run `/pick-cloud-services` in greenfield mode — it locks the dev-to-prod path as the project's first `docs/adr/` record; the SPEC's Rollout section cites it.
-   - Otherwise, prompt them to run `/to-spec`.
+   - For a `fix`- or `internal`-tier change that adds no new behaviour, `/to-frd` can be skipped — go straight to `/to-spec`.
 
    (`/judge-idea` can also gate the finished PRD before `/to-spec` if a bet feels unverified — optional.)
 
 <prd-template>
+
+## Change tier
+
+One word, at the top, decided rather than inherited — it names which artifacts this change must touch. The full ladder is in `${SKILL_DIR}/../../docs/amend-mode.md`.
+
+`fix` · `internal` · `feature` · `launch`
+
+Applying the heaviest tier to everything is the failure mode of a framework like this. A copy change is a `fix`; it does not get an FRD, a mockup, and a cutover runbook.
 
 ## Problem Statement
 
@@ -69,6 +85,12 @@ Lead with an **anchoring promise** — one sentence naming the visceral outcome 
 | | | |
 
 Behavioral and outcome metrics are stronger than activity metrics. "% of users completing first CUJ within 24h" beats "page views".
+
+**Kill criteria.** The exact threshold — a number and a behaviour — that means pivot or die. `define` set this when the hypothesis was framed; carry it here, because this is the document `/readout` reads weeks after launch to decide keep / iterate / cut / pivot. A metric with no kill criterion is decoration: nothing can ever fail it, so nothing is ever learned from it.
+
+| Kill criterion | By when | What we do if it fires |
+|---|---|---|
+| | | |
 
 ## Solution Overview
 
@@ -91,46 +113,6 @@ Numbered CUJs. Each named, **two sentences max**, naming actor + trigger + flow 
 ## Out of Scope
 
 **Top 5 only.** Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep. Entries cut by `/clean-house` carry *cut because* and *re-add trigger* — the observable signal that would justify building it after all — and don't count against the five.
-
-## Functional Requirements
-
-The product surface defined component-by-component, in tables. Cover every relevant component so `/to-spec` has unambiguous "what" to turn into "how". Use the table set below as a checklist — include the ones that apply, drop the rest, add domain-specific ones if needed. Prose only when a table can't carry the meaning. Every row needs an owner you could trace it to — a person, a research finding, a judgment — and a failure you can name if it's dropped; "best practice" and "the model suggested it" are departments, not owners. Rows without an answer go to Out of Scope. (`/clean-house` re-asks both questions of every surviving row between versions.)
-
-**Data model.** The entities the user touches and what they hold. Implementation-level schema (indexes, constraints, migrations) goes to `/to-spec`.
-
-| Entity | Key fields | Relationships |
-|---|---|---|
-| | | |
-
-**External channels & touchpoints.** Every place the product receives input or emits output to the outside world (SMS, email, voice, API endpoints, push notifications, webhooks). Internal app surfaces (nav, panes, screens) → `pick-ui-surfaces`.
-
-| Channel | Inbound behaviour | Outbound behaviour | Notes |
-|---|---|---|---|
-| | | | |
-
-**Agent autonomy matrix.** (If AI is involved.) For every action the agent can take: default behaviour, confidence gate, HITL trigger. Anything that touches the user externally or commits resources defaults to HITL until explicitly justified.
-
-| Action | Default | Confidence gate | HITL trigger |
-|---|---|---|---|
-| | | | |
-
-**Queues / approval flows.** (If the product holds work for human review.) What each queue holds and its lifecycle. UX placement (where seen, badge counts, full-page vs drawer) → `pick-ui-surfaces`.
-
-| Queue | Holds | Lifecycle |
-|---|---|---|
-| | | |
-
-**Notification / digest cadence.** (If users get pushed updates.) Available modes, default, and override rules. The in-app notifications inbox (bell icon, read/unread state) → `pick-ui-surfaces`.
-
-| Mode | Default? | Behaviour |
-|---|---|---|
-| | | |
-
-**Integrations & migration.** Third parties the product reads from or writes to, plus how users bring existing data in. UX placement (where in the app, when presented) → `pick-ui-surfaces`.
-
-| Integration | Direction | MVP behaviour |
-|---|---|---|
-| | | |
 
 ## Risks & Open Questions
 

@@ -4,7 +4,7 @@ A personal AI-coding framework — opinionated, solo.
 
 **What positronic does** — carries a software project from a fuzzy idea to shipped code across four concerns:
 
-- **Product management** — surface the assumptions an idea depends on, then lock them into PRDs, specs, and issues.
+- **Product management** — surface the assumptions an idea depends on, lock them into a brief PRD, a detailed FRD, drawn screens, a spec and issues, then go back weeks after launch and check whether the numbers moved.
 - **Software engineering** — a behavioral floor (below) plus test-driven development that verifies behavior through public interfaces, not implementation details.
 - **Agent-harness engineering** — decide whether a custom LLM/agent harness is warranted (the cut-line is reliability beyond conversational use), then lock its load-bearing shape.
 - **Product-surface engineering** — for products with a UI, lock the structure and visual identity once, before any screen is built.
@@ -29,19 +29,26 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 
 | # | Stage | Run | Writes |
 | --- | --- | --- | --- |
-| 1 | Frame the problem | `define` (auto-fires) | a falsifiable hypothesis + a route |
+| 1 | Frame the problem | `define` (auto-fires) | a falsifiable hypothesis, kill criteria, a change tier, and a route |
 | 2 | Research *(zero-to-one only)* | `/research-market` → `/ideate` → `/judge-idea` | `definitions/research.md`, a chosen idea |
-| 3 | Lock *what & why* | `/to-prd` | `definitions/prd.md` |
-| 4 | Lock the UI *(if it has one)* | `pick-ui-surfaces` | `definitions/surfaces.md` |
-| 5 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` *(placement gate)* |
-| 6 | Lock *how* | `/to-spec` | `definitions/spec.md` |
-| 7 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` |
-| 8 | Build | `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code |
-| 9 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
-| 10 | Go live *(first real traffic / one-way cutovers)* | `/go-live` | GO / NO-GO + ranked blockers |
-| 11 | Clean the house *(between versions)* | `/clean-house` | cuts + deepenings, `docs/audits/` report |
+| 3 | Lock *what & why* | `/to-prd` | `definitions/prd.md` — two pages |
+| 4 | Detail every feature | `/to-frd` | `definitions/frd.md` — states, rules, acceptance criteria |
+| 5 | Lock the UI *(if it has one)* | `pick-ui-surfaces` | `definitions/surfaces.md` |
+| 6 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` *(placement gate)* |
+| 7 | Draw the screens *(if it has UI)* | `/to-mockup` | `definitions/mockup.html` + `definitions/mockup.md` |
+| 8 | Lock *how* | `/to-spec` | `definitions/spec.md` |
+| 9 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` / `wave-N` |
+| 10 | Build, in waves | `/run-wave` — each issue via `test-driven-dev` (+ `ui-taste`, `generate-test-assets`, `diagnose`) | merged code, a reconciled backlog |
+| 11 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
+| 12 | Go live *(first real traffic / one-way cutovers)* | `/go-live` | GO / NO-GO + ranked blockers |
+| 13 | Read the result *(2–6 weeks after launch)* | `/readout` | keep / iterate / cut / pivot, `docs/audits/` |
+| 14 | Clean the house *(between versions)* | `/clean-house` | cuts + deepenings, `docs/audits/` report |
 
-When both apply, stage 4 runs before stage 5 — harness picks then slot into known surfaces. Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`; a service pick ("which email provider?") goes to `/pick-cloud-services`; a first deployment or provider cutover goes to `/go-live`; an accreted system between versions goes to `/clean-house`.
+When both apply, stage 5 runs before stage 6 — harness picks then slot into known surfaces. Stage 7 is a loop, not a gate: what the drawing reveals amends stages 3–5 and gets redrawn.
+
+**Not every change walks all fourteen.** The PRD's change tier decides how far a change travels — a copy fix touches no artifact at all, an internal refactor touches only the SPEC, and only a launch walks the whole chain. The ladder is in [amend-mode.md](docs/amend-mode.md).
+
+Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`; a service pick ("which email provider?") goes to `/pick-cloud-services`; a first deployment or provider cutover goes to `/go-live`; an accreted system between versions goes to `/clean-house`.
 
 ## Skills
 
@@ -52,14 +59,17 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `define` | model | defining | — | — | Surface assumptions, frame a hypothesis, route to the right path |
 | `research-market` | slash | defining | — | `definitions/research.md` | Mine forums + competitive landscape |
 | `ideate` | slash | defining | `definitions/research.md` | `definitions/ideas.md` | Ten ranked one-pagers; you pick the winner |
-| `judge-idea` | slash | defining | `definitions/ideas.md` winner / PRD / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
-| `to-prd` | slash | defining | conversation | `definitions/prd.md` | Synthesize the *what & why* |
-| `pick-ui-surfaces` | model | defining | `definitions/prd.md` | `definitions/surfaces.md` | Lock the UI's structure + visual identity |
-| `pick-harness-shape` | model | defining | `definitions/prd.md`, `definitions/surfaces.md` | `definitions/harness.md` (+ `definitions/runtime.md` at the placement gate) | Decide + shape a custom LLM harness |
-| `design-mcp-server` | model | defining | `definitions/prd.md`, `definitions/harness.md` | `definitions/mcp-servers.md` | Design an MCP server you'll build |
+| `judge-idea` | slash | defining | `definitions/ideas.md` winner / PRD / FRD / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
+| `to-prd` | slash | defining | conversation | `definitions/prd.md` | Synthesize the *what & why*, in two pages |
+| `to-frd` | slash | defining | `definitions/prd.md` | `definitions/frd.md` | Detail every feature: states, rules, acceptance criteria |
+| `pick-ui-surfaces` | model | defining | `definitions/prd.md`, `definitions/frd.md` | `definitions/surfaces.md` | Lock the UI's structure + visual identity |
+| `pick-harness-shape` | model | defining | `definitions/prd.md`, `definitions/frd.md`, `definitions/surfaces.md` | `definitions/harness.md` (+ `definitions/runtime.md` at the placement gate) | Decide + shape a custom LLM harness |
+| `design-mcp-server` | model | defining | `definitions/prd.md`, `definitions/frd.md`, `definitions/harness.md` | `definitions/mcp-servers.md` | Design an MCP server you'll build |
 | `pick-cloud-services` | slash | defining / anytime | PRD (greenfield), `docs/selection-method.md`, live vendor pages | `docs/adr/` decision records | Pick any external/cloud service via live research; on greenfield, decide the dev-to-prod path first |
-| `to-spec` | slash | defining | `definitions/prd.md`, `definitions/harness.md`, `definitions/surfaces.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` | `definitions/spec.md` | Lock the implementation contract |
-| `to-issues` | slash | defining | `definitions/spec.md` | GitHub issues | Break the SPEC into `afk` / `hitl` issues |
+| `to-mockup` | slash | defining | `definitions/frd.md`, `definitions/surfaces.md` | `definitions/mockup.html`, `definitions/mockup.md` | Draw every feature state as annotated screens |
+| `to-spec` | slash | defining | `definitions/prd.md`, `definitions/frd.md`, `definitions/surfaces.md`, `definitions/mockup.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` | `definitions/spec.md` | Lock the implementation contract |
+| `to-issues` | slash | defining | `definitions/spec.md`, `definitions/frd.md` | GitHub issues | Break the SPEC into `afk` / `hitl` slices, ranked into waves |
+| `run-wave` | slash | implementing | GitHub issues | merged code, reconciled backlog | Run one wave in parallel, then re-judge every remaining issue |
 | `test-driven-dev` | model | implementing | `definitions/spec.md` | code + tests | Red-green-refactor on one issue |
 | `ui-taste` | model | implementing | `definitions/surfaces.md` | styled UI | Apply the locked visual identity + taste rules |
 | `generate-test-assets` | model | implementing | `definitions/spec.md`, test plan | `test-assets/` | Generate multimodal test fixtures with Gemini; route load-bearing checks to the human |
@@ -68,6 +78,7 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `audit-drift` | slash | shipping | doc graph | drift report | Sweep PRDs/SPECs/ADRs for drift |
 | `audit-failure-modes` | slash | shipping | the system | P0/P1/P2 list | Pre-mortem of latent failure modes |
 | `go-live` | slash | operating | runbooks, gate scripts, the deployed environment | GO/NO-GO report | Evidence gate before first real traffic or a one-way cutover |
+| `readout` | slash | operating | `definitions/prd.md` metrics, live instrumentation | `docs/audits/` readout | Weeks post-launch: did the number move? keep / iterate / cut / pivot |
 | `github-triage` | slash | meta | GitHub issues | labels | Label-based triage state machine |
 | `clean-house` | slash | maintaining | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
 | `improve-readability` | slash | maintaining / anytime | code, tests, `CONTEXT.md`, git churn | smaller code, stronger tests, `docs/audits/` report | Fresh-eyes confusion log → checklist sweep → cut needless code, comments and docs, rework the tests, until dry |
@@ -115,7 +126,7 @@ git clone https://github.com/dformoso/positronic.git
 ln -s "$(pwd)/positronic/skills" ~/.agents/skills
 ```
 
-The 14 `slash` skills ship `agents/openai.yaml` (`allow_implicit_invocation: false`) — Codex won't auto-fire them; invoke explicitly with `$name`. Floor: copy `AGENTS.md` to `~/.codex/AGENTS.md` (global) or keep it at the project root — Codex reads it natively (no `@import` support; 32 KiB default cap).
+The 18 `slash` skills ship `agents/openai.yaml` (`allow_implicit_invocation: false`) — Codex won't auto-fire them; invoke explicitly with `$name`. Floor: copy `AGENTS.md` to `~/.codex/AGENTS.md` (global) or keep it at the project root — Codex reads it natively (no `@import` support; 32 KiB default cap).
 
 ### Antigravity
 

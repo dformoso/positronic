@@ -1,14 +1,14 @@
 ---
 name: to-spec
-description: Turn definitions/prd.md and (if present) definitions/harness.md and definitions/surfaces.md into an implementation SPEC. Save it as definitions/spec.md. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics, product surfaces). User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Turn definitions/prd.md, definitions/frd.md and (if present) definitions/surfaces.md, definitions/mockup.md and definitions/harness.md into an implementation SPEC. Save it as definitions/spec.md. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics, product surfaces). User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
 If the user did not explicitly invoke this skill — by name, by slash/dollar command, or via its workflow stub — stop: say it exists and wait for them to invoke it.
 
-Synthesize `definitions/prd.md` and (if present) `definitions/harness.md` and `definitions/surfaces.md` into a SPEC. Do NOT re-interview — work from prior decisions.
+Synthesize the upstream definitions into a SPEC. Do NOT re-interview — work from prior decisions.
 
-The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observability, security. The PRD owns *what and why* — don't duplicate it here.
+The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observability, security. The PRD owns *why and for whom*, the FRD owns *what each feature does*, and the mockup owns *what the screens look like* — don't duplicate any of them here. Where the SPEC needs one of their facts, restate the minimum and point at the source.
 
 ## Amend mode
 
@@ -17,6 +17,10 @@ If `definitions/spec.md` already exists and an upstream artifact was amended (or
 ## Process
 
 1. Read the PRD: `definitions/prd.md`. If it doesn't exist, prompt the user to run `/to-prd` first and stop.
+
+1b. Read the FRD: `definitions/frd.md` — the feature inventory, product-wide tables, per-feature states and rules, and the acceptance criteria each slice has to satisfy. This is the primary *what* the SPEC turns into *how*; the modules below should cover its feature inventory with nothing left over and nothing invented. If it doesn't exist and the change is `feature`- or `launch`-tier (see the PRD's Change tier field), stop and prompt the user to run `/to-frd` first. A `fix`- or `internal`-tier change proceeds without one.
+
+1c. Read the mockup index if it exists: `definitions/mockup.md`. Its agreed panel inventory is the UI contract — every panel is a state some slice has to render, and the Test plan below names how each is checked. Don't restate the panels; point at the index and let `/to-issues` carry the panel ids into acceptance criteria.
 
 2. Read the harness artifact: `definitions/harness.md`. If it exists, the SPEC's "Harness shape" section restates its picks (substrate, topology, memory, tool layer, gates, per-stage sampling) — do not re-derive them, and do not contradict them silently. If the SPEC needs to deviate, surface the conflict to the user before writing. If no harness artifact exists and the section matrix below indicates one is needed (custom agent / multi-agent / computer use), stop and prompt the user to run `pick-harness-shape` first.
 
@@ -175,15 +179,24 @@ For any dependency whose setup involves an external clock — quota approvals, i
 
 How the change reaches production safely. For reversible changes a paragraph suffices: feature flag, canary cohort, kill switch. Anything **one-way** — a provider re-point, a datastore migration, first production traffic — needs a stepped cutover runbook written per [rollout.md](rollout.md): per-step Verify + Rollback, one-way doors marked and placed late, a risk register whose every risk names the phase that closes it, thin-slice-first phasing, and a scripted exit gate per step (the evidence `/go-live` later verifies).
 
-For schema changes, state the expand/contract contract — destructive changes (drops, renames) land only once no shipped release reads the old shape — and name its enforcement gate (boot the previous release against the migrated store) in the Test plan. Every environment is a config profile over one SHA-tagged artifact — a demo is a profile, never a fork; production declares itself and refuses dev/test affordances by construction.
+For schema changes, state the expand/contract contract — destructive changes (drops, renames) land only once no shipped release reads the old shape — and name its enforcement gate (boot the previous release against the migrated store) in the Test plan.
 
-If the project recorded a development-to-production path (`docs/adr/`, via `pick-cloud-services`), add one row: the path, a pointer to the record, and its armed `TRIGGER:` lines.
+**Environments.** The ladder from a dev machine to production is recorded in four places, each owning one part; cite them here rather than restating any of them. [rollout.md §7](rollout.md#7-environments) has the map.
 
 ## Observability
 
-Logs (what gets logged, at what level), metrics (counters, latencies), traces (spans) — prefer OpenTelemetry GenAI semantic conventions for agent traces (model call, tool call, agent step as spans). Dashboards or alerts that need to exist before launch. Never log credentials, PII, or auth headers. See `${SKILL_DIR}/../../docs/agentic-patterns/07_eval_observability_brief.md`.
+Write this section per [observability.md](observability.md) — it carries the four tables (telemetry set, service level objectives, alert routing, and the PRD-metric instrumentation that `/readout` later reads) and the rules for filling them.
 
 This section is the **plan-of-record for what telemetry exists**. `pick-harness-shape` §9 owns only the posture, `design-mcp-server` §9 only server-internal logs, and any placement profile (`definitions/runtime.md`) only where the telemetry backend lives — none of them redefines the telemetry set; they point here.
+
+| Table | Answers |
+|---|---|
+| Telemetry set | What gets logged, counted, and traced — and at what level |
+| Service level objectives | What "working" means as a number, and the error budget that follows |
+| Alerts | Which threshold pages a human, where it goes, and what they do first |
+| Product metrics | For each PRD metric and kill criterion: the signal that measures it, and where `/readout` reads it |
+
+The last table is the one that is always missing. A PRD metric with no instrumentation row can never be checked, so the kill criterion attached to it can never fire — which means the product cannot fail, which means nothing is learned from shipping it. Never log credentials, PII, or auth headers.
 
 ## Security / authn / authz
 

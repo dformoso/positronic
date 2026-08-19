@@ -15,15 +15,16 @@ Run pick-ui-surfaces only when the user lives inside a persistent UI: web app, m
 
 ## Amend mode
 
-If `definitions/surfaces.md` already exists and this run is a scoped UI change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read the surfaces artifact as baseline, edit only the sections the change touches (reconcile any it contradicts), leave every other section byte-for-byte alone, and update the Amendment header. Then prompt `/to-spec` to pick up the change.
+If `definitions/surfaces.md` already exists and this run is a scoped UI change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read the surfaces artifact as baseline, edit only the sections the change touches (reconcile any it contradicts), leave every other section byte-for-byte alone, and update the Amendment header. Then prompt `/to-mockup` to re-render the affected panels, and `/to-spec` to pick up the change.
 
-## 1. Read the PRD
+## 1. Read the PRD and the FRD
 
-Before any picks, read the PRD: `definitions/prd.md`. The PRD's target user, form factor, external channels, integrations, and any compliance constraints are the inputs that drive sections 2–10 — picking without them is picking blind.
+Before any picks, read both:
 
-If no PRD exists, stop and prompt the user to run `/to-prd` first.
+- `definitions/prd.md` — target user, form factor, compliance constraints. If it doesn't exist, stop and prompt `/to-prd`.
+- `definitions/frd.md` — the feature inventory, external channels, integrations, queues, and notification modes these surfaces have to hold. If it doesn't exist, stop and prompt `/to-frd`; picking a nav shape without knowing the feature set is picking blind.
 
-Record the PRD path; it goes into the artifact (section 11).
+Record both paths; they go into the artifact (section 11).
 
 ## 2. Visual identity
 
@@ -114,7 +115,7 @@ Default policy: ship privacy-protective defaults (analytics off, sharing off) an
 
 ## 7. Integration placement
 
-For each integration named in the PRD's *Integrations & migration* table, decide where in the UX it surfaces and when it's presented:
+For each integration named in the FRD's *Integrations & migration* table, decide where in the UX it surfaces and when it's presented:
 
 | Integration | Where surfaced | When presented |
 |---|---|---|
@@ -128,6 +129,8 @@ Status indicators (badges, health dashboards, broken-connection banners) decide 
 ## 8. Error & system states
 
 What the user sees when things go wrong or aren't there yet.
+
+**Only system states belong here** — the ones that look the same whatever feature you were using. A state that belongs to one feature (this field rejects a past date; the approval queue is empty; the plan's monthly limit is spent) is the FRD's, and lives in that feature's States table. Both sets get drawn by `/to-mockup`.
 
 | State | Trigger | What user sees | Recovery path |
 |---|---|---|---|
@@ -183,9 +186,10 @@ Length and density: as long as you need — preferably tight. Tables only, no pr
 
 <surfaces-template>
 
-## Source PRD
+## Sources
 
-`definitions/prd.md` — the PRD whose constraints drove these picks.
+`definitions/prd.md` — the user, form factor, and constraints that drove these picks.
+`definitions/frd.md` — the feature set, channels, and integrations these surfaces hold.
 
 ## TL;DR
 
@@ -266,4 +270,5 @@ Decisions deferred to `/to-spec` (e.g., exact module boundaries, schema for sett
 Present the saved `definitions/surfaces.md` and ask the user to review. Once approved:
 
 - If a custom LLM/agent harness is also on the table, prompt them to run `pick-harness-shape` next — it benefits from knowing the UI surfaces it slots into.
-- Otherwise, prompt them to run `/to-spec` — it will read this file alongside the PRD automatically.
+- Then prompt them to run `/to-mockup` — it renders these picks and the FRD's states as real screens, which is the first chance anyone has to disagree with them.
+- After the mockup, `/to-spec` reads this file alongside the PRD, FRD, and mockup index automatically.
