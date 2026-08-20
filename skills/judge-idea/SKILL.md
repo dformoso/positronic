@@ -44,7 +44,7 @@ If no target artifact exists, prompt the user for which artifact to judge and st
    | **loop-back-to-ideate** | Rubric or ranking missed something; idea space wasn't properly explored | User re-runs `/ideate`; rubric likely needs editing |
    | **pivot** | Problem framing itself looks wrong | User loops back to `define` |
 
-4. **Write the judgment.** Save as `judgments/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create the directory). Use the template below. Commit. **Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+4. **Write the judgment.** Save as `judgments/YYYY-MM-DD-HH-mm-SS.md` (use `date +"%Y-%m-%d-%H-%M-%S"`; create the directory). Use the template below. Commit. **Write it in plain English** — short sentences, one idea each, concrete before abstract, jargon glossed on first use, readable by someone who wasn't in this conversation (AGENTS.md §4).
 
 5. **Present verdict to user.** Show the judgment. The user decides whether to follow the recommendation or override and proceed anyway.
 

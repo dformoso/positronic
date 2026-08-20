@@ -21,7 +21,7 @@ The line against its neighbours:
 
 ## Amend mode
 
-If `definitions/journeys.md` already exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read it as baseline, edit only the journeys and reference rows the change touches (reconcile any it contradicts), leave every other journey byte-for-byte alone, and update the Amendment header. Then name which downstream artifacts the touched sections implicate — new or changed steps → `definitions/mockups.md` and `definitions/mockups.html`; the autonomy matrix → `definitions/harness.md`; new channels or tools → `definitions/mcp-servers.md` — prompt only those, then `/to-spec`.
+If `definitions/journeys.md` exists and this is a scoped change rather than a rebuild, follow `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): edit only the journeys and reference rows the change touches, reconcile anything it contradicts, leave every other journey byte-for-byte alone, update the Amendment header. Then name which downstream artifacts the touched sections implicate — new or changed steps → `definitions/mockups.md` and `definitions/mockups.html`; the autonomy matrix → `definitions/harness.md`; new channels or tools → `definitions/mcp-servers.md` — prompt only those, then `/to-spec`.
 
 ## Inputs
 

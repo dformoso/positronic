@@ -76,7 +76,7 @@ Refusing to pick is also a signal: if the numbers can't distinguish these four, 
 
 ### 6. Save
 
-**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, jargon glossed on first use, readable by someone who wasn't in this conversation (AGENTS.md §4).
 
 Always write the record — this one isn't optional, because a readout nobody can find is a readout that didn't happen:
 

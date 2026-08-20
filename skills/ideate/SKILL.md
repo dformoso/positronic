@@ -47,7 +47,7 @@ Generate ten product concepts grounded in the most recent research artifact. Pro
 
    The nine that lost stay in the file: they are the record of what was considered and why it was passed over, the same way the other artifacts keep their rejected alternatives. Commit it.
 
-   **Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+   **Write it in plain English** — short sentences, one idea each, concrete before abstract, jargon glossed on first use, readable by someone who wasn't in this conversation (AGENTS.md §4).
 
 7. **Hand off.** Prompt the user to run `/judge-idea` to adversarially test the winner before `/to-prd` commits.
 

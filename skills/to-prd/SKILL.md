@@ -1,6 +1,6 @@
 ---
 name: to-prd
-description: Turn the current conversation context into a PRD and save it as definitions/prd.md. Use when user wants to create a PRD from the current context. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Turn the current conversation context into a two-page PRD — problem, target user, metrics with kill criteria, journeys named in two sentences each, scope, and the change tier that decides how far the change travels — and save it as definitions/prd.md. Use when the user wants to create or amend a PRD. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -20,7 +20,7 @@ Everything downstream has its own home. Don't write here what belongs there:
 
 ## Amend mode
 
-If `definitions/prd.md` already exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read the PRD as baseline, edit only the sections the change touches (reconcile any it contradicts), leave every other section byte-for-byte alone, and update the Amendment header. Then name which downstream artifacts the touched sections implicate (any change to what the product does → `definitions/journeys.md`; Solution Overview surfaces / form factor → `definitions/mockups.md`) and prompt only those, then `/to-spec`.
+If `definitions/prd.md` exists and this is a scoped change rather than a rebuild, follow `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): edit only the sections the change touches, reconcile anything it contradicts, leave every other section byte-for-byte alone, update the Amendment header. Then name which downstream artifacts the touched sections implicate — any change to what the product does → `definitions/journeys.md`; Solution Overview surfaces / form factor → `definitions/mockups.md`; Goals & Success Metrics or kill criteria → the SPEC's Observability product-metric table and the `/readout` date — and prompt only those, then `/to-spec`.
 
 ## Inputs
 

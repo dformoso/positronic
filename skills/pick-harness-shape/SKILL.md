@@ -11,7 +11,7 @@ Ask one question at a time. Surface your recommended answer with each.
 
 ## Amend mode
 
-If `definitions/harness.md` already exists and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md`: read the harness artifact as baseline, edit only the sections the change touches (reconcile any it contradicts), leave every other section byte-for-byte alone, and update the Amendment header. If the tool layer (§5) changed, prompt `design-mcp-server`; then prompt `/to-spec`.
+If `definitions/harness.md` exists and this is a scoped change rather than a rebuild, follow `${SKILL_DIR}/../../docs/amend-mode.md`: edit only the sections the change touches, reconcile anything it contradicts, leave every other section byte-for-byte alone, update the Amendment header. If the tool layer (§5) changed, prompt `design-mcp-server`; then prompt `/to-spec`.
 
 ## 0. Read the PRD (and surfaces, if any)
 
@@ -205,7 +205,7 @@ For most teams this is the highest-leverage layer beyond ReAct — the instrumen
 
 Once the sections above have been answered, write the picks to `definitions/harness.md` (create `definitions/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
-**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, jargon glossed on first use, readable by someone who wasn't in this conversation (AGENTS.md §4).
 
 Use the template below. Every section must carry information: cite the pattern brief that grounded the call, and record rejected alternatives so future agents don't re-open settled decisions. Commit the file.
 
@@ -309,5 +309,9 @@ Decisions deferred to `/to-spec` (e.g., exact module boundaries, schema specific
 Present the saved `definitions/harness.md` and ask the user to review. Once approved:
 
 - If the tool layer (§5) chose MCP, prompt them to run `design-mcp-server` next — it writes `definitions/mcp-servers.md`, which `/to-spec` reads.
-- **Placement gate** — if the system runs autonomously in the cloud (always-on triggers, scheduled work, inbound webhooks) and its production placement isn't already settled: derive a workload profile from this artifact (max single-run duration, state across waits, trigger shape, executes generated code y/n, concurrency, residency constraint, irreversible side effects) and ask the gate question: *does this need more than one boring compute service?* If runs fit platform timeouts, state lives in the project's own store, and no generated code executes — the answer is no: record the verdict + profile in `definitions/runtime.md` (one page: gate verdict, workload profile, revisit `TRIGGER:` lines — each at the start of its own line, list markers fine; the sweep greps for them) so the decision isn't reopened. If the gate trips, the placement questions in `${SKILL_DIR}/../../docs/selection-method.md` drive the same artifact section by section (per-pick evidence + exit line, residency-exceptions table, cost envelope + kill switch). This artifact records *where the loop runs*; individual service picks are sections of `definitions/infrastructure.md` via `/to-infrastructure`. Amend-mode applies (`definitions/runtime.md` is in the cascade).
+- **Placement gate** — when the system runs autonomously in the cloud (always-on triggers, scheduled work, inbound webhooks) and its production placement isn't settled yet. Derive a workload profile from this artifact: max single-run duration, state across waits, trigger shape, executes generated code y/n, concurrency, residency constraint, irreversible side effects. Then ask the gate question — *does this need more than one boring compute service?*
+  - **No** — runs fit platform timeouts, state lives in the project's own store, and no generated code executes. Record the verdict and the profile in `definitions/runtime.md`, one page: gate verdict, workload profile, revisit `TRIGGER:` lines (each at the start of its own line; list markers are fine, the sweep greps for them). Recording it is what stops the decision being reopened.
+  - **Yes** — the placement questions in `${SKILL_DIR}/../../docs/selection-method.md` drive the same artifact section by section: per-pick evidence + exit line, residency-exceptions table, cost envelope + kill switch.
+
+  This artifact records *where the loop runs*; individual service picks are sections of `definitions/infrastructure.md` via `/to-infrastructure`. Amend mode applies — `definitions/runtime.md` is in the cascade.
 - Then prompt them to run `/to-spec` — it reads this file (and the placement profile, if one exists) alongside the PRD automatically.

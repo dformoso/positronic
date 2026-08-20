@@ -139,7 +139,7 @@ Record the picks as `## Environments`, `## Gate ladder`, `## Build & deploy`, an
 
    Any **red** is either justified in the record or kills the candidate.
 5. **Tie ⇒ spike.** A time-boxed spike (≤ 1 day) with kill criteria *written before* the spike starts. No open-ended evaluations.
-6. **Lock the record.** Write it (below). The decision is not made until it is recorded. **Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+6. **Lock the record.** Write it (below). The decision is not made until it is recorded. **Write it in plain English** — short sentences, one idea each, concrete before abstract, jargon glossed on first use, readable by someone who wasn't in this conversation (AGENTS.md §4).
 
 ## The record
 

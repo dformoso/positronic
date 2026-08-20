@@ -23,7 +23,7 @@ Run this only when the user lives inside a persistent UI: web app, mobile app, d
 
 ## Amend mode
 
-If `definitions/mockups.md` already exists and this run is a scoped UI change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read it as baseline, edit only the sections the change touches (reconcile any it contradicts), leave every other section byte-for-byte alone, and update the Amendment header.
+If `definitions/mockups.md` exists and this is a scoped UI change rather than a rebuild, follow `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): edit only the sections the change touches, reconcile anything it contradicts, leave every other section byte-for-byte alone, update the Amendment header.
 
 The drawing amends too, in step with the picks. Add or edit only the panels the change touches and leave the rest byte-for-byte alone — except when the **visual identity** changed, which re-renders everything, because every panel inherits it. A change that touches no journey step and no identity field draws nothing; that's a correct outcome, not a skipped step. Deleting a journey deletes its panels: a drawing of a screen the product no longer has misleads worse than no drawing at all. Then prompt `/to-spec`.
 

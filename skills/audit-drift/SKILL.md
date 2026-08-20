@@ -120,7 +120,7 @@ After printing the report, ask:
 
 > Save the report to `docs/audits/YYYY-MM-DD-doc-audit.md`? (y/N)
 
-**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, jargon glossed on first use, readable by someone who wasn't in this conversation (AGENTS.md §4).
 
 Default no. Create `docs/audits/` lazily on first save.
 

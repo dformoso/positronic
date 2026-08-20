@@ -1,6 +1,6 @@
 ---
 name: to-issues
-description: Break a plan, spec, or PRD into independently-grabbable GitHub issues using tracer-bullet vertical slices. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into issues. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Break the SPEC (or a plan) into independently-grabbable GitHub issues using tracer-bullet vertical slices, then rank them into waves — most certain first — so /run-wave can work them in parallel. Use when the user wants to convert a plan or SPEC into issues, create implementation tickets, or break work into waves. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ Run only on explicit invocation — by name, slash/dollar command, or workflow s
 
 # To Issues
 
-Break a plan into independently-grabbable GitHub issues using vertical slices (tracer bullets).
+Break a plan into independently-grabbable GitHub issues using vertical slices (tracer bullets), ranked into waves that `/run-wave` works in parallel.
 
 ## Process
 
@@ -139,7 +139,7 @@ For each approved slice, create a GitHub issue with two labels: `afk` or `hitl` 
 
 Create issues in dependency order (blockers first) so you can reference real issue numbers in the "Blocked by" field.
 
-**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, jargon glossed on first use, readable by someone who wasn't in this conversation (AGENTS.md §4).
 
 The wave label is the only scheduling state that lives in GitHub, and `/run-wave` both reads and rewrites it — an issue the between-wave review re-scopes gets relabelled rather than re-filed.
 

@@ -11,7 +11,7 @@ Ask one question at a time. Surface your recommended answer with each.
 
 ## Amend mode
 
-If `definitions/mcp-servers.md` already carries a section for this server and this run is a scoped change (not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md`: read that server's section as baseline, edit only the parts the change touches (reconcile any it contradicts), and leave the rest of the file — including every other server's section — byte-for-byte alone. Update the Amendment header, naming which server changed. Then prompt `/to-spec` to pick up the change.
+If `definitions/mcp-servers.md` already carries a section for this server and this is a scoped change rather than a rebuild, follow `${SKILL_DIR}/../../docs/amend-mode.md`: edit only the parts the change touches, reconcile anything it contradicts, and leave the rest of the file — including every other server's section — byte-for-byte alone. Update the Amendment header, naming which server changed. Then prompt `/to-spec` to pick up the change.
 
 ## 0. Read the PRD (and harness, if invoked from pick-harness-shape)
 
@@ -141,7 +141,7 @@ See [mcp-testing.md](../test-driven-dev/mcp-testing.md) for code patterns.
 
 Once the sections above have been answered, write the picks to `definitions/mcp-servers.md` (create `definitions/` if missing). This file is the source of truth that `/to-spec` reads downstream — do not skip it, and do not paraphrase only in-conversation.
 
-**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4).
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, jargon glossed on first use, readable by someone who wasn't in this conversation (AGENTS.md §4).
 
 One file holds every server this project designs, one `##` section each, under a `# MCP servers` title. Append this server's section if the file exists; create it if not. Never touch another server's section.
 

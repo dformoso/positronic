@@ -1,6 +1,6 @@
 ---
 name: to-spec
-description: Turn definitions/prd.md, definitions/journeys.md and (if present) definitions/mockups.md and definitions/harness.md into an implementation SPEC. Save it as definitions/spec.md. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, agent harness specifics, product surfaces). User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Turn the definitions/ artifacts — prd.md and journeys.md, plus mockups.md, harness.md, mcp-servers.md, runtime.md and infrastructure.md where they exist — into an implementation SPEC. Save it as definitions/spec.md. Use when the user wants to lock down the implementation contract beyond what /to-prd captured (modules, data model, API surface, harness specifics, product surfaces, verification fidelity, rollout, observability). User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -12,39 +12,37 @@ The SPEC owns *how*: modules, schema, API contracts, test plan, rollout, observa
 
 ## Amend mode
 
-If `definitions/spec.md` already exists and an upstream artifact was amended (or this run is otherwise a scoped change, not a from-scratch rebuild), run in amend mode per `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): read the SPEC as baseline, edit only the sections the change touches (reconcile any the upstream change contradicts), leave every other section byte-for-byte alone, and update the Amendment header. Then prompt `/to-issues` for the new or changed slices only.
+If `definitions/spec.md` exists and an upstream artifact was amended — or this is otherwise a scoped change rather than a rebuild — follow `${SKILL_DIR}/../../docs/amend-mode.md` (`${SKILL_DIR}` = the directory containing this file): edit only the sections the change touches, reconcile anything the upstream change contradicts, leave every other section byte-for-byte alone, update the Amendment header. Then prompt `/to-issues` for the new or changed slices only.
 
 ## Process
 
-1. Read the PRD: `definitions/prd.md`. If it doesn't exist, prompt the user to run `/to-prd` first and stop.
+1. **Read the upstream artifacts.** Each one that exists is a *baseline*, not a suggestion: the SPEC **restates** its picks and never re-derives them, and never contradicts one silently. If the SPEC has to deviate, surface the conflict to the user before writing.
 
-1b. Read the journeys: `definitions/journeys.md` — the journey scripts, their branches and end-state proofs, the cross-journey rules, the behaviour no journey touches, and the reference tables. This is the primary *what* the SPEC turns into *how*; the modules below should carry every journey and every reference row, with nothing left over and nothing invented. Each journey's **end-state proof** is what the Test plan's end-to-end row asserts. If it doesn't exist and the change is `feature`- or `launch`-tier (see the PRD's Change tier field), stop and prompt the user to run `/to-journeys` first. A `fix`- or `internal`-tier change proceeds without one.
+| Artifact | What the SPEC does with it | If it's missing |
+|---|---|---|
+| `definitions/prd.md` | The *what & why* every section below serves | Stop — prompt `/to-prd` |
+| `definitions/journeys.md` | The primary *what* this turns into *how*. Modules carry every journey and every reference row, with nothing left over and nothing invented; each journey's **end-state proof** becomes the Test plan's end-to-end row | Stop and prompt `/to-journeys` on a `feature`- or `launch`-tier change (the PRD's Change tier field). A `fix`- or `internal`-tier change proceeds without one |
+| `definitions/mockups.md` | Its picks — visual identity, nav, account, onboarding, settings, integration placement, error states, compliance — become **Product surfaces**, and Modules reflect them. Its agreed panel inventory is the UI contract: every panel is a state some slice renders, and the Test plan names how each is checked. Don't restate the panels; point at the file and let `/to-issues` carry the panel ids into acceptance criteria | Stop and prompt `/to-mockups` if the product has persistent UI surfaces |
+| `definitions/harness.md` | Its picks — substrate, topology, memory, tool layer, gates, per-stage sampling — become **Harness shape** | Stop and prompt `pick-harness-shape` if the section matrix below marks one needed (custom agent / multi-agent / computer use) |
+| `definitions/mcp-servers.md` | One `##` section per server; read every one. Each adds a paragraph to **Tool layer / ACI** restating its picks — transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy — plus a pointer to that section | Stop and prompt `design-mcp-server` if the SPEC describes an MCP server |
+| `definitions/runtime.md` | The placement profile folds into existing sections: residency exceptions into Security, telemetry backend into Observability, cost envelope + kill switch into Rollout | Proceed |
+| `definitions/infrastructure.md` | Holds every service-level vendor pick. Name the capability and point at the section; never restate the vendor rationale | Proceed |
 
-1c. Read the mockups artifact if it exists: `definitions/mockups.md`. Its agreed panel inventory is the UI contract — every panel is a state some slice has to render, and the Test plan below names how each is checked. Don't restate the panels; point at the file and let `/to-issues` carry the panel ids into acceptance criteria.
+2. Sketch modules and integration points. Assign each module the design decision it hides — if two modules must agree on a format or assumption, that's leakage; pick one owner. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation, and state per interface which error modes are defined out of existence (semantics that make the special case a non-event) versus surfaced.
 
-2. Read the harness artifact: `definitions/harness.md`. If it exists, the SPEC's "Harness shape" section restates its picks (substrate, topology, memory, tool layer, gates, per-stage sampling) — do not re-derive them, and do not contradict them silently. If the SPEC needs to deviate, surface the conflict to the user before writing. If no harness artifact exists and the section matrix below indicates one is needed (custom agent / multi-agent / computer use), stop and prompt the user to run `pick-harness-shape` first.
+3. Confirm with the user which modules need tests; capture them in the Test plan section.
 
-3. Read the mockups artifact: `definitions/mockups.md`. If it exists, the SPEC's "Product surfaces" section restates its picks (visual identity, nav, account, onboarding, settings, integration placement, error states, compliance) and the SPEC's Modules section should reflect them — do not re-derive, and do not contradict silently. If the SPEC needs to deviate, surface the conflict before writing. If the product has persistent UI surfaces and no mockups artifact exists, stop and prompt the user to run `/to-mockups` first.
-
-4. Read the MCP-server designs (if any): `definitions/mcp-servers.md`. Multi-server projects keep one `##` section per server; read every one. For each, the SPEC's "Tool layer / ACI" section adds a paragraph restating its picks (transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy) plus a pointer to that section — do not re-derive, and do not contradict silently. If the SPEC describes an MCP server but no design artifact exists, stop and prompt the user to run `design-mcp-server` first.
-
-4b. Read the placement profile if it exists: `definitions/runtime.md`. Its constraints fold into existing sections — residency exceptions into Security, telemetry backend placement into Observability, cost envelope + kill switch into Rollout — restated, never re-derived. Service-level vendor picks live in `definitions/infrastructure.md` (written by `/to-infrastructure`); the SPEC names the capability and points at the section rather than restating the vendor rationale.
-
-5. Sketch modules and integration points. Assign each module the design decision it hides — if two modules must agree on a format or assumption, that's leakage; pick one owner. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation, and state per interface which error modes are defined out of existence (semantics that make the special case a non-event) versus surfaced.
-
-6. Confirm with the user which modules need tests; capture them in the Test plan section.
-
-7. Pick the **verification fidelity** — how real development and verification are along five axes: data, external access, eval signal, CUJ verification, deploy. Show the rungs as a table, recommend one per axis, let the user override per dependency.
+4. Pick the **verification fidelity** — how real development and verification are along five axes: data, external access, eval signal, CUJ verification, deploy. Show the rungs as a table, recommend one per axis, let the user override per dependency.
 
    Default: build and test against the lowest *faithful* stand-in — fixtures plus mock or sandbox adapters at the external seams — so AFK slices run unattended. Then schedule an explicit crossover before the release gate; a slice may not claim done on a mock when its journey needs the real thing.
 
    Settle the crossover shape too: per-slice (true tracer bullet, real deps from the start, credentials needed early), phased (mock through MVP, dedicated crossover slices before launch), or hybrid per-axis (recommended). Picks go in the Verification fidelity section; the per-dependency rung goes in the External dependencies column.
 
-8. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `definitions/spec.md` (create `definitions/` if missing). Commit it.
+5. Write the SPEC using the template below, including only the sections that apply (see the matrix). Save as `definitions/spec.md` (create `definitions/` if missing). Commit it.
 
-9. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information, in plain English — short sentences, one idea each, concrete before abstract, every term of art glossed on first use (AGENTS.md §4).
+6. Length and density: As long as you need. Tables wherever ideal. Every sentence must carry information, in plain English — short sentences, one idea each, concrete before abstract, every term of art glossed on first use (AGENTS.md §4).
 
-10. Present the saved SPEC and wait for the user's approval before they run `/to-issues`. (If the SPEC adds load-bearing decisions worth stress-testing, mention `/judge-idea` can run adversarially on it first — optional.)
+7. Present the saved SPEC and wait for the user's approval before they run `/to-issues`. (If the SPEC adds load-bearing decisions worth stress-testing, mention `/judge-idea` can run adversarially on it first — optional.)
 
 ## Section applicability
 

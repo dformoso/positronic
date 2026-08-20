@@ -25,7 +25,7 @@ A personal AI-coding framework — opinionated, solo.
 
 ## A typical user journey
 
-You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each stage writes one document into `definitions/` that the next one reads. There is exactly one file per artifact type: later runs amend it in place, and git carries every version it used to be.
+You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each stage writes one document the next one reads. The defining artifacts live in `definitions/`, one file per artifact type — later runs amend it in place, and git carries every version it used to be; the reports stages 11–14 produce land in `docs/audits/`.
 
 | # | Stage | Run | Writes |
 | --- | --- | --- | --- |
@@ -59,14 +59,14 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `define` | model | defining | — | — | Surface assumptions, frame a hypothesis, route to the right path |
 | `research-market` | slash | defining | — | `definitions/research.md` | Mine forums + competitive landscape |
 | `ideate` | slash | defining | `definitions/research.md` | `definitions/ideas.md` | Ten ranked one-pagers; you pick the winner |
-| `judge-idea` | slash | defining | `definitions/ideas.md` winner / PRD / journeys / SPEC | — | Adversarial gate: proceed, loop-back, or pivot |
+| `judge-idea` | slash | defining | `definitions/ideas.md` winner / PRD / journeys / SPEC | `judgments/<timestamp>.md` | Adversarial gate: proceed, loop-back, or pivot |
 | `to-prd` | slash | defining | conversation | `definitions/prd.md` | Synthesize the *what & why*, in two pages |
 | `to-journeys` | slash | defining | `definitions/prd.md` | `definitions/journeys.md` | Script each journey: steps, branches, end-state proof |
 | `to-mockups` | slash | defining | `definitions/prd.md`, `definitions/journeys.md` | `definitions/mockups.md`, `definitions/mockups.html` | Lock the UI's structure + visual identity, then draw every screen |
 | `pick-harness-shape` | model | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md` | `definitions/harness.md` (+ `definitions/runtime.md` at the placement gate) | Decide + shape a custom LLM harness |
 | `design-mcp-server` | model | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/harness.md` | `definitions/mcp-servers.md` | Design an MCP server you'll build |
 | `to-infrastructure` | slash | defining / anytime | PRD, `docs/selection-method.md`, live vendor pages | `definitions/infrastructure.md` | Define the dev-to-prod path, environments, the gate ladder, CI/CD, infrastructure-as-code and deploy mechanics; pick every external service via live research |
-| `to-spec` | slash | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` | `definitions/spec.md` | Lock the implementation contract |
+| `to-spec` | slash | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md`, `definitions/infrastructure.md` | `definitions/spec.md` | Lock the implementation contract |
 | `to-issues` | slash | defining | `definitions/spec.md`, `definitions/journeys.md` | GitHub issues | Break the SPEC into `afk` / `hitl` slices, ranked into waves |
 | `run-wave` | slash | implementing | GitHub issues, `definitions/spec.md`, `definitions/journeys.md` | merged code, reconciled backlog | Run one wave in parallel, then re-judge every remaining issue |
 | `test-driven-dev` | model | implementing | `definitions/spec.md` | code + tests, `test-assets/` | Red-green-refactor on one issue; generates multimodal fixtures when a test needs one |

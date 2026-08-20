@@ -217,7 +217,7 @@ never loop silently.
 Always write `docs/audits/YYYY-MM-DD-readability.md` (create `docs/audits/` lazily); print
 the same to chat.
 
-**Write it in plain English** — short sentences, one idea each, concrete before abstract, every term of art glossed on first use. Someone who wasn't in this conversation has to follow it without asking (AGENTS.md §4). The next run reads it for calibration. Delete the previous readability
+**Write it in plain English** — short sentences, one idea each, concrete before abstract, jargon glossed on first use, readable by someone who wasn't in this conversation (AGENTS.md §4). The next run reads it for calibration. Delete the previous readability
 report as part of the spent-docs sweep — only the latest is ever read.
 
 ```text
