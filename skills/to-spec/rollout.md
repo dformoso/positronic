@@ -53,6 +53,11 @@ produce:
 These Verify clauses are exactly what `/go-live` §1(d) cites. A cutover scheduled before
 the drill record exists is scheduling a NO-GO.
 
+How to make both rehearsals — this one and §5's boot-the-previous-release proof — into gates
+that can actually fail is `../to-infrastructure/pipeline.md` §13. Two traps live there: row
+counts cannot be a restore's verdict, and a proof that cannot read the deploy history must go
+red rather than fall back quietly to the merge base.
+
 ## 7. Environments
 
 The canonical rule, stated here once: every environment is a **config profile over one SHA-tagged artifact** — a demo is a profile, never a fork. Production **declares itself** (a profile flag, not a hostname guess) and **refuses dev/test affordances by construction**. Write this into the SPEC so the build can't drift into a forked prod.

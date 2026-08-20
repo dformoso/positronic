@@ -35,7 +35,7 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 | 4 | Script every journey | `/to-journeys` | `definitions/journeys.md` — steps, branches, end-state proofs |
 | 5 | Design + draw the UI *(if it has one)* | `/to-mockups` | `definitions/mockups.md`, `definitions/mockups.html` |
 | 6 | Lock the harness *(if custom)* | `pick-harness-shape` (+ `design-mcp-server`) | `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` *(placement gate)* |
-| 7 | Lock the plumbing | `/to-infrastructure` | `definitions/infrastructure.md` — path, environments, CI/CD, infrastructure-as-code, service picks |
+| 7 | Lock the plumbing | `/to-infrastructure` | `definitions/infrastructure.md` — path, environments, gate ladder, CI/CD, infrastructure-as-code, service picks |
 | 8 | Lock *how* | `/to-spec` | `definitions/spec.md` |
 | 9 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` / `wave-N` |
 | 10 | Build, in waves | `/run-wave` — each issue via `test-driven-dev` (+ `ui-taste`, `diagnose`) | merged code, a reconciled backlog |
@@ -65,7 +65,7 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `to-mockups` | slash | defining | `definitions/prd.md`, `definitions/journeys.md` | `definitions/mockups.md`, `definitions/mockups.html` | Lock the UI's structure + visual identity, then draw every screen |
 | `pick-harness-shape` | model | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md` | `definitions/harness.md` (+ `definitions/runtime.md` at the placement gate) | Decide + shape a custom LLM harness |
 | `design-mcp-server` | model | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/harness.md` | `definitions/mcp-servers.md` | Design an MCP server you'll build |
-| `to-infrastructure` | slash | defining / anytime | PRD, `docs/selection-method.md`, live vendor pages | `definitions/infrastructure.md` | Define the dev-to-prod path, environments, CI/CD, infrastructure-as-code and deploy mechanics; pick every external service via live research |
+| `to-infrastructure` | slash | defining / anytime | PRD, `docs/selection-method.md`, live vendor pages | `definitions/infrastructure.md` | Define the dev-to-prod path, environments, the gate ladder, CI/CD, infrastructure-as-code and deploy mechanics; pick every external service via live research |
 | `to-spec` | slash | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md` | `definitions/spec.md` | Lock the implementation contract |
 | `to-issues` | slash | defining | `definitions/spec.md`, `definitions/journeys.md` | GitHub issues | Break the SPEC into `afk` / `hitl` slices, ranked into waves |
 | `run-wave` | slash | implementing | GitHub issues, `definitions/spec.md`, `definitions/journeys.md` | merged code, reconciled backlog | Run one wave in parallel, then re-judge every remaining issue |

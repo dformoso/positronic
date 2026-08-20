@@ -12,7 +12,7 @@ positronic keeps one document per artifact type, flat in `definitions/`, each na
 | `definitions/harness.md` | `pick-harness-shape` |
 | `definitions/mcp-servers.md` | `design-mcp-server` (one section per server) |
 | `definitions/runtime.md` | `pick-harness-shape`, at the placement gate |
-| `definitions/infrastructure.md` | `/to-infrastructure` (path, environments, CI/CD, infrastructure-as-code, one section per service) |
+| `definitions/infrastructure.md` | `/to-infrastructure` (path, environments, gate ladder, CI/CD, infrastructure-as-code, one section per service) |
 | `definitions/decisions.md` | `/clean-house`, `/improve-readability` (one section per decision) |
 | `definitions/spec.md` | `/to-spec` |
 

@@ -78,6 +78,7 @@ The ladder itself is recorded upstream, split across four owners — the map is 
 | Check | Evidence | ✓/✗ |
 |---|---|---|
 | Deploy traceable to a SHA | the deployed revision's SHA | |
+| The configuration that was applied is the configuration actually *serving* | read it off the revision holding traffic, never off the service's next-revision template | |
 | Rollback to the previous revision rehearsed once for real | dated rehearsal note | |
 | Schema-change contract honored — the previous release boots against the migrated store (expand/contract) | the boot-the-previous-image proof (see rollout.md) | |
 | Kill switch for the riskiest new surface | flip it in a non-prod profile | |
