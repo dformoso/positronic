@@ -46,3 +46,14 @@ Red-flag tells while implementing: a method that forwards to a same-signature me
 callers fill with the same value (overexposure — default it). And the counterweight: depth
 is not tininess — never split a coherent function into sibling fragments that only make
 sense together.
+
+## Shapes that make the module testable
+
+Depth and testability are the same design, seen from two sides — a small interface is a small
+test surface.
+
+- **Accept dependencies, don't create them.** `processOrder(order, paymentGateway)` can be
+  tested; a `processOrder(order)` that constructs its own gateway inside cannot.
+- **Return results, don't mutate.** `calculateDiscount(cart) -> Discount` is asserted directly;
+  an `applyDiscount(cart)` that edits `cart.total` in place has to be observed indirectly.
+- **Fewer methods, fewer parameters.** Each one is another test and another line of setup.

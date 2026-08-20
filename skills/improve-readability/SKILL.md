@@ -150,8 +150,9 @@ Three sweeps, parallel read-only subagents per lens or per area:
   READMEs describing a layout that changed. One auditor per candidate carrying
   [../clean-house/DELETION-AUDIT.md](../clean-house/DELETION-AUDIT.md) — readership is only
   half of it; a doc still cited but no longer true is the worse find. **Never touch
-  decision records**: the `definitions/` artifacts
-  are supersede-never-edit by design — superseded is not spent.
+  the `definitions/` artifacts**: they are amended, never deleted, and the two decision
+  files (`decisions.md`, `infrastructure.md`) are append-and-supersede — superseded is not
+  spent.
 
 Merge into findings: *file:line / check / evidence / responding move / lane*. A
 confusion-log entry corroborated by a check outranks either alone.
