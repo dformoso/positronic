@@ -21,14 +21,14 @@ If `definitions/spec.md` exists and an upstream artifact was amended — or this
 | Artifact | What the SPEC does with it | If it's missing |
 |---|---|---|
 | `definitions/prd.md` | The *what & why* every section below serves | Stop — prompt `/to-prd` |
-| `definitions/journeys.md` | The primary *what* this turns into *how*. Modules carry every journey and every reference row, with nothing left over and nothing invented; each journey's **end-state proof** becomes the Test plan's end-to-end row | Stop and prompt `/to-journeys` on a `feature`- or `launch`-tier change (the PRD's Change tier field). A `fix`- or `internal`-tier change proceeds without one |
+| `definitions/journeys.md` | The primary *what* this turns into *how*. Modules carry every journey and every reference row, with nothing left over and nothing invented; each journey's **end-state proof** becomes the Test plan's end-to-end row; the **Journey coverage** table under Modules & interfaces shows the rule holding, row by row | Stop and prompt `/to-journeys` on a `feature`- or `launch`-tier change (the PRD's Change tier field). A `fix`- or `internal`-tier change proceeds without one |
 | `definitions/mockups.md` | Its picks — visual identity, nav, account, onboarding, settings, integration placement, error states, compliance — become **Product surfaces**, and Modules reflect them. Its agreed panel inventory is the UI contract: every panel is a state some slice renders, and the Test plan names how each is checked. Don't restate the panels; point at the file and let `/to-issues` carry the panel ids into acceptance criteria | Stop and prompt `/to-mockups` if the product has persistent UI surfaces |
 | `definitions/harness.md` | Its picks — substrate, topology, memory, tool layer, gates, per-stage sampling — become **Harness shape** | Stop and prompt `pick-harness-shape` if the section matrix below marks one needed (custom agent / multi-agent / computer use) |
 | `definitions/mcp-servers.md` | One `##` section per server; read every one. Each adds a paragraph to **Tool layer / ACI** restating its picks — transport, auth, tool naming + schema discipline, return-shape policy, state model, testing strategy — plus a pointer to that section | Stop and prompt `design-mcp-server` if the SPEC describes an MCP server |
 | `definitions/runtime.md` | The placement profile folds into existing sections: residency exceptions into Security, telemetry backend into Observability, cost envelope + kill switch into Rollout | Proceed |
 | `definitions/infrastructure.md` | Holds every service-level vendor pick. Name the capability and point at the section; never restate the vendor rationale | Proceed |
 
-2. Sketch modules and integration points. Assign each module the design decision it hides — if two modules must agree on a format or assumption, that's leakage; pick one owner. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation, and state per interface which error modes are defined out of existence (semantics that make the special case a non-event) versus surfaced.
+2. Sketch modules and integration points. Assign each module the design decision it hides — if two modules must agree on a format or assumption, that's leakage; pick one owner. Look for opportunities to extract deep modules — small interface, deep implementation — that can be tested in isolation, and state per interface which error modes are defined out of existence (semantics that make the special case a non-event) versus surfaced. As you assign, fill the **Journey coverage** table (template below) — it is where the completeness rule either holds or visibly doesn't.
 
 3. Confirm with the user which modules need tests; capture them in the Test plan section.
 
@@ -87,6 +87,11 @@ Restate the **visual identity** inline as a table (register, who, feel, signatur
 For each module: name, responsibility, what it hides (the design decision that lives only here), interface (inputs / outputs), depth (deep vs shallow). Look for opportunities to extract deep modules that can be tested in isolation.
 
 **Anti-pattern: one module per data type or REST resource.** `users/`, `orders/`, `products/` is a shallow-module trap — each becomes a CRUD passthrough with no real behavior, and every workflow has to coordinate across all of them. Group by domain function instead (`checkout/`, `billing/`, `reconciliation/`) — each owns multiple data types internally and exposes a small interface that does meaningful work. If a module's name is a noun lifted from your schema, suspect it.
+
+Close the section with a **Journey coverage** table — the completeness rule, made checkable. One row per journey and per reference row in `definitions/journeys.md`; each row names every module that carries part of it. A journey with an empty cell is not designed yet. A module that appears in no row is work no journey asked for — cut it, or find the journey that needs it.
+
+| Journey | Modules that carry it |
+|---|---|
 
 ## Data model / schema
 

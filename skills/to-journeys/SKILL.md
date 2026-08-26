@@ -1,6 +1,6 @@
 ---
 name: to-journeys
-description: Expand each PRD journey into an executable script — preconditions, numbered steps, branches, and the end-state proof a test asserts — plus the reference tables the journeys run on. Saves definitions/journeys.md. Use after /to-prd, before to-mockups and /to-spec. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Expand each PRD journey into an executable script — preconditions, numbered steps, branches, and the end-state proof a test asserts — plus the reference tables the journeys run on and a plain-words capability list a non-engineer can read. Saves definitions/journeys.md. Use after /to-prd, before to-mockups and /to-spec. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -43,11 +43,13 @@ If `definitions/journeys.md` exists and this is a scoped change rather than a re
 
 6. **Every row carries an owner and a failure.** Someone you could trace it to — a person, a research finding, a judgment — and a failure you can name if it's dropped. "Best practice" and "the model suggested it" are departments, not owners. Rows with neither go to the PRD's Out of Scope. (`/clean-house` re-asks both between versions.)
 
-7. Save as `definitions/journeys.md` (create `definitions/` if missing). Commit it.
+7. **Distill "What the product does" last, place it first.** Only after the journeys and reference tables exist, write the capability list at the top of the file: one row per thing the product can do, in words a person outside engineering reads. Pull capabilities out of journey steps and reference rows — this is where something several journeys share finally gets a name. Then check both directions: every `feature`-tier journey appears in at least one row, and no row names a journey or background behaviour the file doesn't contain.
 
-8. **Length and style.** Plain English throughout — short sentences, one idea each, concrete before abstract, every term of art glossed on first use (AGENTS.md §4). As long as the product needs — this is the artifact that scales, and the PRD stays short precisely so this one can be complete. Tables wherever they carry the meaning. This is also the technical tier: vendor names, SDK names, protocol mechanics and regulatory rules belong here, in cells rather than prose. Reuse the PRD's product nouns; never mint a synonym for something it already named.
+8. Save as `definitions/journeys.md` (create `definitions/` if missing). Commit it.
 
-9. Present the saved file and ask the user to review. Then prompt the next step:
+9. **Length and style.** Plain English throughout — short sentences, one idea each, concrete before abstract, every term of art glossed on first use (AGENTS.md §4). As long as the product needs — this is the artifact that scales, and the PRD stays short precisely so this one can be complete. Tables wherever they carry the meaning. This is also the technical tier: vendor names, SDK names, protocol mechanics and regulatory rules belong here, in cells rather than prose. Reuse the PRD's product nouns; never mint a synonym for something it already named.
+
+10. Present the saved file and ask the user to review. Then prompt the next step:
     - If the product has persistent UI surfaces, prompt them to run `to-mockups` — it locks the identity and structure and draws every step and branch as a panel.
     - If the project involves a custom LLM/agent harness, prompt them to run `pick-harness-shape`.
     - Otherwise, prompt them to run `/to-spec`.
@@ -57,6 +59,15 @@ If `definitions/journeys.md` exists and this is a scoped change rather than a re
 ## Source PRD
 
 `definitions/prd.md` — the PRD whose Key User Journeys these expand.
+
+## What the product does
+
+The one list a person outside engineering reads — sales, support, a new teammate. One row per capability, in plain words, no engineering nouns. A capability that several journeys share (a checking engine, an import pipeline) gets its own row here even though no single journey owns it.
+
+| Capability | In plain words | Where it happens |
+|---|---|---|
+
+"Where it happens" holds journey ids (`J1, J3`) or `background` for rows that live only in Behaviour with no journey. Rows here are summaries, so they carry no owner — the journeys they point at do.
 
 ## Journey inventory
 
