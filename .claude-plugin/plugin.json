@@ -15,6 +15,7 @@
     "./skills/to-spec",
     "./skills/to-issues",
     "./skills/run-wave",
+    "./skills/conduct",
     "./skills/test-driven-dev",
     "./skills/ui-taste",
     "./skills/diagnose",
