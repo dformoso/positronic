@@ -18,9 +18,15 @@ positronic keeps one document per artifact type, flat in `definitions/`, each na
 
 Each one is a **whole-product** document that every consumer reads by name. There are no subdirectories, no timestamps, and no second copy — the file *is* the current truth, and git holds every version it used to be.
 
-Two of them work slightly differently: `definitions/decisions.md` and `definitions/infrastructure.md` are **append-and-supersede** rather than edit-in-place. A re-pick or a reversed decision adds a new section and marks the old one `**Superseded by:**`, leaving its body intact. Keeping the trail inside the file rather than only in git means one read recovers why a path was abandoned — which is the whole value of a decision record.
+Two of them work slightly differently: `definitions/decisions.md` and `definitions/infrastructure.md` are **append-and-supersede** rather than edit-in-place. A re-pick or a reversed decision adds a new section and marks the old one `**Superseded by:**`, leaving its body intact. Keeping the trail inside the file rather than only in git means one read recovers why a path was abandoned — which is the whole value of a decision record. **This is the only append the framework licenses, and it is narrow:** it covers a superseded decision's own section, nothing else. Every other line of those two files — and every line of every other artifact — is edited in place.
 
-That leaves one trap. When a feature lands after the first cut, the tempting move is to regenerate the file around the new feature — and everything the product already did, which the change never touched, quietly disappears. Amend mode is the discipline that prevents it: read the file as **baseline**, change only the delta, leave the rest byte-for-byte alone. The product stays whole, the work stays incremental, and `git log -p definitions/prd.md` is the changelog.
+That leaves two traps, opposite in shape.
+
+**Regenerating.** When a feature lands after the first cut, the tempting move is to rewrite the file around the new feature — and everything the product already did, which the change never touched, quietly disappears.
+
+**Appending.** The opposite reflex, and the more common one: leave every existing line where it is and put the new fact beside it — one more bullet, one more subsection, a sentence beginning "as of the March amendment". Nothing is lost, so it feels like the safe move. It isn't. The file gains a layer per change, the layers contradict each other, and a reader — human or agent — can no longer tell which line is current without reading the git history the document was supposed to save them. A file that only grows stops being re-read, and an artifact nobody re-reads drifts from the code by default.
+
+Amend mode is the discipline between them: read the file as **baseline**, then say the new thing *in the lines that already say the old thing*, and leave the rest byte-for-byte alone. The product stays whole, the file stays the size of the product rather than the size of its history, and `git log -p definitions/prd.md` is the changelog.
 
 ## When it applies
 
@@ -52,9 +58,11 @@ Which artifacts a change must touch, decided once at the top of the PRD rather t
 1. **Read the baseline** — the artifact's file, whole.
 2. **Read the change intent** — the increment's scope, from `define`'s increment frame or the conversation.
 3. **Scope the delta** — name exactly which template sections the change touches.
-4. **Edit in place, section by section** — targeted edits to the sections in scope. **Do not regenerate the file.** Rewriting it wholesale re-derives locked decisions you never meant to reopen (AGENTS.md §3, at the artifact level) and is how untouched capabilities go missing. **One exception:** if the delta *contradicts* an untouched section — a new feature that was a prior Non-Goal, a constraint the change breaks — that section is now in-scope. Reconcile it; never leave a document that contradicts itself.
+4. **Edit in place, section by section** — targeted edits to the sections in scope. **Do not regenerate the file.** Rewriting it wholesale re-derives locked decisions you never meant to reopen (AGENTS.md §3, at the artifact level) and is how untouched capabilities go missing. **Do not append to it either.** Where the change makes a sentence wrong, rewrite that sentence; where it makes one redundant, delete it. Add a bullet only when the artifact genuinely gained something it did not have before — never to avoid touching what is already written, and never as a tombstone ("this used to be X"): a line saying what was true before is a line the next reader has to arbitrate. **One exception:** if the delta *contradicts* an untouched section — a new feature that was a prior Non-Goal, a constraint the change breaks — that section is now in-scope. Reconcile it; never leave a document that contradicts itself.
 5. **Update the Amendment header** — replace it with this amendment's, at the top of the file.
 6. **Commit** — the diff is the changelog. No separate changelog file.
+
+**Calibration.** Most amends leave the artifact about the same length, and a fair share leave it shorter — a changed capability usually replaces text rather than adding to it. If every amend grows the file, the reflex is appending, not amending. The tell is a section carrying one bullet per past change. The check before you commit: could a reader who has never seen this file say what is true today, without knowing which paragraph was written last?
 
 ## The Amendment header
 

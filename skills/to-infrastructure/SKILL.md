@@ -143,7 +143,7 @@ Record the picks as `## Environments`, `## Gate ladder`, `## Build & deploy`, an
 
 ## The record
 
-One `##` section per category in `definitions/infrastructure.md`, headed `## <Category> — <choice> (YYYY-MM-DD)`. The file is amended in place per `${SKILL_DIR}/../../docs/amend-mode.md`: a later re-pick **appends the new section and marks the old one superseded** — it never deletes it. The trail of what was chosen before, and why it stopped being right, is the asset; keeping it in the file rather than in git means one read recovers it.
+One `##` section per category in `definitions/infrastructure.md`, headed `## <Category> — <choice> (YYYY-MM-DD)`. This file is one of the two **append-and-supersede** exceptions in `${SKILL_DIR}/../../docs/amend-mode.md`: a later re-pick appends the new section and marks the old one superseded — it never deletes it. The trail of what was chosen before, and why it stopped being right, is the asset; keeping it in the file rather than in git means one read recovers it. The exception covers the decision sections only — everything else in the file is edited in place like any other artifact.
 
 ```
 ## Transactional email — <choice> (2026-08-20)

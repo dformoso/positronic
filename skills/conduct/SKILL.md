@@ -29,9 +29,19 @@ AGENTS.md §9 owns the loop — decompose, fan out, coalesce, re-wave — and th
 
 Everything else is avoidable. Delegate it.
 
+## Every brief says: change it, don't grow it
+
+An agent arrives with a narrow assignment and no history in the file, so its safest-looking move is to add. It writes a second comment above the stale one, a second helper beside the one that nearly fits, a new paragraph under the section that already answers the question — because adding cannot break anything and editing looks like scope it was not given. Run a wave like that and the codebase is strictly larger every time, layered with text that disagrees with itself, and the next agent has to work out which layer is current. Put the correction in the brief, at launch:
+
+- **Read what is already there before adding to it.** The stale comment, the wrong docstring, the section this change just overtook are part of the assignment — not someone else's problem to report.
+- **Correct in place.** If a line is now wrong, rewrite it. If it is now redundant, delete it. Never leave the old claim standing beside the new one, and never leave a tombstone — a line recording what the code used to do is a line the next reader has to arbitrate.
+- **Prefer the deletion.** When cutting code, a comment, a test, or a paragraph leaves the result simpler and truer, that is the better change, not the riskier one. Git holds the undo; undeleted weight is a tax on every future context window (`/clean-house`).
+- **Scope still holds.** This licenses editing what the assignment touches, not tidying the neighbourhood. Anything else it noticed goes in the report, not the diff (AGENTS.md §3).
+
 ## Verdicts
 
 - An agent's "done" is a claim, not a fact. Check every return against the criteria you set at launch — run the gate, read the diff, drive the journey — before it merges.
+- **Check what the diff did not delete.** An all-additions return usually means the agent wrote beside something instead of fixing it. Find the line it should have replaced; if there is one, send it back.
 - The check itself is delegable: a fresh agent that didn't write the work makes a better skeptic. The verdict is not.
 - Two returns that disagree are a decision, not an average. Pick one and say why, or send both back naming what would settle it.
 - Accountability doesn't delegate. A failure that ships in merged work is your miss, not the agent's.
@@ -41,9 +51,9 @@ Everything else is avoidable. Delegate it.
 While the stance is on, every artifact a `to-*` skill saves (`/to-prd`, `/to-journeys`, `/to-mockups`, `/to-infrastructure`, `/to-spec`, `/to-issues`) earns its presentation. The skill runs first, as itself — its interview and its synthesis need this conversation, so that part is the exception above. Then, twice over:
 
 1. **Three critics in parallel**, each briefed to attack, not summarize, each from its own angle: completeness (does the artifact keep every promise the upstream artifacts made), consistency (does it contradict itself or its neighbours), and the implementer's read (could a stranger build and test from it alone). Findings only — no praise.
-2. **One collator**, separate from the critics, merges the findings — dedupes them, drops what is wrong, keeps what is real — and applies the fixes to the artifact.
+2. **One collator**, separate from the critics, merges the findings — dedupes them, drops what is wrong, keeps what is real — and applies the fixes to the artifact, rewriting the lines that are wrong rather than writing corrections beside them.
 
-Fresh critics both rounds; a critic who saw round one defends its old verdicts. After the second round, one **prose pass**: a final agent reads the artifact as a document and fixes the writing — straightforward, clean, plain English (AGENTS.md §4 and the skill's own style rules) — without touching a decision. Then present the artifact for approval as the skill itself requires; your gate at the end doesn't move.
+Fresh critics both rounds; a critic who saw round one defends its old verdicts. After the second round, one **prose pass**: a final agent reads the artifact as a document and fixes the writing — straightforward, clean, plain English (AGENTS.md §4 and the skill's own style rules), cutting whatever the artifact now says twice — without touching a decision. Then present the artifact for approval as the skill itself requires; your gate at the end doesn't move.
 
 ## When to bring the user in
 
