@@ -1,6 +1,6 @@
 ---
 name: audit-drift
-description: Audit the project's doc graph (definitions/, CONTEXT.md) for drift. Surfaces glossary terms used inconsistently, dead cross-references, decisions the current SPEC has overtaken, SPEC contracts the code has overtaken, and mockup panels no journey still contains. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Audit the project's doc graph (definitions/, CONTEXT.md) for drift. Surfaces glossary terms used inconsistently, dead cross-references, decisions the current SPEC has overtaken, SPEC contracts the code has overtaken, mockup panels no journey still contains, and journeys the SPEC never designed. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -10,7 +10,7 @@ Run only on explicit invocation — by name, slash/dollar command, or workflow s
 
 Static sweep across the project's doc graph (and the code it describes). Detects drift. Reports only — never auto-fixes. Mirrors `/review-pr`'s posture.
 
-Scope is the **doc graph**, not the diff (`/review-pr`) and not system risk (`/audit-failure-modes`). Distinct from `judge-idea` too: that stress-tests one artifact's argument, this detects mechanical drift across all of them.
+Scope is the **doc graph**, not the diff (`/review-pr`) and not system risk (`/audit-failure-modes`). Distinct from `/judge-idea` too: that stress-tests one artifact's argument, this detects mechanical drift across all of them.
 
 Also runs inside `/clean-house` at the end of each pass: after a pass's cuts and reshapes, this sweep reconciles the doc graph, and findings the pass's edits don't explain feed the next pass's questioning.
 
@@ -100,6 +100,17 @@ Skip if there's no `definitions/mockups.md`. Mechanical, in both directions:
 
 A drawing of a screen the product doesn't have misleads the next implementer more than no drawing at all, which is why this is must-fix rather than worth-noting. Report each gap as the missing panel id or the unmatched step.
 
+#### 2.6. Journey coverage and capability list vs. the journeys — *must-fix*
+
+Skip both halves if there's no `definitions/journeys.md`, and the SPEC half if there's no `definitions/spec.md`. Mechanical, in both directions:
+
+- The SPEC's **Journey coverage** table needs one row per journey and per reference row in `definitions/journeys.md`, and no cell may be empty.
+- No coverage row may name a journey the file no longer contains, and no module in `## Modules & interfaces` may be missing from every row.
+- The journeys file's **What the product does** table must place every `feature`-tier journey in the Journey inventory in at least one row's *Where it happens*.
+- No capability row may name a journey id or `background` behaviour the file doesn't contain.
+
+An empty cell is a journey nobody designed and a module in no row is work nobody asked for — both are missing decisions, not untidy docs, which is why this is must-fix rather than worth-noting. Report each gap as the uncovered journey, the unclaimed module, or the dangling id.
+
 ### 3. Report
 
 Print to chat. Match `/review-pr`'s format:
@@ -128,7 +139,7 @@ Default no. Create `docs/audits/` lazily on first save.
 
 Named so they aren't re-litigated:
 
-- **PRD-SPEC scope coverage.** Whether the SPEC covers everything the PRD *promised* (forward completeness) — distinct from 2.4, which checks whether the code still *honours* the SPEC (backward conformance). Hard, judgment-heavy, and `/judge-idea` covers neighbouring ground.
+- **PRD-SPEC scope coverage, beyond the journeys.** Whether the SPEC covers what the PRD promised outside its journeys — success metrics, kill criteria, scope lines (forward completeness) — distinct from 2.4, which checks whether the code still *honours* the SPEC (backward conformance). Still hard and judgment-heavy, and `/judge-idea` covers neighbouring ground. The journeys half is mechanical now, and 2.6 does it.
 - **Deployed-vs-artifact harness drift.** Prod model swaps, added gates, or topology changes not visible in the repo. Brief-07 production-monitoring territory, not a static sweep.
 - **Decision-record completeness.** The format is intentionally minimal — there's no required-section list to enforce.
 - **Orphan decisions.** Records live in two known files, not scattered ones; a section in a file everything already reads can't be orphaned.

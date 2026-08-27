@@ -69,13 +69,14 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `to-spec` | slash | defining | `definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md`, `definitions/infrastructure.md` | `definitions/spec.md` | Lock the implementation contract |
 | `to-issues` | slash | defining | `definitions/spec.md`, `definitions/journeys.md` | GitHub issues | Break the SPEC into `afk` / `hitl` slices, ranked into waves |
 | `run-wave` | slash | implementing | GitHub issues, `definitions/spec.md`, `definitions/journeys.md` | merged code, reconciled backlog | Run one wave in parallel, then re-judge every remaining issue |
+| `conduct` | slash | any | — | — | Take the conductor's stance: work goes to parallel agents, decisions and verdicts stay with the session |
 | `test-driven-dev` | model | implementing | `definitions/spec.md` | code + tests, `test-assets/` | Red-green-refactor on one issue; generates multimodal fixtures when a test needs one |
 | `ui-taste` | model | implementing | `definitions/spec.md` § Product surfaces | styled UI | Apply the locked visual identity + taste rules |
-| `diagnose` | model | diagnosing | — | fix + regression test | Reproduce → minimise → fix hard bugs |
+| `diagnose` | model | diagnosing | — | fix + regression test | Triage, build a feedback loop, reproduce, fix hard bugs |
 | `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |
 | `audit-drift` | slash | shipping | doc graph | drift report | Sweep the `definitions/` artifacts and the code for drift |
 | `audit-failure-modes` | slash | shipping | the system | P0/P1/P2 list | Pre-mortem of latent failure modes |
-| `go-live` | slash | operating | `definitions/infrastructure.md`, runbooks, gate scripts, the deployed environment | GO/NO-GO report | Verify the running system actually matches what `to-infrastructure` promised, before first traffic or a one-way cutover |
+| `go-live` | slash | operating | `definitions/infrastructure.md`, runbooks, gate scripts, the deployed environment | GO/NO-GO report | Verify the running system actually matches what `/to-infrastructure` promised, before first traffic or a one-way cutover |
 | `readout` | slash | operating | `definitions/prd.md` metrics, live instrumentation | `docs/audits/` readout | Weeks post-launch: did the number move? keep / iterate / cut / pivot |
 | `github-triage` | slash | meta | GitHub issues | labels | Label-based triage state machine |
 | `clean-house` | slash | maintaining | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
@@ -124,7 +125,7 @@ git clone https://github.com/dformoso/positronic.git
 ln -s "$(pwd)/positronic/skills" ~/.agents/skills
 ```
 
-The 18 `slash` skills ship `agents/openai.yaml` (`allow_implicit_invocation: false`) — Codex won't auto-fire them; invoke explicitly with `$name`. Floor: copy `AGENTS.md` to `~/.codex/AGENTS.md` (global) or keep it at the project root — Codex reads it natively (no `@import` support; 32 KiB default cap).
+The 19 `slash` skills ship `agents/openai.yaml` (`allow_implicit_invocation: false`) — Codex won't auto-fire them; invoke explicitly with `$name`. Floor: copy `AGENTS.md` to `~/.codex/AGENTS.md` (global) or keep it at the project root — Codex reads it natively (no `@import` support; 32 KiB default cap).
 
 ### Antigravity
 

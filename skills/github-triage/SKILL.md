@@ -1,6 +1,6 @@
 ---
 name: github-triage
-description: Triage GitHub issues through a label-based state machine. Use when user wants to create an issue, triage issues, review incoming bugs or feature requests, prepare issues for an AFK agent, or manage issue workflow. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Triage GitHub issues through a label-based state machine. Use when user wants to triage issues, review incoming bugs or feature requests, prepare issues for an AFK agent, or manage issue workflow. Works on issues that already exist — creating the backlog is /to-issues. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 

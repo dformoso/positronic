@@ -1,6 +1,6 @@
 ---
 name: clean-house
-description: Between-versions subtraction loop over a built system — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions; run as a single supervised pass, re-fired until a pass comes up dry. Use between versions when the system has accreted, when the user wants to find what to delete or simplify, asks to improve architecture, consolidate tightly-coupled modules, or make a codebase more testable, or says "clean the house". User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Between-versions subtraction loop over a built system — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions; run as a single supervised pass, re-fired until a pass comes up dry. In targeted mode it skips the pass and audits only the targets named — /clean-house docs/runbooks/, or specific candidates another skill hands over. Use between versions when the system has accreted, when the user wants to find what to delete or simplify, asks to improve architecture, consolidate tightly-coupled modules, or make a codebase more testable, or says "clean the house". User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 

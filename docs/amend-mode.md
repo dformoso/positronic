@@ -18,7 +18,7 @@ positronic keeps one document per artifact type, flat in `definitions/`, each na
 
 Each one is a **whole-product** document that every consumer reads by name. There are no subdirectories, no timestamps, and no second copy — the file *is* the current truth, and git holds every version it used to be.
 
-The last two work slightly differently: they are **append-and-supersede** rather than edit-in-place. A re-pick or a reversed decision adds a new section and marks the old one `**Superseded by:**`, leaving its body intact. Keeping the trail inside the file rather than only in git means one read recovers why a path was abandoned — which is the whole value of a decision record.
+Two of them work slightly differently: `definitions/decisions.md` and `definitions/infrastructure.md` are **append-and-supersede** rather than edit-in-place. A re-pick or a reversed decision adds a new section and marks the old one `**Superseded by:**`, leaving its body intact. Keeping the trail inside the file rather than only in git means one read recovers why a path was abandoned — which is the whole value of a decision record.
 
 That leaves one trap. When a feature lands after the first cut, the tempting move is to regenerate the file around the new feature — and everything the product already did, which the change never touched, quietly disappears. Amend mode is the discipline that prevents it: read the file as **baseline**, change only the delta, leave the rest byte-for-byte alone. The product stays whole, the work stays incremental, and `git log -p definitions/prd.md` is the changelog.
 
@@ -97,4 +97,4 @@ This is also the path a production-learning loop takes: brief 07's optimizer ame
 
 ## What does not change
 
-Every execution and read-only skill already reads the artifact by filename and keeps working untouched: `/to-issues`, `/run-wave`, `/to-spec` (reading upstream), `/review-pr`, `/audit-drift`, `/readout`, `test-driven-dev`, `judge-idea`. Amend mode is purely an *authoring* convention — it changes how a document is edited, never how it is read. That is why it is low-risk.
+Every execution and read-only skill already reads the artifact by filename and keeps working untouched: `/to-issues`, `/run-wave`, `/to-spec` (reading upstream), `/review-pr`, `/audit-drift`, `/readout`, `test-driven-dev`, `/judge-idea`. Amend mode is purely an *authoring* convention — it changes how a document is edited, never how it is read. That is why it is low-risk.

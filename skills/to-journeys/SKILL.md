@@ -1,6 +1,6 @@
 ---
 name: to-journeys
-description: Expand each PRD journey into an executable script — preconditions, numbered steps, branches, and the end-state proof a test asserts — plus the reference tables the journeys run on and a plain-words capability list a non-engineer can read. Saves definitions/journeys.md. Use after /to-prd, before to-mockups and /to-spec. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
+description: Expand each PRD journey into an executable script — preconditions, numbered steps, branches, and the end-state proof a test asserts — plus the reference tables the journeys run on and a plain-words capability list a non-engineer can read. Saves definitions/journeys.md. Use after /to-prd, before /to-mockups and /to-spec. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
 disable-model-invocation: true
 ---
 
@@ -15,8 +15,9 @@ The line against its neighbours:
 | Question | Owner |
 |---|---|
 | Why build it, for whom, what outcome | `definitions/prd.md` |
+| What the product can do, in words a non-engineer reads | **this file** |
 | What the user does, step by step, and how you prove it worked | **this file** |
-| How the app is arranged, how it looks, and what each screen shows | `definitions/mockups.md` + `definitions/mockups.html` (`to-mockups`) |
+| How the app is arranged, how it looks, and what each screen shows | `definitions/mockups.md` + `definitions/mockups.html` (`/to-mockups`) |
 | How it is built | `definitions/spec.md` (`/to-spec`) |
 
 ## Amend mode
@@ -50,7 +51,7 @@ If `definitions/journeys.md` exists and this is a scoped change rather than a re
 9. **Length and style.** Plain English throughout — short sentences, one idea each, concrete before abstract, every term of art glossed on first use (AGENTS.md §4). As long as the product needs — this is the artifact that scales, and the PRD stays short precisely so this one can be complete. Tables wherever they carry the meaning. This is also the technical tier: vendor names, SDK names, protocol mechanics and regulatory rules belong here, in cells rather than prose. Reuse the PRD's product nouns; never mint a synonym for something it already named.
 
 10. Present the saved file and ask the user to review. Then prompt the next step:
-    - If the product has persistent UI surfaces, prompt them to run `to-mockups` — it locks the identity and structure and draws every step and branch as a panel.
+    - If the product has persistent UI surfaces, prompt them to run `/to-mockups` — it locks the identity and structure and draws every step and branch as a panel.
     - If the project involves a custom LLM/agent harness, prompt them to run `pick-harness-shape`.
     - Otherwise, prompt them to run `/to-spec`.
 
@@ -85,13 +86,13 @@ One `###` section per row, in inventory order.
 ### J1 — <Name, matching the PRD>
 
 **Precondition.** The state the world is in before step 1. Include what does *not* exist yet.
-**Data.** The concrete values this runs on — real names, real numbers, real timestamps. The same data `to-mockups` populates its panels with and the test fixtures use.
+**Data.** The concrete values this runs on — real names, real numbers, real timestamps. The same data `/to-mockups` populates its panels with and the test fixtures use.
 **Surfaces.** The bolded product nouns the user touches, in order.
 
 | # | Actor | Action | Observable result | Panel |
 |---|---|---|---|---|
 
-The **Panel** column names the screen this step shows (`#convos-unread`); `to-mockups` draws one panel per row and per branch. Leave it blank for steps with no screen. Actor is a person, an external system, or the product itself — never a module.
+The **Panel** column names the screen this step shows (`#j1-step4`); `/to-mockups` draws one panel per row and per branch. Leave it blank for steps with no screen. Actor is a person, an external system, or the product itself — never a module.
 
 **End-state proof.** One assertion. After the last step, what is observably true that wasn't before? Name the records, counts, and states a test can check. This is the tracer-bullet test `test-driven-dev` writes first, and the thing `/to-issues` copies into the slice's acceptance criteria.
 
@@ -134,7 +135,7 @@ What the journeys run on. `/to-spec`, `pick-harness-shape`, and `design-mcp-serv
 | Entity | Key fields | Relationships | Created by / deleted by |
 |---|---|---|---|
 
-**External channels & touchpoints.** Every place the product receives input or emits output to the outside world: SMS, email, voice, API endpoints, push, webhooks. Internal app surfaces are `to-mockups`.
+**External channels & touchpoints.** Every place the product receives input or emits output to the outside world: SMS, email, voice, API endpoints, push, webhooks. Internal app surfaces are `/to-mockups`.
 
 | Channel | Inbound behaviour | Outbound behaviour | Rate / quota | Notes |
 |---|---|---|---|---|
@@ -144,7 +145,7 @@ What the journeys run on. `/to-spec`, `pick-harness-shape`, and `design-mcp-serv
 | Action | Default | Confidence gate | Hands to human when | Irreversible? |
 |---|---|---|---|---|
 
-**Queues & approval flows.** *(If the product holds work for human review.)* What each queue holds and how an item moves through it. Where it is seen — badge counts, drawer vs. full page — is `to-mockups`.
+**Queues & approval flows.** *(If the product holds work for human review.)* What each queue holds and how an item moves through it. Where it is seen — badge counts, drawer vs. full page — is `/to-mockups`.
 
 | Queue | Holds | Enters when | Leaves when | Expiry / escalation |
 |---|---|---|---|---|

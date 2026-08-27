@@ -62,7 +62,7 @@ red rather than fall back quietly to the merge base.
 
 The canonical rule, stated here once: every environment is a **config profile over one SHA-tagged artifact** — a demo is a profile, never a fork. Production **declares itself** (a profile flag, not a hostname guess) and **refuses dev/test affordances by construction**. Write this into the SPEC so the build can't drift into a forked prod.
 
-The rest of the environment ladder is deliberately not one document. Four places own four different questions, and each is written at the moment its answer is actually known:
+The rest of the environment ladder is deliberately not one document. Four owners record four different questions — two of them in the same file — and each is written at the moment its answer is actually known. The fifth row records nothing: `/go-live` verifies what those four claim.
 
 | Question | Owner | Written when |
 |---|---|---|

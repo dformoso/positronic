@@ -24,7 +24,7 @@ What "working" means as a number. Two or three, no more — an SLO nobody would 
 
 The last column is the one that makes an SLO real. "Stop shipping features until it recovers" is an answer. "Investigate" is not.
 
-For an agent or LLM surface, the useful objectives are usually cost-per-success, trajectory length, and gate hit-rate — not raw latency. Take them from `definitions/harness.md` §9 rather than inventing new ones.
+For an agent or LLM surface, the useful objectives are usually cost-per-success, trajectory length, and gate hit-rate — not raw latency. Take them from `definitions/harness.md` § Observability & evaluation rather than inventing new ones.
 
 ## 3. Alerts
 

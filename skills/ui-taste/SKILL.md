@@ -1,6 +1,6 @@
 ---
 name: ui-taste
-description: Opinionated taste rules for visual interface work — avoids the generic, cookie-cutter look. Use when the user is building or styling frontend components, dashboards, marketing pages, design tokens, or anything users will see. Triggers on React/Vue/Svelte/HTML/CSS work, Tailwind, design system additions, or when the user says "make this look better", "style this", "design this screen", or shows a screenshot of something to improve.
+description: Opinionated taste rules for visual interface work — avoids the generic, cookie-cutter look. Reads the locked visual identity from the SPEC's Product surfaces section — register, feel, accent, type, spacing — and applies it instead of re-picking a look per screen. Use when the user is building or styling frontend components, dashboards, marketing pages, design tokens, or anything users will see. Triggers on React/Vue/Svelte/HTML/CSS work, Tailwind, design system additions, or when the user says "make this look better", "style this", "design this screen", or shows a screenshot of something to improve.
 ---
 
 # UI taste

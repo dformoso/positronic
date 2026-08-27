@@ -170,7 +170,7 @@ One paragraph naming transport, auth, rough tool count, return-shape policy, and
 
 **Picked:** stdio | Streamable HTTP | SSE-only | WebSocket | stdio + HTTP
 **Why:**
-**Cited pattern:** `docs/agentic-patterns/06_mcp_design_brief.md`
+**Cited pattern:** the named technique that drove the pick, with its evidence (e.g. Streamable HTTP's `400`/`404`/`405` fallback — mastra `client.ts:80, 432`).
 
 ### Auth
 

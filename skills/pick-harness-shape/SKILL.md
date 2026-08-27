@@ -1,6 +1,6 @@
 ---
 name: pick-harness-shape
-description: Pick the harness shape for an LLM/agent system. Invoked by define when the project may need reliability beyond conversational use — programmatic gates, contracts, audit, autonomous execution. First decides whether a custom harness is needed at all, then walks substrate, topology, memory, tools, gates and recovery, security, and observability. Use when the user is designing a system that doesn't fit a single LLM call or a deterministic pipeline.
+description: Pick the harness shape for an LLM/agent system. Invoked by define when the project may need reliability beyond conversational use — programmatic gates, contracts, audit, autonomous execution. First decides whether a custom harness is needed at all, then walks substrate, topology, memory, tools, gates and recovery, security, per-stage sampling, and observability into definitions/harness.md — plus a placement gate that writes definitions/runtime.md when the harness runs unattended in the cloud. Use when the user is designing a system that doesn't fit a single LLM call or a deterministic pipeline.
 ---
 
 You are picking the harness shape for an LLM/agent system. The harness is the runtime stack around the LLM — tool dispatch, scheduling, memory, verification gates, audit. It is what makes a system trustworthy when there's no human in the loop catching mistakes. Harness changes alone can swing benchmark scores 6× on the same model; these decisions are load-bearing.
@@ -86,10 +86,10 @@ Supervisor or either multi-agent rung means you now have more than one role. **A
 
 | Decision | Default | Why / cite |
 |---|---|---|
-| **Role set & count** | 3–5 non-overlapping roles; name each (planner, executor, critic/verifier, retriever/researcher, router, synthesizer) | More than ~5 adds cost without specialization gain; fewer under-specializes. `02_role_design_brief.md` |
+| **Role set & count** | 3–5 non-overlapping roles; name each (planner, executor, critic/verifier, retriever/researcher, router, synthesizer) | More than ~5 adds cost without specialization gain; fewer under-specializes. `${SKILL_DIR}/../../docs/agentic-patterns/02_role_design_brief.md` |
 | **Contract per role, not persona** | Inputs, outputs, allowed tools, stop condition, prohibitions | Free-form "you are an expert X" is near-random and can *hurt* accuracy (PRISM, "Helpful Assistant"). Contracts win. |
 | **Boundaries & comms** | Hard boundaries + artifact passing for repeatable workflows; dialog only for prototypes | MetaGPT (artifacts) beats AutoGen (dialog) on repeatable pipelines; dialog drifts and bleeds roles. |
-| **Topology shape** | Sequential pipeline if stages are ordered; parallel workers only for *independent* sub-tasks; hierarchical past ~5 roles | Parallel beats sequential only when sub-tasks are genuinely independent. `05_harness_architectures_brief.md` |
+| **Topology shape** | Sequential pipeline if stages are ordered; parallel workers only for *independent* sub-tasks; hierarchical past ~5 roles | Parallel beats sequential only when sub-tasks are genuinely independent. `${SKILL_DIR}/../../docs/agentic-patterns/05_harness_architectures_brief.md` |
 | **Cross-role memory** | Artifacts only — role A sees role B's deliverable, not its reasoning | Lower coupling, higher specialization than shared dialog history. |
 | **Assignment** | Static for production; dynamic routing only for heterogeneous query mixes | Dynamic adds routing-failure modes and a harder eval surface. |
 
@@ -211,7 +211,7 @@ Use the template below. Every section must carry information: cite the pattern b
 
 <harness-template>
 
-*Every section below cites the `docs/agentic-patterns/` brief that grounded it; name the brief inline in the Why sentence rather than as a separate line.*
+*Every section below cites the agentic-patterns brief that grounded it; name the brief inline in the Why sentence rather than as a separate line, so the artifact carries a name a reader can act on rather than a path into this repo.*
 
 ## Sources
 
@@ -310,8 +310,8 @@ Present the saved `definitions/harness.md` and ask the user to review. Once appr
 
 - If the tool layer (§5) chose MCP, prompt them to run `design-mcp-server` next — it writes `definitions/mcp-servers.md`, which `/to-spec` reads.
 - **Placement gate** — when the system runs autonomously in the cloud (always-on triggers, scheduled work, inbound webhooks) and its production placement isn't settled yet. Derive a workload profile from this artifact: max single-run duration, state across waits, trigger shape, executes generated code y/n, concurrency, residency constraint, irreversible side effects. Then ask the gate question — *does this need more than one boring compute service?*
-  - **No** — runs fit platform timeouts, state lives in the project's own store, and no generated code executes. Record the verdict and the profile in `definitions/runtime.md`, one page: gate verdict, workload profile, revisit `TRIGGER:` lines (each at the start of its own line; list markers are fine, the sweep greps for them). Recording it is what stops the decision being reopened.
-  - **Yes** — the placement questions in `${SKILL_DIR}/../../docs/selection-method.md` drive the same artifact section by section: per-pick evidence + exit line, residency-exceptions table, cost envelope + kill switch.
+  - **No** — runs fit platform timeouts, state lives in the project's own store, and no generated code executes. Record the verdict and the profile in `definitions/runtime.md`, one page: gate verdict, workload profile, telemetry backend (where traces, logs and metrics land), revisit `TRIGGER:` lines (each at the start of its own line; list markers are fine, the sweep greps for them). Recording it is what stops the decision being reopened.
+  - **Yes** — the same artifact carries the placement picks, each made under the per-pick discipline in `${SKILL_DIR}/../../docs/selection-method.md` (verify at decision time, one sentence of trade-off, residency never traded away): per-pick evidence + exit line, residency-exceptions table, telemetry backend, cost envelope + kill switch.
 
   This artifact records *where the loop runs*; individual service picks are sections of `definitions/infrastructure.md` via `/to-infrastructure`. Amend mode applies — `definitions/runtime.md` is in the cascade.
 - Then prompt them to run `/to-spec` — it reads this file (and the placement profile, if one exists) alongside the PRD automatically.

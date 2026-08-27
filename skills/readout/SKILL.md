@@ -70,7 +70,7 @@ One of four, with a reason in one sentence:
 | **keep** | Metric hit target, no kill criterion fired. Leave it alone and go work on something else | Nothing. Resist polishing something that is already working |
 | **iterate** | Direction is right, magnitude isn't. A specific, named change would plausibly close the gap | `define` in increment mode — frame just that change |
 | **cut** | Nobody used it, or it costs more than it returns | `/clean-house` in targeted mode, naming this feature |
-| **pivot** | The hypothesis was wrong — a kill criterion fired against the bet, not against the execution | `define` from scratch. If the Target User or Problem Statement is what was wrong, the PRD is rewritten, not amended (`docs/amend-mode.md`) |
+| **pivot** | The hypothesis was wrong — a kill criterion fired against the bet, not against the execution | `define` from scratch. If the Target User or Problem Statement is what was wrong, the PRD is rewritten, not amended (`${SKILL_DIR}/../../docs/amend-mode.md`; `${SKILL_DIR}` = the directory containing this file) |
 
 Refusing to pick is also a signal: if the numbers can't distinguish these four, the metrics were the wrong metrics. Say so, and fix them in the PRD before the next increment inherits them.
 

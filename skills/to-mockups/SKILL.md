@@ -32,7 +32,7 @@ The drawing amends too, in step with the picks. Add or edit only the panels the 
 Before any picks, read both:
 
 - `definitions/prd.md` — target user, form factor, compliance constraints. If it doesn't exist, stop and prompt `/to-prd`.
-- `definitions/journeys.md` — the journey scripts whose every step names a screen, plus the channels, integrations, queues and notification modes these surfaces have to hold. If it doesn't exist, stop and prompt `/to-journeys`; picking a nav shape without knowing what the user walks through is picking blind, and the drawing half has no panel list at all.
+- `definitions/journeys.md` — the journey scripts whose steps name the screens they show, plus the channels, integrations, queues and notification modes these surfaces have to hold. If it doesn't exist, stop and prompt `/to-journeys`; picking a nav shape without knowing what the user walks through is picking blind, and the drawing half has no panel list at all.
 
 Record both paths; they go into the artifact.
 
@@ -233,7 +233,7 @@ Brief — in-app docs surface, contact mechanism, status page.
 | Panel id | Renders | Viewport | What it locks |
 |---|---|---|---|
 
-Every row must exist as an `id` in `definitions/mockups.html`, and every journey step and branch must appear as a row. A gap in either direction is drift — `/audit-drift` checks both, but fix it before committing.
+Every row must exist as an `id` in `definitions/mockups.html`, and every journey step and branch that names a panel must appear as a row; no row may name a step or journey the journeys artifact no longer has. A gap in either direction is drift — `/audit-drift` check 2.5 reconciles the rows against the ids and against the steps that name panels, but fix it before committing. A step with no screen names no panel and gets no row. A step the user watches happen does have a screen, so a blank Panel cell there is drift in `definitions/journeys.md`, not licence to skip a panel here.
 
 ## What the drawing changed
 
@@ -259,7 +259,7 @@ Decisions deferred to `/to-spec` (e.g., exact module boundaries, schema for sett
 
 Now make the picks real. **The drawing is a decision instrument, not a deliverable** — its output is the amendments it provokes: the branch nobody had thought about, the journey that needs four taps, the identity that looked fine in a table and wrong on a page.
 
-**Build the panel inventory before drawing anything.** One panel per row of every journey's step table, one per row of every Branches table, plus the system states section 8 owns (404, 403, 500, offline, session expired, rate limited, maintenance, quota exceeded) and each onboarding moment from section 5. Then add the states everyone forgets and nobody specified: first-run empty, single item, long-list overflow, longest realistic string, loading, partial failure, and the smallest viewport the PRD says is used. Show the inventory to the user and get it agreed **before** writing HTML — rendering the wrong set of screens beautifully is the expensive mistake here.
+**Build the panel inventory before drawing anything.** One panel per row of every journey's step table that names a panel, one per row of every Branches table, plus the system states section 8 owns (404, 403, 500, offline, session expired, rate limited, maintenance, quota exceeded) and each onboarding moment from section 5. A step whose Panel cell is blank has nothing on screen — a background job, an external system's move — and is the only row that skips; every branch draws, because branches are where panels get skipped. Then add the states everyone forgets and nobody specified: first-run empty, single item, long-list overflow, longest realistic string, loading, partial failure, and the smallest viewport the PRD says is used. Show the inventory to the user and get it agreed **before** writing HTML — rendering the wrong set of screens beautifully is the expensive mistake here.
 
 Then write one file: `definitions/mockups.html`. Self-contained — no build step, no framework, no CDN, no network request of any kind. It must open correctly from a `file://` URL on a machine with no toolchain.
 

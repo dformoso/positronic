@@ -1,6 +1,6 @@
 ---
 name: define
-description: Defining-phase orchestrator. Surfaces assumptions, frames a falsifiable hypothesis, then routes to the right next step (research-market / ideate / judge-idea / to-prd / to-journeys / to-mockups / pick-harness-shape / to-infrastructure / to-spec). Use when the user has a fuzzy product or feature idea — whether greenfield (no PRD/SPEC yet) or a scoped change (increment) to an existing product.
+description: Defining-phase orchestrator. Surfaces assumptions, frames a falsifiable hypothesis, then routes to the right next step (/research-market, /ideate, /judge-idea, /to-prd, /to-journeys, /to-mockups, pick-harness-shape, /to-infrastructure, /to-spec). Use when the user has a fuzzy product or feature idea — whether greenfield (no PRD/SPEC yet) or a scoped change (increment) to an existing product.
 ---
 
 Entry point for the Defining phase — for both a greenfield idea and a scoped change to an existing product. Surface the assumptions the idea depends on, frame a falsifiable hypothesis, and route to the right path. Work through the steps in order, one question at a time. For each question, recommend an answer.
