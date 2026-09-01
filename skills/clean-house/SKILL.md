@@ -1,10 +1,7 @@
 ---
 name: clean-house
-description: Between-versions subtraction loop over a built system — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions; run as a single supervised pass, re-fired until a pass comes up dry. In targeted mode it skips the pass and audits only the targets named — /clean-house docs/runbooks/, or specific candidates another skill hands over. Use between versions when the system has accreted, when the user wants to find what to delete or simplify, asks to improve architecture, consolidate tightly-coupled modules, or make a codebase more testable, or says "clean the house". User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
-disable-model-invocation: true
+description: Between-versions subtraction loop over a built system — question requirements against reality, delete what can't justify itself, deepen the modules that survive, accelerate the feedback loop, review automation in both directions; run as a single supervised pass, re-fired until a pass comes up dry. In targeted mode it skips the pass and audits only the targets named — clean-house docs/runbooks/, or specific candidates another skill hands over. Use between versions when the system has accreted, when the user wants to find what to delete or simplify, asks to improve architecture, consolidate tightly-coupled modules, or make a codebase more testable, or says "clean the house".
 ---
-
-Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Clean the House
 
@@ -26,11 +23,11 @@ Neighbours — keep the questions distinct:
 
 | Skill | Its question |
 |---|---|
-| `/clean-house` (this) | What shouldn't exist? Subtraction |
-| `/audit-drift` | Do the documents still agree with each other and the code? Consistency — standalone at shipping, and run here at the end of each pass |
+| `clean-house` (this) | What shouldn't exist? Subtraction |
+| `audit-drift` | Do the documents still agree with each other and the code? Consistency — standalone at shipping, and run here at the end of each pass |
 | `/audit-failure-modes` | What will break? Risk — the additive move; untouched by this skill |
 | `/judge-idea` | Is the bet sound? Pre-build adversarial gate; runs on speculation, this runs on evidence |
-| `/improve-readability` | Can the next person understand it, and is any of it needless? Comprehension and reduction *inside* the code that stays — cuts machinery, comments, spent docs and weak tests without changing what a caller sees; hands feature-level cuts and module reshaping here. **Runs after this pass**, on what survived |
+| `improve-readability` | Can the next person understand it, and is any of it needless? Comprehension and reduction *inside* the code that stays — cuts machinery, comments, spent docs and weak tests without changing what a caller sees; hands feature-level cuts and module reshaping here. **Runs after this pass**, on what survived |
 
 ## Glossary
 
@@ -64,13 +61,13 @@ If any of these don't exist, proceed silently — don't flag their absence. With
 
 ## Targeted mode
 
-When another skill hands over specific candidates — `diagnose` after a fix (no good test seam, tangled callers), `/review-pr` on a private-API reach, `/improve-readability` on a module-level candidate (shallow cluster, leaked decision needing one owner) — skip the pass. Apply the kill question to each candidate first (is the right move deleting the surrounding feature rather than deepening it?), then run step 3's grilling on what survives. No report.
+When another skill hands over specific candidates — `diagnose` after a fix (no good test seam, tangled callers), `/review-pr` on a private-API reach, `improve-readability` on a module-level candidate (shallow cluster, leaked decision needing one owner) — skip the pass. Apply the kill question to each candidate first (is the right move deleting the surrounding feature rather than deepening it?), then run step 3's grilling on what survives. No report.
 
-When the *user* names the targets instead — `/clean-house docs/runbooks/`, `/clean-house infra/main.tf#backend` — skip the pass and audit exactly what they named, one file, directory or section per target. Fan out one read-only auditor each carrying [DELETION-AUDIT.md](DELETION-AUDIT.md); coalesce the verdict blocks and run step 2's approval gate over them. No report.
+When the *user* names the targets instead — `clean-house docs/runbooks/`, `clean-house infra/main.tf#backend` — skip the pass and audit exactly what they named, one file, directory or section per target. Fan out one read-only auditor each carrying [DELETION-AUDIT.md](DELETION-AUDIT.md); coalesce the verdict blocks and run step 2's approval gate over them. No report.
 
 ## The pass
 
-Run the five steps once, in order. A pass already takes a while and the report carries state forward, so **re-running is the loop** — one pass per invocation. Each pass changes the system, exposing what the last couldn't see: cutting a feature turns a module into a pass-through; deepening one reveals config nothing reads. Re-fire `/clean-house` to chase what a pass exposed; stop when a pass comes up dry.
+Run the five steps once, in order. A pass already takes a while and the report carries state forward, so **re-running is the loop** — one pass per invocation. Each pass changes the system, exposing what the last couldn't see: cutting a feature turns a module into a pass-through; deepening one reveals config nothing reads. Re-fire `clean-house` to chase what a pass exposed; stop when a pass comes up dry.
 
 Hunting is read-only — fan out subagents and parallelize freely. Execution is gated — cuts and reshapes happen only after the user approves, never silently. Don't batch the whole pass into one approval; gate at the step boundaries below. Automating the approval gate away would be this skill committing its own step-5 mistake.
 
@@ -100,7 +97,7 @@ Hunt cut candidates at every layer:
 | Config surface | Options with one observed value; flags nobody flips |
 | Abstractions | Pass-throughs (deletion test); one-adapter seams nothing else will use; layers with one caller |
 | Process | CI stages, hooks, scripts, doc artifacts, skills nobody runs |
-| Tests | Suites green against nothing: tests for features already cut, tests asserting mocks of deleted seams, implementation-detail pins that break on refactor rather than regression (tests.md red flags). Cut them here; *strengthening* the survivors is `/improve-readability`'s pass — see [`../improve-readability/TESTS.md`](../improve-readability/TESTS.md) |
+| Tests | Suites green against nothing: tests for features already cut, tests asserting mocks of deleted seams, implementation-detail pins that break on refactor rather than regression (tests.md red flags). Cut them here; *strengthening* the survivors is `improve-readability`'s pass — see [`../improve-readability/TESTS.md`](../improve-readability/TESTS.md) |
 | Spent docs | `.md` files nothing reads anymore: executed plans, finished migration guides, how-tos for cut features, superseded audit reports, READMEs describing a layout that changed. **Never** the `definitions/` artifacts — they are amended rather than deleted, and the trail of why is the asset |
 | Method docs / skills / prompts | Embedded perishable facts in files meant to be durable method — vendor names, prices, model versions, "as of" status lines (`grep -rnE '\$[0-9]|20[0-9]{2}|as of' <skill/prompt dirs>`). Each is rot: replace with the category plus a verify-live instruction; dated facts belong only in provenance-stamped records |
 
@@ -152,11 +149,11 @@ Measure the feedback loop on surviving paths only: test-suite wall clock, CI dur
 The pass's cuts and reshapes made the doc graph stale; leave each pass consistent.
 
 - **Amendments.** Approved requirement-level cuts are dropped capabilities — prompt the user to run `/to-prd` (amend mode picks up automatically), with the cuts as the change intent. Each cut lands in the PRD's Out of Scope with *cut because* + *re-add trigger*. The cascade rule in `${SKILL_DIR}/../../docs/amend-mode.md` carries it downstream only along touched edges.
-- **Drift sweep.** Execute the checks in `${SKILL_DIR}/../audit-drift/SKILL.md` — the `/clean-house` invocation covers this; don't re-prompt. Fix the must-fix drift this pass's edits caused. Any drift the pass's edits *don't* explain is evidence for the next pass's step 1.
+- **Drift sweep.** Execute the checks in `${SKILL_DIR}/../audit-drift/SKILL.md` — the `clean-house` invocation covers this; don't re-prompt. Fix the must-fix drift this pass's edits caused. Any drift the pass's edits *don't* explain is evidence for the next pass's step 1.
 
 ### Dry or wet?
 
-No new approved cut + no new deepening candidate + no unexplained drift → the pass is **dry**: the house is clean, write the report, stop. Otherwise it's **wet**: write the report, list what's still open under **Left for the next pass**, and tell the user to re-run `/clean-house` when ready. One pass per invocation — never loop silently.
+No new approved cut + no new deepening candidate + no unexplained drift → the pass is **dry**: the house is clean, write the report, stop. Otherwise it's **wet**: write the report, list what's still open under **Left for the next pass**, and tell the user to re-run `clean-house` when ready. One pass per invocation — never loop silently.
 
 ## Report
 

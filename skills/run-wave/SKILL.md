@@ -10,7 +10,7 @@ Run only on explicit invocation — by name, slash/dollar command, or workflow s
 
 Work the backlog in **waves**: a batch of non-colliding issues run in parallel, then a review of everything still open, then the next batch. This is AGENTS.md §9 — decompose, fan out, coalesce, re-wave — with the GitHub backlog as the work-list.
 
-**One wave per invocation.** Re-firing is the loop, the same way `/clean-house` re-fires. Each wave changes the codebase, and the review that follows is only possible *because* the code changed — an issue written against an imagined module reads differently once the real one exists. Batching all waves into one run would skip every review, which is the part that keeps the backlog honest.
+**One wave per invocation.** Re-firing is the loop, the same way `clean-house` re-fires. Each wave changes the codebase, and the review that follows is only possible *because* the code changed — an issue written against an imagined module reads differently once the real one exists. Batching all waves into one run would skip every review, which is the part that keeps the backlog honest.
 
 **The order is the point.** Certain work first, uncertain work last. A wave doesn't just deliver its own issues — it converts guesses in later issues into facts. Running a low-certainty issue early wastes that.
 
@@ -111,4 +111,4 @@ Print:
 Wave 2: #26, #29, #31 (2 afk, 1 hitl) — re-run /run-wave
 ```
 
-If open issues remain, tell the user to re-fire. If none do, say the backlog is empty and prompt the shipping phase: `/review-pr`, then `/audit-drift`.
+If open issues remain, tell the user to re-fire. If none do, say the backlog is empty and prompt the shipping phase: `/review-pr`, then `audit-drift`.

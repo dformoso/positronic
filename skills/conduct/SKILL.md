@@ -35,7 +35,7 @@ An agent arrives with a narrow assignment and no history in the file, so its saf
 
 - **Read what is already there before adding to it.** The stale comment, the wrong docstring, the section this change just overtook are part of the assignment — not someone else's problem to report.
 - **Correct in place.** If a line is now wrong, rewrite it. If it is now redundant, delete it. Never leave the old claim standing beside the new one, and never leave a tombstone — a line recording what the code used to do is a line the next reader has to arbitrate.
-- **Prefer the deletion.** When cutting code, a comment, a test, or a paragraph leaves the result simpler and truer, that is the better change, not the riskier one. Git holds the undo; undeleted weight is a tax on every future context window (`/clean-house`).
+- **Prefer the deletion.** When cutting code, a comment, a test, or a paragraph leaves the result simpler and truer, that is the better change, not the riskier one. Git holds the undo; undeleted weight is a tax on every future context window (`clean-house`).
 - **Scope still holds.** This licenses editing what the assignment touches, not tidying the neighbourhood. Anything else it noticed goes in the report, not the diff (AGENTS.md §3).
 
 ## Verdicts

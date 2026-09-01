@@ -10,7 +10,7 @@ Run only on explicit invocation — by name, slash/dollar command, or workflow s
 
 Review the current branch before it ships. Focus on what's wrong or risky, not what's fine.
 
-Scope is the **current diff**. Whole-system risk is `/audit-failure-modes`; doc-graph drift is `/audit-drift`.
+Scope is the **current diff**. Whole-system risk is `/audit-failure-modes`; doc-graph drift is `audit-drift`.
 
 ## Process
 
@@ -37,7 +37,7 @@ Read every changed file in full. For each, check against the AGENTS.md principle
 - **Comprehension** — could a reader outside this change follow it? Flag: names that lie (`is*` non-boolean, `get*` that mutates or costs, a name promising more/less/opposite of the behavior); vague names (`data`, `result`, `process`); a new public surface without an interface comment, or one that leaks implementation / restates code; a new wrapper that adds interface without hiding anything (deletion test); the same constant/format/assumption now encoded in two places; nesting a guard clause would flatten. Judgment, not gates — and don't demand fragmentation: a deep function with a paragraph comment passes.
 - **Needless machinery** — an error path, guard, or `catch` for a state the types or call sites make unreachable; validation repeated at a layer that already received parsed input; a new setting with one possible value; a boolean flag argument selecting between two behaviors. The cheapest failure mode is the one that can't occur.
 - **Comments git already holds** — history notes (`// was: oldName()`, dated change annotations, changelog blocks at a file head), commented-out code, docstrings that restate the signature. Flag them for deletion; the commit message is where history belongs.
-- **Private-API reach** — flag any access to underscore-prefixed attributes across module boundaries. If a public surface needs the data, the underscore reach is a bug-in-waiting and the deepening opportunity should go to `/clean-house` (targeted mode).
+- **Private-API reach** — flag any access to underscore-prefixed attributes across module boundaries. If a public surface needs the data, the underscore reach is a bug-in-waiting and the deepening opportunity should go to `clean-house` (targeted mode).
 - **User-facing reliability** — for new >2s operations, confirm a progress signal is shown; for new external calls, confirm failure paths map to actionable messages, not raw exception strings. AGENTS.md §7.
 - **MCP-server changes** — if the diff adds or modifies an MCP tool / resource / prompt, check it against `${SKILL_DIR}/../../docs/agentic-patterns/06_mcp_design_brief.md` (`${SKILL_DIR}` = the directory containing this file) and against `definitions/mcp-servers.md` if the project has one. Flag drift from either, plus the three the brief can't see from a schema: advertised capabilities that aren't implemented, `tools/list_changed` missing on mutation, schemas not validated at startup.
 - **Trace-to-task** — every changed line traces to a sentence in the user's request. Pre-existing dirty state (files modified before the session started) gets surfaced explicitly — never quietly bundled.
@@ -67,7 +67,7 @@ Output a review with two sections:
 
 Do not summarise what the code does. Do not praise things that are fine. The author can read the diff.
 
-**Doc-graph nudge** — if `definitions/` exists in the repo, append: "Consider `/audit-drift` next for whole-graph doc drift (glossary inconsistencies, dead refs, decisions overtaken by the SPEC, mockup panels no journey contains). If you're approaching a release cut, also consider `/audit-failure-modes` to enumerate latent failure modes by surface."
+**Doc-graph nudge** — if `definitions/` exists in the repo, append: "Consider `audit-drift` next for whole-graph doc drift (glossary inconsistencies, dead refs, decisions overtaken by the SPEC, mockup panels no journey contains). If you're approaching a release cut, also consider `/audit-failure-modes` to enumerate latent failure modes by surface."
 
 ### 4. Resolve
 

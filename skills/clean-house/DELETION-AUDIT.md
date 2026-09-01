@@ -2,7 +2,7 @@
 
 The brief for a single read-only auditor: one target in, one verdict block out. The target is a file, a directory, or a named section of a file. Audit nothing else. Fix nothing.
 
-`/clean-house` fans these out in step 2 and in targeted mode; `/improve-readability` fans them out over spent-doc candidates. The launcher coalesces the blocks and runs the approval gate — an auditor never edits.
+`clean-house` fans these out in step 2 and in targeted mode; `improve-readability` fans them out over spent-doc candidates. The launcher coalesces the blocks and runs the approval gate — an auditor never edits.
 
 **Default to deletion. The burden of proof is on keeping.** Guards, error paths and tests are the exception: those keep prove-before-deleting ([CHECKS.md](../improve-readability/CHECKS.md), [TESTS.md](../improve-readability/TESTS.md)), because a wrong cut there fails silently. When the deciding fact is one only the owner can settle — does anyone actually read this? — the default still holds: say delete, and put the question that would reverse it in NOT ASSESSED.
 

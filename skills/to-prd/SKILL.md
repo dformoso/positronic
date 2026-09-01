@@ -111,7 +111,7 @@ Numbered CUJs. Each named, **two sentences max**, naming actor + trigger + flow 
 
 ## Out of Scope
 
-**Top 5 only.** Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep. Entries cut by `/clean-house` carry *cut because* and *re-add trigger* — the observable signal that would justify building it after all — and don't count against the five.
+**Top 5 only.** Features explicitly not built in this PRD. Different from Non-Goals: this is about *what*, Non-Goals is about *who*. Both protect against scope creep. Entries cut by `clean-house` carry *cut because* and *re-add trigger* — the observable signal that would justify building it after all — and don't count against the five.
 
 ## Risks & Open Questions
 

@@ -1,6 +1,6 @@
 # Checks
 
-The audit tables for `/improve-readability`. Sweep hotspots, not the whole tree; mechanical
+The audit tables for `improve-readability`. Sweep hotspots, not the whole tree; mechanical
 proxies flag candidates, judgment confirms; priority comes from reader traffic and machinery
 removed, never from finding count. Distilled from Ousterhout (*A Philosophy of Software
 Design*), Hermans (*The Programmer's Brain*), Fowler (*Refactoring*, 2nd ed), Beck (*Tidy
@@ -16,12 +16,12 @@ Symptom: the reader can't learn what's true from the code in front of them.
 | Check | Looks like | Move |
 |---|---|---|
 | Vague name | `data`, `result`, `info`, `process`, `handle` — could name many things | Rename to what it holds or does |
-| Hard to name | You (or the author, visibly) couldn't find a crisp name | The unit blends responsibilities — split along the concepts, or hand to `/clean-house` if it's a module |
+| Hard to name | You (or the author, visibly) couldn't find a crisp name | The unit blends responsibilities — split along the concepts, or hand to `clean-house` if it's a module |
 | Comment restates code | Reader learns nothing the next line doesn't say | Delete it; if something *was* worth saying (why, invariant, unit), say that instead |
 | Interface comment leaks internals | Public doc explains *how* instead of *what a caller must know* | Rewrite as contract: inputs, outputs, invariants, error modes — no implementation |
 | Hard to describe | An honest doc comment comes out long and hedged | The design is the problem — flag it; don't wordsmith the comment |
 | Nonobvious code | You must mentally execute it to know what it does | Rewrite for the reader; if the cleverness is load-bearing, add the why-comment at a higher level than the code |
-| Information leakage (code level) | Same format, constant, or assumption encoded in ≥2 places — change one, hunt the others | Give the decision one owner (constant, function, type); module-level leakage → `/clean-house` |
+| Information leakage (code level) | Same format, constant, or assumption encoded in ≥2 places — change one, hunt the others | Give the decision one owner (constant, function, type); module-level leakage → `clean-house` |
 | Special case in a general mechanism | `if (caller === X)` inside shared code; use-case names in a generic module | Pull the special case up to its caller |
 | Conjoined functions | Can't understand A without B open in the other pane | Recombine, or redraw the split so each piece stands alone |
 | Error handled everywhere | Same exception caught at every call site | Ladder: define the error out of existence (semantics where the case is a non-event — delete-absent is a no-op) → mask it low → aggregate it high → crash if unrecoverable |
@@ -59,7 +59,7 @@ refactoring.com; these earn a row because they show up in comprehension passes.
 | Repeated switches | Same discriminator switched in many places | Replace conditional with polymorphism (or one dispatch table) |
 | Message chains | `a.b().c().d()` — the reader learns the whole topology | Hide the delegate, or move the function to the end of the chain |
 | Scattered siblings | Three-line helpers that only make sense read together | **One pile** (Beck): inline them back into one unit, read it whole, then re-split honestly — or leave it whole |
-| Speculative generality | Hooks, params, layers for futures that never came | Inline, collapse, delete — route module-level deletions to `/clean-house` |
+| Speculative generality | Hooks, params, layers for futures that never came | Inline, collapse, delete — route module-level deletions to `clean-house` |
 | Temporary field | Field meaningful only sometimes | Extract the variant, or introduce a special case object |
 | Comment as deodorant | A comment apologizing for the block below | Fix the block (rename, extract, simplify); keep only what code can't say |
 
@@ -74,12 +74,12 @@ removing it pays twice. This is the lens that cuts.
 | Impossible-state handling | A guard, `catch`, or branch for a state the types or the call sites make unreachable | Delete it. If it turns out to be reachable, the type is lying — fix the type, don't keep the guard |
 | Validation at every layer | The same input checked at the edge, again in the service, again at the store | Parse once at the edge and carry the proof in the type; inner layers accept only the parsed value |
 | Nullable that's never null | An `Optional` / `\| null` return whose callers all assert, default, or ignore it | Make the function total; if absence is real, push it into the one caller that means it |
-| Setting with one value | A config knob, env var, or parameter with one observed value across the repo and its history | Inline the value. Note it in the report — a pattern of these is a config-surface finding for `/clean-house` |
+| Setting with one value | A config knob, env var, or parameter with one observed value across the repo and its history | Inline the value. Note it in the report — a pattern of these is a config-surface finding for `clean-house` |
 | Flag parameter | A boolean argument selecting between two behaviors | Split into two named functions; every caller already knows which one it wants |
 | Retry around a retry | Backoff at the client *and* the caller *and* the queue | One owner for the policy; everything else propagates |
 | Catch-log-rethrow | An exception caught only to log it and raise it again | Delete the handler; log once, where the decision to give up is made |
 | Just-in-case fallback | A default that hides a failure instead of handling it (`except: return []`) | Fail loudly, or handle it where the caller can actually act |
-| Forwarding wrapper | A function or class whose body is one call with the same arguments | Inline it (deletion test). If the layer is a whole module, route to `/clean-house` |
+| Forwarding wrapper | A function or class whose body is one call with the same arguments | Inline it (deletion test). If the layer is a whole module, route to `clean-house` |
 | Two paths, one job | A flag, branch, or duplicate path where one side is dead or both now do the same thing | Delete the dead side; collapse the live one |
 | Braided concerns | One unit that decides *and* performs; state mixed with time; domain mixed with transport | Separate the decision from the effect — the decision half then tests without mocks |
 | Speculative extension point | Hooks, callbacks, generics, or params nothing supplies | Inline, collapse, delete |
@@ -87,7 +87,7 @@ removing it pays twice. This is the lens that cuts.
 Guard-rails for this lens specifically:
 
 - **Removing machinery must never remove capability.** If you cannot say which caller stops
-  being served, you are removing machinery. If you can, stop — that's `/clean-house`.
+  being served, you are removing machinery. If you can, stop — that's `clean-house`.
 - **Prove unreachability before deleting a guard.** Grep the call sites, check the type, or
   leave the guard and log the finding. "It looks impossible" is not proof.
 - A deleted error path must be *impossible*, not merely *unlikely*. Unlikely-but-possible is

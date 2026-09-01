@@ -39,16 +39,16 @@ You arrive with a fuzzy idea — "build X", "fix Y" — and no spec yet. Each st
 | 8 | Lock *how* | `/to-spec` | `definitions/spec.md` |
 | 9 | Break into work | `/to-issues` | GitHub issues, tagged `afk` / `hitl` / `wave-N` |
 | 10 | Build, in waves | `/run-wave` — each issue via `test-driven-dev` (+ `ui-taste`, `diagnose`) | merged code, a reconciled backlog |
-| 11 | Ship | `/review-pr`, `/audit-drift`, `/audit-failure-modes` | review + drift findings |
+| 11 | Ship | `/review-pr`, `audit-drift`, `/audit-failure-modes` | review + drift findings |
 | 12 | Go live *(first real traffic / one-way cutovers)* | `/go-live` | GO / NO-GO + ranked blockers |
 | 13 | Read the result *(2–6 weeks after launch)* | `/readout` | keep / iterate / cut / pivot, `docs/audits/` |
-| 14 | Clean the house *(between versions)* | `/clean-house` | cuts + deepenings, `docs/audits/` report |
+| 14 | Clean the house *(between versions)* | `clean-house` | cuts + deepenings, `docs/audits/` report |
 
 When both apply, stage 5 runs before stage 6 — harness picks then slot into known surfaces. Stage 5 is itself a loop, not a gate: it picks the identity, draws it, and sends what the drawing reveals back up to stages 3–4 before redrawing.
 
 **Not every change walks all fourteen.** The PRD's change tier decides how far a change travels — a copy fix touches no artifact at all, an internal refactor touches only the SPEC, and only a launch walks the whole chain. The ladder is in [amend-mode.md](docs/amend-mode.md).
 
-Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`; a service pick ("which email provider?") goes to `/to-infrastructure`; a first deployment or provider cutover goes to `/go-live`; an accreted system between versions goes to `/clean-house`.
+Skip straight to the stage that fits: a bug report drops into `diagnose`, a known-good plan jumps to `/to-spec`, a finished branch goes to `/review-pr`; a service pick ("which email provider?") goes to `/to-infrastructure`; a first deployment or provider cutover goes to `/go-live`; an accreted system between versions goes to `clean-house`.
 
 ## Skills
 
@@ -74,13 +74,13 @@ Organized by phase. **Invocation:** `model` = the agent auto-fires it when a pro
 | `ui-taste` | model | implementing | `definitions/spec.md` § Product surfaces | styled UI | Apply the locked visual identity + taste rules |
 | `diagnose` | model | diagnosing | — | fix + regression test | Triage, build a feedback loop, reproduce, fix hard bugs |
 | `review-pr` | slash | shipping | the diff | findings | Flag must-fix / worth-noting before shipping |
-| `audit-drift` | slash | shipping | doc graph | drift report | Sweep the `definitions/` artifacts and the code for drift |
+| `audit-drift` | model | shipping | doc graph | drift report | Sweep the `definitions/` artifacts and the code for drift |
 | `audit-failure-modes` | slash | shipping | the system | P0/P1/P2 list | Pre-mortem of latent failure modes |
 | `go-live` | slash | operating | `definitions/infrastructure.md`, runbooks, gate scripts, the deployed environment | GO/NO-GO report | Verify the running system actually matches what `/to-infrastructure` promised, before first traffic or a one-way cutover |
 | `readout` | slash | operating | `definitions/prd.md` metrics, live instrumentation | `docs/audits/` readout | Weeks post-launch: did the number move? keep / iterate / cut / pivot |
 | `github-triage` | slash | meta | GitHub issues | labels | Label-based triage state machine |
-| `clean-house` | slash | maintaining | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
-| `improve-readability` | slash | maintaining / anytime | code, tests, `CONTEXT.md`, git churn | smaller code, stronger tests, `docs/audits/` report | Fresh-eyes confusion log → checklist sweep → cut needless code, comments and docs, rework the tests, until dry |
+| `clean-house` | model | maintaining | doc graph, code | cuts, deepenings, `docs/audits/` report | Question → delete → deepen → accelerate → automate, in rounds until dry |
+| `improve-readability` | model | maintaining / anytime | code, tests, `CONTEXT.md`, git churn | smaller code, stronger tests, `docs/audits/` report | Fresh-eyes confusion log → checklist sweep → cut needless code, comments and docs, rework the tests, until dry |
 
 The system prompt sees `AGENTS.md` plus the descriptions of `model` skills only; `slash` skills load on invoke.
 
@@ -125,7 +125,7 @@ git clone https://github.com/dformoso/positronic.git
 ln -s "$(pwd)/positronic/skills" ~/.agents/skills
 ```
 
-The 19 `slash` skills ship `agents/openai.yaml` (`allow_implicit_invocation: false`) — Codex won't auto-fire them; invoke explicitly with `$name`. Floor: copy `AGENTS.md` to `~/.codex/AGENTS.md` (global) or keep it at the project root — Codex reads it natively (no `@import` support; 32 KiB default cap).
+The 16 `slash` skills ship `agents/openai.yaml` (`allow_implicit_invocation: false`) — Codex won't auto-fire them; invoke explicitly with `$name`. Floor: copy `AGENTS.md` to `~/.codex/AGENTS.md` (global) or keep it at the project root — Codex reads it natively (no `@import` support; 32 KiB default cap).
 
 ### Antigravity
 

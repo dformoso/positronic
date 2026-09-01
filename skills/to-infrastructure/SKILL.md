@@ -201,4 +201,4 @@ Ask only the 2–3 that gate the pick. **Governing default, every row: take what
 
 ## Freshness & sweep wiring
 
-Every fact in a section is dated at the point it was fetched. `/clean-house` sweeps every `NEXT REVIEW:`/`TRIGGER:` line each pass (its step-1 sweep owns the canonical check, covering `definitions/infrastructure.md`, `definitions/decisions.md`, and `definitions/runtime.md`) — and a fired path trigger is the input to the `/go-live` gate. This skill names **no vendor, product, price, or version** on purpose: if one ever appears here, it is a bug in an example, never the method. Fix the example; leave the method alone.
+Every fact in a section is dated at the point it was fetched. `clean-house` sweeps every `NEXT REVIEW:`/`TRIGGER:` line each pass (its step-1 sweep owns the canonical check, covering `definitions/infrastructure.md`, `definitions/decisions.md`, and `definitions/runtime.md`) — and a fired path trigger is the input to the `/go-live` gate. This skill names **no vendor, product, price, or version** on purpose: if one ever appears here, it is a bug in an example, never the method. Fix the example; leave the method alone.

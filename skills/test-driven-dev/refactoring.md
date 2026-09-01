@@ -25,7 +25,7 @@ After each cycle, look for:
 | Excess machinery | An error path for a state that can't occur; a wrapper that only forwards; a flag arg picking between two behaviors | Delete the path; inline the wrapper; split the flagged function |
 | Comment as deodorant | Comment apologizing for the block below | Fix the block; keep only what code can't say |
 | Comment git already holds | `// was: oldName()`, a date-stamped change note, commented-out code | Delete — history lives in the commit, and the comment goes stale the moment it's wrong |
-| Existing code | The new code reveals a problem in old code | Fix here if small; else flag for `/improve-readability` or `/clean-house` |
+| Existing code | The new code reveals a problem in old code | Fix here if small; else flag for `improve-readability` or `clean-house` |
 
 Guard-rails — refactoring must not fragment:
 

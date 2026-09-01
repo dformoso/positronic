@@ -1,10 +1,7 @@
 ---
 name: audit-drift
-description: Audit the project's doc graph (definitions/, CONTEXT.md) for drift. Surfaces glossary terms used inconsistently, dead cross-references, decisions the current SPEC has overtaken, SPEC contracts the code has overtaken, mockup panels no journey still contains, and journeys the SPEC never designed. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
-disable-model-invocation: true
+description: Audit the project's doc graph (definitions/, CONTEXT.md) for drift. Surfaces glossary terms used inconsistently, dead cross-references, decisions the current SPEC has overtaken, SPEC contracts the code has overtaken, mockup panels no journey still contains, and journeys the SPEC never designed. Reports must-fix and worth-noting; never auto-fixes. Use when the user wants a doc-health sweep before shipping or after a long defining phase.
 ---
-
-Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Audit Drift
 
@@ -12,7 +9,7 @@ Static sweep across the project's doc graph (and the code it describes). Detects
 
 Scope is the **doc graph**, not the diff (`/review-pr`) and not system risk (`/audit-failure-modes`). Distinct from `/judge-idea` too: that stress-tests one artifact's argument, this detects mechanical drift across all of them.
 
-Also runs inside `/clean-house` at the end of each pass: after a pass's cuts and reshapes, this sweep reconciles the doc graph, and findings the pass's edits don't explain feed the next pass's questioning.
+Also runs inside `clean-house` at the end of each pass: after a pass's cuts and reshapes, this sweep reconciles the doc graph, and findings the pass's edits don't explain feed the next pass's questioning.
 
 ## Process
 
@@ -69,7 +66,7 @@ For each `##` section in `definitions/decisions.md` and `definitions/infrastruct
 - Read the SPEC's `## Modules & interfaces` and `## Data model / schema` sections.
 - If the recorded decision is no longer reflected in the current SPEC, flag it.
 
-LLM judgment, not a grep. Be conservative — flag only a clear contradiction, not a section and a SPEC discussing different layers. A record's *freshness* is governed by its own `NEXT REVIEW:`/`TRIGGER:` lines, which `/clean-house` sweeps; here flag only a SPEC that contradicts what was recorded.
+LLM judgment, not a grep. Be conservative — flag only a clear contradiction, not a section and a SPEC discussing different layers. A record's *freshness* is governed by its own `NEXT REVIEW:`/`TRIGGER:` lines, which `clean-house` sweeps; here flag only a SPEC that contradicts what was recorded.
 
 #### 2.4. The latest SPEC overtaken by the code — *must-fix* (forward) / *worth-noting* (reverse)
 

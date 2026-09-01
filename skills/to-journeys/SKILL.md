@@ -42,7 +42,7 @@ If `definitions/journeys.md` exists and this is a scoped change rather than a re
 
 5. **Then write the reference half** — what the journeys run on and what no journey touches. Data model, external channels, agent autonomy, queues, notifications, integrations, permissions. If a rule applies inside exactly one journey it belongs in that journey's Rules row; if it crosses journeys it is hoisted to the cross-journey table; if it belongs to no journey at all it goes under *Behaviour with no journey*.
 
-6. **Every row carries an owner and a failure.** Someone you could trace it to — a person, a research finding, a judgment — and a failure you can name if it's dropped. "Best practice" and "the model suggested it" are departments, not owners. Rows with neither go to the PRD's Out of Scope. (`/clean-house` re-asks both between versions.)
+6. **Every row carries an owner and a failure.** Someone you could trace it to — a person, a research finding, a judgment — and a failure you can name if it's dropped. "Best practice" and "the model suggested it" are departments, not owners. Rows with neither go to the PRD's Out of Scope. (`clean-house` re-asks both between versions.)
 
 7. **Distill "What the product does" last, place it first.** Only after the journeys and reference tables exist, write the capability list at the top of the file: one row per thing the product can do, in words a person outside engineering reads. Pull capabilities out of journey steps and reference rows — this is where something several journeys share finally gets a name. Then check both directions: every `feature`-tier journey appears in at least one row, and no row names a journey or background behaviour the file doesn't contain.
 

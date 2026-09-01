@@ -1,6 +1,6 @@
 # Reworking an Existing Suite
 
-The test half of `/improve-readability`. [test-driven-dev](../test-driven-dev/SKILL.md)
+The test half of `improve-readability`. [test-driven-dev](../test-driven-dev/SKILL.md)
 covers writing a test for behavior you are about to build; this covers judging a suite that
 already exists, deleting what protects nothing, and strengthening what's left.
 
@@ -43,7 +43,7 @@ assertion to add.
 
 | Smell | Looks like | Move |
 |---|---|---|
-| Tests the mechanism | Asserts a mock was called, checks call counts or order, reaches a private method | Rewrite through the public interface. If that's impossible, the module is the wrong shape → `/clean-house` |
+| Tests the mechanism | Asserts a mock was called, checks call counts or order, reaches a private method | Rewrite through the public interface. If that's impossible, the module is the wrong shape → `clean-house` |
 | Can't fail | No assertion; asserts something the code can't violate; asserts only that nothing threw | Assert the observable outcome, or delete the test |
 | Planted state | Setup writes state directly when production reaches it through a factory, endpoint, or upload | Build state the way production builds it (see [tests.md](../test-driven-dev/tests.md)) |
 | Mystery guest | Depends on a fixture file, shared row, clock, or env var the test never shows | Make the input visible in the test |

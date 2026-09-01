@@ -53,4 +53,4 @@ Two rules:
 
 ## 5. Dashboards
 
-One line each: who opens it, when, and the question it answers. A dashboard with no named reader and no question gets deleted by the next `/clean-house` pass, and rightly.
+One line each: who opens it, when, and the question it answers. A dashboard with no named reader and no question gets deleted by the next `clean-house` pass, and rightly.

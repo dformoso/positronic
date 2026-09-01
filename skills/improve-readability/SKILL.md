@@ -1,10 +1,7 @@
 ---
 name: improve-readability
-description: Supervised comprehension-and-reduction pass over an established codebase — find where the code costs its readers, and where it carries more machinery than the job needs, then fix both in gated slices: cut needless code and error paths, strip comments back to what the code and git can't say, delete spent docs, and rework the tests until they would actually catch a break. Use when the user says the code is hard to read, onboarding is slow, every change starts with archaeology, or asks to simplify the code, cut it down, strip the comments, clear out dead docs, or strengthen a weak test suite. Cutting whole features, requirements or modules belongs to /clean-house. User-invoked only — never activate autonomously; if it seems relevant, tell the user it exists and wait.
-disable-model-invocation: true
+description: Supervised comprehension-and-reduction pass over an established codebase — find where the code costs its readers, and where it carries more machinery than the job needs, then fix both in gated slices: cut needless code and error paths, strip comments back to what the code and git can't say, delete spent docs, and rework the tests until they would actually catch a break. Use when the user says the code is hard to read, onboarding is slow, every change starts with archaeology, or asks to simplify the code, cut it down, strip the comments, clear out dead docs, or strengthen a weak test suite. Cutting whole features, requirements or modules belongs to clean-house.
 ---
-
-Run only on explicit invocation — by name, slash/dollar command, or workflow stub. Otherwise stop: say this skill exists, and wait.
 
 # Improve Readability
 
@@ -34,8 +31,8 @@ Neighbours — keep the questions distinct:
 
 | Skill | Its question |
 |---|---|
-| `/improve-readability` (this) | Can the next person understand it, and is any of it needless? Comprehension and reduction, inside the code that stays |
-| `/clean-house` | What shouldn't exist *at all*? Cutting features, requirements, dependencies, modules, process. **Runs before this pass when both are due** — polishing code that is about to be deleted is wasted work |
+| `improve-readability` (this) | Can the next person understand it, and is any of it needless? Comprehension and reduction, inside the code that stays |
+| `clean-house` | What shouldn't exist *at all*? Cutting features, requirements, dependencies, modules, process. **Runs before this pass when both are due** — polishing code that is about to be deleted is wasted work |
 | `/review-pr` | Is this diff safe to ship? A gate on the change, not a pass over the codebase |
 | `/audit-failure-modes` | What will break? Enumerates risk and adds handling; this pass removes the failures worth removing |
 | `diagnose` | Why is it broken? Bugs found here route there; obscurity found there routes here |
@@ -50,7 +47,7 @@ Neighbours — keep the questions distinct:
    is earned per area, never assumed. Where it isn't earned, the area is comments and docs
    only.
 3. **Code altitude, not product altitude.** Reshaping interfaces, merging module clusters,
-   moving seams, dropping a feature or a requirement — hand those to `/clean-house` as named
+   moving seams, dropping a feature or a requirement — hand those to `clean-house` as named
    candidates with the evidence attached. If a target smells deletable *as a whole*, don't
    polish it and don't shrink it: flag it and move on.
 
@@ -180,7 +177,7 @@ Per approved slice, in this order:
 3. **Small steps, suite green after each.** The slice lands as its own structural commit,
    no behavior change mixed in. For a reduction too large to land at once, strangle it: new
    shape beside old, callers moved over one at a time, old shape deleted last.
-4. **Route what isn't yours.** Module-level and deletion candidates → `/clean-house`
+4. **Route what isn't yours.** Module-level and deletion candidates → `clean-house`
    (targeted mode) with the evidence; bugs → `diagnose`.
 5. **Rejected with a load-bearing reason** → offer a record in `definitions/decisions.md`
    (see [../clean-house/DECISIONS-FORMAT.md](../clean-house/DECISIONS-FORMAT.md)) so later
@@ -210,7 +207,7 @@ lines removed, branches removed, error paths removed, tests deleted / raised / s
 
 **Dry or wet?** No new must-fix finding, no new high-severity stumble on the re-walk, no
 machinery left flagged → **dry**: stop. Otherwise **wet**: write the report, list what's
-open, tell the user to re-fire `/improve-readability` when ready. One pass per invocation —
+open, tell the user to re-fire `improve-readability` when ready. One pass per invocation —
 never loop silently.
 
 ## Report
@@ -241,7 +238,7 @@ report as part of the spent-docs sweep — only the latest is ever read.
 - tests: {deleted / raised to the interface / strengthened}
 
 ## Handed off
-- {candidate} → {/clean-house targeted | diagnose} — {evidence}
+- {candidate} → {clean-house targeted | diagnose} — {evidence}
 
 ## Newcomer artifacts
 - {added/updated, or "none needed — say why"}

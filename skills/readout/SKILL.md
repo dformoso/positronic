@@ -14,7 +14,7 @@ This closes the only loop positronic otherwise leaves open. `define` frames a fa
 
 Report-only on the code — it changes nothing and fixes nothing. It writes one dated record and returns a verdict.
 
-**When to run it.** At the date the PRD's kill-criteria table set, typically two to six weeks after the change reaches real users. Early enough that you can still act, late enough that the numbers mean something. Also run it at the version hinge, before defining the next increment — `/clean-house` step 1 asks whether each requirement is exercised in reality, and this is the evidence that answers it.
+**When to run it.** At the date the PRD's kill-criteria table set, typically two to six weeks after the change reaches real users. Early enough that you can still act, late enough that the numbers mean something. Also run it at the version hinge, before defining the next increment — `clean-house` step 1 asks whether each requirement is exercised in reality, and this is the evidence that answers it.
 
 ## Process
 
@@ -57,7 +57,7 @@ A fired criterion constrains the verdict no matter how good the rest looks. If y
 The qualitative half, and the part that most often produces the next thing worth building. Three or four bullets, concrete:
 
 - What users did that nobody predicted — including the workaround they invented.
-- What they ignored entirely. A shipped feature at zero usage is a `/clean-house` candidate, and this is where that gets noticed.
+- What they ignored entirely. A shipped feature at zero usage is a `clean-house` candidate, and this is where that gets noticed.
 - What broke, or nearly did.
 - Which assumption from the PRD's Risks table turned out wrong.
 
@@ -69,7 +69,7 @@ One of four, with a reason in one sentence:
 |---|---|---|
 | **keep** | Metric hit target, no kill criterion fired. Leave it alone and go work on something else | Nothing. Resist polishing something that is already working |
 | **iterate** | Direction is right, magnitude isn't. A specific, named change would plausibly close the gap | `define` in increment mode — frame just that change |
-| **cut** | Nobody used it, or it costs more than it returns | `/clean-house` in targeted mode, naming this feature |
+| **cut** | Nobody used it, or it costs more than it returns | `clean-house` in targeted mode, naming this feature |
 | **pivot** | The hypothesis was wrong — a kill criterion fired against the bet, not against the execution | `define` from scratch. If the Target User or Problem Statement is what was wrong, the PRD is rewritten, not amended (`${SKILL_DIR}/../../docs/amend-mode.md`; `${SKILL_DIR}` = the directory containing this file) |
 
 Refusing to pick is also a signal: if the numbers can't distinguish these four, the metrics were the wrong metrics. Say so, and fix them in the PRD before the next increment inherits them.

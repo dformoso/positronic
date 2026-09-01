@@ -112,7 +112,7 @@ TRIGGER: more than one person touches running infra → shared cloud
 TRIGGER: deploy or rollback feels manual and risky → deploy automation + a rollback contract
 ```
 
-A fired trigger is the input to the `/go-live` gate. `/to-infrastructure` in greenfield mode records this path as the **first** section of `definitions/infrastructure.md`, and that section's exit-plan field *is* this trigger list. All revisit machinery is grep-able: sections carry a `NEXT REVIEW: YYYY-MM-DD` line and `TRIGGER:` lines each at the start of its own line; `/clean-house`'s step-1 sweep (the canonical check) flags past-due reviews and fired triggers each pass.
+A fired trigger is the input to the `/go-live` gate. `/to-infrastructure` in greenfield mode records this path as the **first** section of `definitions/infrastructure.md`, and that section's exit-plan field *is* this trigger list. All revisit machinery is grep-able: sections carry a `NEXT REVIEW: YYYY-MM-DD` line and `TRIGGER:` lines each at the start of its own line; `clean-house`'s step-1 sweep (the canonical check) flags past-due reviews and fired triggers each pass.
 
 ## This doc is method
 

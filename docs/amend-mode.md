@@ -13,7 +13,7 @@ positronic keeps one document per artifact type, flat in `definitions/`, each na
 | `definitions/mcp-servers.md` | `design-mcp-server` (one section per server) |
 | `definitions/runtime.md` | `pick-harness-shape`, at the placement gate |
 | `definitions/infrastructure.md` | `/to-infrastructure` (path, environments, gate ladder, CI/CD, infrastructure-as-code, one section per service) |
-| `definitions/decisions.md` | `/clean-house`, `/improve-readability` (one section per decision) |
+| `definitions/decisions.md` | `clean-house`, `improve-readability` (one section per decision) |
 | `definitions/spec.md` | `/to-spec` |
 
 Each one is a **whole-product** document that every consumer reads by name. There are no subdirectories, no timestamps, and no second copy — the file *is* the current truth, and git holds every version it used to be.
@@ -99,10 +99,10 @@ What stops "rewrite five artifacts per feature." An amended artifact forces a do
 
 **Termination:** any amended upstream artifact (`definitions/prd.md`, `definitions/journeys.md`, `definitions/mockups.md`, `definitions/harness.md`, `definitions/mcp-servers.md`, `definitions/runtime.md`) implies a `/to-spec` amend; a `/to-spec` amend implies `/to-issues`; `/to-issues` hands to `/run-wave`. The cascade ends at `/to-issues` — the executable unit, and the last place a stale issue can be caught. A change confined to one section travels one edge, not the whole graph.
 
-**Mid-graph edge:** an amended `definitions/harness.md` whose Topology (trigger classes), Gates (waits), Security (residency, sandbox posture), or Substrate sections changed implicates `definitions/runtime.md` — the placement profile, when one exists (written at `pick-harness-shape`'s placement gate). Service-level vendor picks are sections of `definitions/infrastructure.md` (via `/to-infrastructure`) and sit outside this cascade; their revisit triggers are swept by `/clean-house` instead.
+**Mid-graph edge:** an amended `definitions/harness.md` whose Topology (trigger classes), Gates (waits), Security (residency, sandbox posture), or Substrate sections changed implicates `definitions/runtime.md` — the placement profile, when one exists (written at `pick-harness-shape`'s placement gate). Service-level vendor picks are sections of `definitions/infrastructure.md` (via `/to-infrastructure`) and sit outside this cascade; their revisit triggers are swept by `clean-house` instead.
 
 This is also the path a production-learning loop takes: brief 07's optimizer amends `definitions/harness.md` directly → cascades to `/to-spec` → `/to-issues`. Same machinery, different trigger.
 
 ## What does not change
 
-Every execution and read-only skill already reads the artifact by filename and keeps working untouched: `/to-issues`, `/run-wave`, `/to-spec` (reading upstream), `/review-pr`, `/audit-drift`, `/readout`, `test-driven-dev`, `/judge-idea`. Amend mode is purely an *authoring* convention — it changes how a document is edited, never how it is read. That is why it is low-risk.
+Every execution and read-only skill already reads the artifact by filename and keeps working untouched: `/to-issues`, `/run-wave`, `/to-spec` (reading upstream), `/review-pr`, `audit-drift`, `/readout`, `test-driven-dev`, `/judge-idea`. Amend mode is purely an *authoring* convention — it changes how a document is edited, never how it is read. That is why it is low-risk.

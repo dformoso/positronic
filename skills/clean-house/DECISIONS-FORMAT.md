@@ -21,7 +21,7 @@ Only when they add genuine value. Most records won't need them.
 - **Superseded by** — when a later decision replaces this one, add the line and **leave the body in place**. Records supersede, never get edited away; the trail of why is the asset, and keeping it here means one read recovers it.
 - **Considered options** — only when the rejected alternatives are worth remembering.
 - **Consequences** — only when non-obvious downstream effects need calling out.
-- **Revisit trigger** — a grep-able line (`NEXT REVIEW: YYYY-MM-DD`, or `TRIGGER: <observable condition> → <action>`) when the decision should be re-examined on a signal rather than by memory. Each at the start of its own line; `/clean-house`'s step-1 sweep greps for them each pass.
+- **Revisit trigger** — a grep-able line (`NEXT REVIEW: YYYY-MM-DD`, or `TRIGGER: <observable condition> → <action>`) when the decision should be re-examined on a signal rather than by memory. Each at the start of its own line; `clean-house`'s step-1 sweep greps for them each pass.
 
 ## When to record one
 

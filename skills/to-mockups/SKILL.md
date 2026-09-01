@@ -233,7 +233,7 @@ Brief — in-app docs surface, contact mechanism, status page.
 | Panel id | Renders | Viewport | What it locks |
 |---|---|---|---|
 
-Every row must exist as an `id` in `definitions/mockups.html`, and every journey step and branch that names a panel must appear as a row; no row may name a step or journey the journeys artifact no longer has. A gap in either direction is drift — `/audit-drift` check 2.5 reconciles the rows against the ids and against the steps that name panels, but fix it before committing. A step with no screen names no panel and gets no row. A step the user watches happen does have a screen, so a blank Panel cell there is drift in `definitions/journeys.md`, not licence to skip a panel here.
+Every row must exist as an `id` in `definitions/mockups.html`, and every journey step and branch that names a panel must appear as a row; no row may name a step or journey the journeys artifact no longer has. A gap in either direction is drift — `audit-drift` check 2.5 reconciles the rows against the ids and against the steps that name panels, but fix it before committing. A step with no screen names no panel and gets no row. A step the user watches happen does have a screen, so a blank Panel cell there is drift in `definitions/journeys.md`, not licence to skip a panel here.
 
 ## What the drawing changed
 

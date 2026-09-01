@@ -8,7 +8,7 @@ Run only on explicit invocation — by name, slash/dollar command, or workflow s
 
 # Audit Failure Modes
 
-Prospective diagnosis. Walk the system and list how it could break — before it does. Reports only — never auto-fixes. Mirrors `/review-pr`'s and `/audit-drift`'s posture.
+Prospective diagnosis. Walk the system and list how it could break — before it does. Reports only — never auto-fixes. Mirrors `/review-pr`'s and `audit-drift`'s posture.
 
 Scope is the **whole system, read from code**. The one worth keeping straight is `/go-live`: it verifies runtime evidence no code-read can see — whether the secret is actually set, whether backups are actually retaining, whether an alert actually fires. Enumerate here; verify there.
 
@@ -119,7 +119,7 @@ this skill reaches for is additive — a timeout, a retry, a check — and the c
 mode is the one that can't occur: make the bad state unrepresentable in the type, parse once
 at the edge and carry the proof inward, or pick semantics where the case is a non-event.
 When that's the answer, say so instead of specifying a handler, and route it to
-`/improve-readability` (excess-machinery lens) rather than adding a guard here.
+`improve-readability` (excess-machinery lens) rather than adding a guard here.
 
 Rank each finding:
 
@@ -186,7 +186,7 @@ Default no. Create `docs/audits/` lazily on first save.
 
 ## Out of scope
 
-- **Auto-fix.** Mirrors `/review-pr` and `/audit-drift` — detection, not repair.
-- **Test-coverage audit.** Different lens; absence of evidence, not a failure mode. A suite that stays green when the code breaks belongs to `/improve-readability` — see [`../improve-readability/TESTS.md`](../improve-readability/TESTS.md).
+- **Auto-fix.** Mirrors `/review-pr` and `audit-drift` — detection, not repair.
+- **Test-coverage audit.** Different lens; absence of evidence, not a failure mode. A suite that stays green when the code breaks belongs to `improve-readability` — see [`../improve-readability/TESTS.md`](../improve-readability/TESTS.md).
 - **Performance regression hunting.** `diagnose` territory once a regression exists.
-- **Doc-graph drift.** `/audit-drift`.
+- **Doc-graph drift.** `audit-drift`.
